@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+set -e
+
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+echo "-----> Building with src/all.sh"
+cd $BUILD_DIR/src
+./all.sh 2>&1 | sed -u 's/^/       /'
+[ "${PIPESTATUS[*]}" = "0 0" ]
