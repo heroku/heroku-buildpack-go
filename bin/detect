@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # bin/use <build-dir>
 
-if [ -f $1/src/all.sh ]; then
+if [ -f $1/all.sh ]; then
   echo "Go" && exit 0
 else
   echo "no" && exit 1

@@ -7,6 +7,6 @@ BUILD_DIR=$1
 CACHE_DIR=$2
 
 echo "-----> Building with src/all.sh"
-cd $BUILD_DIR/src
+cd $BUILD_DIR
 ./all.sh 2>&1 | sed -u 's/^/       /'
 [ "${PIPESTATUS[*]}" = "0 0" ]
