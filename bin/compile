@@ -17,12 +17,16 @@ GOROOT="$cache/src/go/$GOVERSION"
 PATH="$GOROOT/bin:$PATH"
 export GOROOT PATH
 
+indent() {
+  sed 's/^/       /'
+}
+
 if [ -f $GOROOT/src/all.bash ]
 then
   echo "-----> Go version $GOVERSION cached; Skipping clone."
 else
   echo "-----> Cloning Go version $GOVERSION."
-  hg clone -r $GOVERSION http://go.googlecode.com/hg $GOROOT
+  hg clone -r $GOVERSION http://go.googlecode.com/hg $GOROOT 2>&1 | indent
 fi
 
 if [ -f $GOROOT/bin/gofmt ]
@@ -35,8 +39,7 @@ fi
 
 if [ -f $build/all.sh ]
 then
-  (cd $build && ./all.sh) |
-  sed 's/^/       /'
+  (cd $build && ./all.sh) | indent
 else
   echo "-----> all.sh does not exist; Aborting."
   exit 1
