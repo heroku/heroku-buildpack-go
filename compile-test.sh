@@ -50,14 +50,6 @@ it_compiles_app() {
   test "$(./build/bin/mytest 2>&1)" = "ok"
 }
 
-it_goinstalls_for_no_all_sh() {
-  rm build/all.sh
-  compile
-  test -f build/bin/mytest
-  test -x build/bin/mytest
-  test "$(./build/bin/mytest 2>&1)" = "ok"
-}
-
 it_deletes_cache() {
   # Here only to delete the cache dir
   rm -rf cache

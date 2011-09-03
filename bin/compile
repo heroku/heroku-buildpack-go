@@ -41,21 +41,11 @@ fi
 # unset git dir or it will mess with goinstall
 unset GIT_DIR
 
-if [ -f $build/all.sh ]
-then
-  echo "-----> Running all.sh"
-  (
-    cd $build && ./all.sh
-  ) | indent
-else
-  echo "-----> Running goinstall"
-  (
-    cd $build
-    GOPATH="$PWD"
-    export GOPATH
+echo "-----> Running goinstall"
+cd $build
+GOPATH="$PWD"
+export GOPATH
 
-    for f in $(find src -type f | egrep "\.go$" | sort | uniq)
-    do goinstall ./$(dirname $f)
-    done
-  )
-fi
+for f in $(find src -type f | egrep "\.go$" | sort | uniq)
+do goinstall ./$(dirname $f)
+done

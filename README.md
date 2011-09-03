@@ -2,12 +2,13 @@
 
 *Use*
 
-		$ cat all.sh
-		#!/bin/sh
-		set -e
-		GOPATH="$PWD"
-		export GOPATH
-		goinstall ./src/prettydemo/prettydemo
+		$ find . -type f
+		Procfile
+		src/prettydemo/prettydemo/main.go
+		src/prettydemo/web/web.go
+
+		$ cat Procfile
+		web: ./bin/prettydemo -l :$PORT
 
 		$ heroku create --stack cedar
 		$ heroku config:add LANGUAGE_PACK_URL="https://user:pass@github.com/heroku/language-pack-go.git"
