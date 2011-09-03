@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 # bin/use <build-dir>
+set -e
 
 if [ -f $1/all.sh ]; then
-  echo "Go" && exit 0
+  echo "Go"
+  exit 0
 else
-  echo "no" && exit 1
+  echo "no"
+  exit 1
 fi
