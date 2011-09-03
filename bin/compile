@@ -23,17 +23,17 @@ indent() {
 
 if [ -f $GOROOT/src/all.bash ]
 then
-  echo "-----> Go version $GOVERSION cached; Skipping clone."
+  echo "-----> Go version $GOVERSION cached; Skipping clone"
 else
-  echo "-----> Cloning Go version $GOVERSION."
+  echo "-----> Cloning Go version $GOVERSION"
   hg clone -r $GOVERSION http://go.googlecode.com/hg $GOROOT 2>&1 | indent
 fi
 
 if [ -f $GOROOT/bin/gofmt ]
 then
-  echo "-----> Go version $GOVERSION built; Skipping build."
+  echo "-----> Go version $GOVERSION built; Skipping build"
 else
-  echo "-----> Building Go version $GOVERSION."
+  echo "-----> Building Go version $GOVERSION"
   (cd $GOROOT/src && ./all.bash > $cache/build.log 2>&1)
 fi
 
@@ -46,6 +46,6 @@ then
     cd $build && ./all.sh
   ) | indent
 else
-  echo "-----> all.sh does not exist; Aborting."
+  echo "-----> all.sh does not exist; Aborting"
   exit 1
 fi
