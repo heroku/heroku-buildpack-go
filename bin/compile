@@ -39,6 +39,7 @@ fi
 
 if [ -f $build/all.sh ]
 then
+  echo "-----> Running all.sh"
   (cd $build && ./all.sh) | indent
 else
   echo "-----> all.sh does not exist; Aborting."
