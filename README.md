@@ -2,7 +2,8 @@
 
 *Use*
 
-		$ find . -type f
+		# The langpack looks for .go files under src/ for detection
+		$ find * -type f
 		Procfile
 		src/prettydemo/prettydemo/main.go
 		src/prettydemo/web/web.go
