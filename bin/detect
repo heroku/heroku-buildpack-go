@@ -2,10 +2,14 @@
 # bin/use <build-dir>
 set -e
 
-if [ -f $1/all.sh ]; then
-  echo "Go"
-  exit 0
-else
-  echo "no"
-  exit 1
-fi
+build=$1
+
+isgo() {
+  [ -f src/all.sh ] ||
+  (
+    [ -d src ] &&
+    find src -type f | egrep -q "\.go$"
+  )
+}
+
+cd "$build" && isgo && echo "Go"

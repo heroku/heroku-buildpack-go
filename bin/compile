@@ -46,6 +46,14 @@ then
     cd $build && ./all.sh
   ) | indent
 else
-  echo "-----> all.sh does not exist; Aborting"
-  exit 1
+  echo "-----> Running goinstall"
+  (
+    cd $build
+    GOPATH="$PWD"
+    export GOPATH
+
+    for f in $(find src -type f | egrep "\.go$" | sort | uniq)
+    do goinstall ./$(dirname $f)
+    done
+  )
 fi

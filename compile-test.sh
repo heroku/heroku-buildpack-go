@@ -50,13 +50,12 @@ it_compiles_app() {
   test "$(./build/bin/mytest 2>&1)" = "ok"
 }
 
-it_errors_for_no_all_sh() {
+it_goinstalls_for_no_all_sh() {
   rm build/all.sh
-  set +e
-  out=$(compile)
-  test $? = 1
-  set -e
-  echo "$out" | grep Aborting
+  compile
+  test -f build/bin/mytest
+  test -x build/bin/mytest
+  test "$(./build/bin/mytest 2>&1)" = "ok"
 }
 
 it_deletes_cache() {
