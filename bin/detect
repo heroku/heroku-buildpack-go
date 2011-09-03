@@ -2,14 +2,10 @@
 # bin/use <build-dir>
 set -e
 
-build=$1
-
 isgo() {
-  [ -f src/all.sh ] ||
-  (
-    [ -d src ] &&
-    find src -type f | egrep -q "\.go$"
-  )
+  cd $1
+  [ -d src ]
+  find src -type f | egrep -q "\.go$"
 }
 
-cd "$build" && isgo && echo "Go"
+isgo "$1" && echo "Go"
