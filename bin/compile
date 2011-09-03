@@ -40,7 +40,11 @@ fi
 if [ -f $build/all.sh ]
 then
   echo "-----> Running all.sh"
-  (cd $build && ./all.sh) | indent
+  (
+    # unset git dir or it will mess with goinstall
+    unset GIT_DIR
+    cd $build && ./all.sh
+  ) | indent
 else
   echo "-----> all.sh does not exist; Aborting."
   exit 1
