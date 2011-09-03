@@ -1,12 +1,42 @@
-#!/usr/bin/env bash
-# bin/compile <build-dir> <cache-dir>
+#!/bin/sh
+
+##
+# usage: bin/compile <build-dir> <cache-dir>
 
 set -e
 
-BUILD_DIR=$1
-CACHE_DIR=$2
+build=$(cd "$1" && pwd)
+cache=$(cd "$2" && pwd)
 
-echo "-----> Building with src/all.sh"
-cd $BUILD_DIR
-./all.sh 2>&1 | sed -u 's/^/       /'
-[ "${PIPESTATUS[*]}" = "0 0" ]
+: ${GOVERSION:=release.r59}
+# TODO: Check the version exists in src/go
+echo "-----> Using Go version $GOVERSION"
+
+GOROOT="$cache/src/go/$GOVERSION"
+PATH="$GOROOT/bin:$PATH"
+export GOROOT PATH
+
+if [ -f $GOROOT/src/all.bash ]
+then
+  echo "-----> Go version $GOVERSION cached; Skipping clone."
+else
+  echo "-----> Cloning Go version $GOVERSION."
+  hg clone -r $GOVERSION http://go.googlecode.com/hg $GOROOT
+fi
+
+if [ -f $GOROOT/bin/gofmt ]
+then
+  echo "-----> Go version $GOVERSION built; Skipping build."
+else
+  echo "-----> Building Go version $GOVERSION."
+  (cd $GOROOT/src && ./all.bash > $cache/build.log 2>&1)
+fi
+
+if [ -f $build/all.sh ]
+then
+  (cd $build && ./all.sh) |
+  sed 's/^/       /'
+else
+  echo "-----> all.sh does not exist; Aborting."
+  exit 1
+fi
