@@ -9,7 +9,7 @@ mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 
-: ${GOVERSION:=release.r59}
+: ${GOVERSION:=release.r60.2}
 # TODO: Check the version exists in src/go
 echo "-----> Using Go version $GOVERSION"
 
