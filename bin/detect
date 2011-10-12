@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# bin/use <build-dir>
+# bin/detect <build-dir>
 set -e
 
-isgo() {
-  cd $1
-  [ -d src ]
-  find src -type f | egrep -q "\.go$"
-}
+cd $1
 
-isgo "$1" && echo "Go"
+if test -n "`find src -type f -name '*.go' | head -n1`"
+then echo Go
+else echo no; exit 1
+fi
