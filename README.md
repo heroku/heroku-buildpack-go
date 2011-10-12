@@ -1,8 +1,8 @@
-# Go language pack
+# Go buildpack
 
 *Use*
 
-    # The langpack looks for .go files under src/ for detection
+    # The buildpack looks for .go files under src/ for detection
     $ find * -type f
     Procfile
     src/prettydemo/prettydemo/main.go
@@ -43,13 +43,13 @@
 *Go versions*
 
 You can use whichever version of Go you like; The
-default is `release.r60.2`. This language pack builds Go
+default is `release.r60.2`. This buildpack builds Go
 on your first deploy according to the `GOVERSION`
 environment variable set. You can change this with
 `heroku config:add GOVERSION=weekly.2011-1-1` for
 example, or even a SHA.
 
-Once built, the language pack will keep it cached for
+Once built, the buildpack will keep it cached for
 future deploys, until you change the GOVERSION.
 
 *Demo*
