@@ -8,44 +8,40 @@ set -e
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
+ver=release.r60.3
 
-: ${GOVERSION:=release.r60.2}
-# TODO: Check the version exists in src/go
-echo "-----> Using Go version $GOVERSION"
+echo "-----> Using Go $ver"
 
-GOROOT="$cache/src/go/$GOVERSION"
-PATH="$GOROOT/bin:$PATH"
-export GOROOT PATH
+mkdir -p $cache/go-$ver
+(
+    set -e
+    cd $cache/go-$ver
+    test -d go && exit
 
-indent() {
-  sed 's/^/       /'
-}
+    if ! test -f go-$ver.tar.gz
+    then
+        rm -rf $cache/* # be sure not to build up cruft
+        echo "-----> Fetching Go $ver"
+        curl -sO https://s3.amazonaws.com/golang/go-$ver.tar.gz
+    fi
 
-if [ -f $GOROOT/src/all.bash ]
-then
-  echo "-----> Go version $GOVERSION cached; Skipping clone"
-else
-  echo "-----> Cloning Go version $GOVERSION"
-  hg clone -r $GOVERSION http://go.googlecode.com/hg $GOROOT 2>&1 | indent
-fi
+    tar zxf go-$ver.tar.gz
+    rm -f go-$ver.tar.gz
+)
 
-if [ -f $GOROOT/bin/gofmt ]
-then
-  echo "-----> Go version $GOVERSION built; Skipping build"
-else
-  echo "-----> Building Go version $GOVERSION"
-  (cd $GOROOT/src && ./all.bash > $cache/build.log 2>&1)
-fi
+rm -f /tmp/go
+ln -s $cache/go-$ver/go /tmp/go
 
+GOROOT=/tmp/go
+export GOROOT
+PATH=$GOROOT/bin:$PATH
 
-# unset git dir or it will mess with goinstall
-unset GIT_DIR
-
-echo "-----> Running goinstall"
 cd $build
-GOPATH="$PWD"
-export GOPATH
 
+GOPATH=`pwd`
+export GOPATH
+unset GIT_DIR # unset git dir or it will mess with goinstall
+echo "-----> Running goinstall"
 for f in $(find src -type f | egrep "\.go$" | sort | uniq)
 do goinstall ./$(dirname $f)
 done
