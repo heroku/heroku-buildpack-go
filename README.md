@@ -158,14 +158,10 @@ We now have the three major components of our app: application source in `src/he
 
 Create the app on the Cedar stack:
 
-    $ heroku create --stack cedar
+    $ heroku create --stack cedar --buildpack git://github.com/kr/heroku-buildpack-go.git
     Creating pure-sunrise-3607... done, stack is cedar
     http://pure-sunrise-3607.herokuapp.com/ | git@heroku.com:pure-sunrise-3607.git
     Git remote heroku added
-
-Configure the Go buildpack:
-
-    $ heroku config:add BUILDPACK_URL=git@github.com:heroku/buildpack-go.git
 
 Deploy your code:
 
