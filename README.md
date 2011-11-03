@@ -55,6 +55,7 @@ It's best to install Go directly from source code, rather than using
 homebrew, apt, or another packaging system.
 
 If you already have Go release.r60 installed, feel free to skip this section.
+You can find out which version of Go you're using by typing `6g -V`.
 
 These commands will download the Go source and build the compiler
 and related tools:
