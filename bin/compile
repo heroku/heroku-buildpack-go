@@ -12,27 +12,23 @@ ver=release.r60.3
 
 echo "-----> Using Go $ver"
 
-mkdir -p $cache/go-$ver
 (
     set -e
-    cd $cache/go-$ver
-    test -d go && exit
 
-    if ! test -f go-$ver.tar.gz
-    then
-        rm -rf $cache/* # be sure not to build up cruft
-        echo "-----> Fetching Go $ver"
-        curl -sO https://s3.amazonaws.com/golang/go-$ver.tar.gz
-    fi
+    # Already cached?
+    test -d $cache/go-$ver/go && exit
+
+    rm -rf $cache/* # be sure not to build up cruft
+    mkdir -p $cache/go-$ver
+    cd $cache/go-$ver
+    echo "-----> Fetching Go $ver"
+    curl -sO https://s3.amazonaws.com/golang/go-$ver.tar.gz
 
     tar zxf go-$ver.tar.gz
     rm -f go-$ver.tar.gz
 )
 
-rm -f /tmp/go
-ln -s $cache/go-$ver/go /tmp/go
-
-GOROOT=/tmp/go
+GOROOT=$cache/go-$ver/go
 export GOROOT
 PATH=$GOROOT/bin:$PATH
 
