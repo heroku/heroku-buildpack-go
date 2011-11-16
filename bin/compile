@@ -1,6 +1,4 @@
 #!/bin/sh
-
-##
 # usage: bin/compile <build-dir> <cache-dir>
 
 set -e
@@ -8,7 +6,22 @@ set -e
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
-ver=release.r60.3
+ver=weekly.2012-03-13
+file=go.$ver.linux-amd64.tar.gz
+url=http://go.googlecode.com/files/$file
+
+if ! test -f $build/.godir
+then
+    echo >&2 '-----> ERROR: Please create .godir'
+    echo >&2 '-----> See https://gist.github.com/4984b5d9fe9244776197 for instructions'
+    exit 1
+fi
+
+if test -e $build/bin && ! test -d $build/bin
+then
+    echo >&2 '-----> ERROR: File bin exists and is not a directory.'
+    exit 1
+fi
 
 echo "-----> Using Go $ver"
 
@@ -22,22 +35,29 @@ echo "-----> Using Go $ver"
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
     echo "-----> Fetching Go $ver"
-    curl -sO https://s3.amazonaws.com/golang/go-$ver.tar.gz
-
-    tar zxf go-$ver.tar.gz
-    rm -f go-$ver.tar.gz
+    curl -sO $url
+    tar zxf $file
+    rm -f $file
 )
 
-GOROOT=$cache/go-$ver/go
-export GOROOT
+GOROOT=$cache/go-$ver/go export GOROOT
+GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-cd $build
+name=$(cat $build/.godir)
+p=$GOPATH/src/$name
+mkdir -p $p
+cp -R $build/* $p
 
-GOPATH=`pwd`
-export GOPATH
 unset GIT_DIR # unset git dir or it will mess with goinstall
-echo "-----> Running goinstall"
-for f in $(find src -type f | egrep "\.go$" | sort | uniq)
-do goinstall ./$(dirname $f)
+echo "-----> Running go get and go install"
+cd $p
+for f in $(find . -type f -name '*.go')
+do
+    go get $(dirname $f)
+    go install $(dirname $f)
 done
+
+mkdir -p $build/bin
+mv $GOPATH/bin/* $build/bin
+rm -rf $build/.heroku
