@@ -2,9 +2,7 @@
 # bin/detect <build-dir>
 set -e
 
-cd $1
-
-if test -n "`find src -type f -name '*.go' | head -n1`"
+if test -n "$(find "$1" -type f -name '*.go' | head -n1)"
 then echo Go
 else echo no; exit 1
 fi
