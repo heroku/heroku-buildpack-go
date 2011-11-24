@@ -3,7 +3,9 @@
 
 set -e
 
-echo $GOVERSION
+echo GOVERSION
+echo \"$GOVERSION\"
+echo exit 1
 exit 1
 
 mkdir -p "$1" "$2"
