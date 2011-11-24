@@ -3,18 +3,14 @@
 
 set -e
 
-echo GOVERSION
-echo \"$GOVERSION\"
-echo exit 1
-exit 1
-
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 name=$(cat $build/hack-appname)
 ver=release.r60.3
-echo $build
-exit 1
+if test -f $build/hack-goversion
+then ver=$(cat $build/hack-goversion)
+fi
 
 echo "-----> Using Go $ver"
 
