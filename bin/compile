@@ -24,10 +24,18 @@ echo "-----> Using Go $ver"
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
     echo "-----> Fetching Go $ver"
-    curl -sO https://s3.amazonaws.com/golang/go-$ver.tar.gz
-
-    tar zxf go-$ver.tar.gz
-    rm -f go-$ver.tar.gz
+    url=https://s3.amazonaws.com/golang/go-$ver.tar.gz
+    if curl -sI $url | head -n1 | grep -q 200
+    then
+      curl -sO $url
+      tar zxf go-$ver.tar.gz
+      rm -f go-$ver.tar.gz
+    else
+      hg clone https://go.googlecode.com/hg/ go
+      cd go/src
+      hg update $ver
+      ./make.bash
+    fi
 )
 
 GOROOT=$cache/go-$ver/go export GOROOT
