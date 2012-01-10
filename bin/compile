@@ -44,7 +44,7 @@ PATH=$GOROOT/bin:$PATH
 
 p=$GOPATH/src/$name
 mkdir -p $p
-mv $build/* $p
+cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running goinstall"
