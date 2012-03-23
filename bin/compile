@@ -6,7 +6,7 @@ set -e
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
-ver=weekly.2012-03-13
+ver=weekly.2012-03-22
 file=go.$ver.linux-amd64.tar.gz
 url=http://go.googlecode.com/files/$file
 
