@@ -45,4 +45,4 @@ add BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of
 (example forthcoming)
 
 [buildpack]: http://devcenter.heroku.com/articles/buildpack
-[quickstart]: https://gist.github.com/4984b5d9fe9244776197
+[quickstart]: https://gist.github.com/299535bbf56bf3016cba
