@@ -9,26 +9,47 @@ introduction suitable for all Heroku users.
 
 ## Example
 
-    $ find . -type f -print
-    ./.godir
-    ./Procfile
-    ./app.go
+    $ tree
+    .
+    ├── Procfile
+    └── src
+        └── app
+            └── main.go
+
+    $ cat Procfile
+    web: shitiwrote
+
+    $ cat src/app/main.go
+    package main
+
+    import (
+        "fmt"
+        "net/http"
+        mustache "github.com/hoisie/mustache.go"
+        "os"
+    )
+
+    func main() {
+        http.HandleFunc("/", handler)
+        e := http.ListenAndServe("0.0.0.0:"+os.Getenv("PORT"), nil)
+        if e != nil {
+            panic(e)
+        }
+    }
+
+    const (
+        TEMPLATE = `I can't believe it's not {{enginename}}`
+    )
+    func handler(w http.ResponseWriter, r *http.Request) {
+        var msg = mustache.Render(TEMPLATE, map[string]string{"enginename":"GAE"})
+        fmt.Fprintf(w, msg)
+    }
 
     $ heroku create -s cedar --buildpack git@github.com:kr/heroku-buildpack-go.git
     ...
 
     $ git push heroku master
     ...
-    -----> Heroku receiving push
-    -----> Fetching custom buildpack... done
-    -----> Go app detected
-    -----> Using Go weekly.2012-03-13
-    -----> Running go get and go install
-    -----> Discovering process types
-           Procfile declares types -> web
-    -----> Compiled slug size is 1.0MB
-    -----> Launching... done, v1
-           http://pure-sunrise-3607.herokuapp.com deployed to Heroku
 
 The buildpack will detect your repository as Go if it
 contains a `.go` file.
