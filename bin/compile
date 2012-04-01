@@ -40,5 +40,5 @@ PATH=$build/bin:$GOROOT/bin:$PATH
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running go get and go install"
-cd $GOPATH
+cd $build
 go get ./...
