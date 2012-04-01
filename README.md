@@ -17,7 +17,7 @@ introduction suitable for all Heroku users.
             └── main.go
 
     $ cat Procfile
-    web: shitiwrote
+    web: app
 
     $ cat src/app/main.go
     package main
