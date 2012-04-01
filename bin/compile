@@ -10,13 +10,6 @@ ver=go1
 file=go.$ver.linux-amd64.tar.gz
 url=http://go.googlecode.com/files/$file
 
-if ! test -f $build/.godir
-then
-    echo >&2 '-----> ERROR: Please create .godir'
-    echo >&2 '-----> See https://gist.github.com/4984b5d9fe9244776197 for instructions'
-    exit 1
-fi
-
 if test -e $build/bin && ! test -d $build/bin
 then
     echo >&2 '-----> ERROR: File bin exists and is not a directory.'
@@ -33,6 +26,7 @@ echo "-----> Using Go $ver"
 
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/go-$ver
+    mkdir -p $cache/dependencies
     cd $cache/go-$ver
     echo "-----> Fetching Go $ver"
     curl -sO $url
@@ -41,23 +35,10 @@ echo "-----> Using Go $ver"
 )
 
 GOROOT=$cache/go-$ver/go export GOROOT
-GOPATH=$build/.heroku/g export GOPATH
-PATH=$GOROOT/bin:$PATH
-
-name=$(cat $build/.godir)
-p=$GOPATH/src/$name
-mkdir -p $p
-cp -R $build/* $p
+GOPATH=$cache/dependencies:$build export GOPATH
+PATH=$build/bin:$GOROOT/bin:$PATH
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running go get and go install"
-cd $p
-for f in $(find . -type f -name '*.go')
-do
-    go get $(dirname $f)
-    go install $(dirname $f)
-done
-
-mkdir -p $build/bin
-mv $GOPATH/bin/* $build/bin
-rm -rf $build/.heroku
+cd $GOPATH
+go get ./...
