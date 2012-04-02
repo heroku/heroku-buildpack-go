@@ -9,18 +9,34 @@ mkdir -p "$1" "$2"
 BUILD=$(cd "$1/" && pwd)
 CACHE=$(cd "$2/" && pwd)
 
-PIP_DOWNLOAD_CACHE=$CACHE/pip
+VENV_LOC=$CACHE/venv
+export PIP_DOWNLOAD_CACHE=$CACHE/pip
+PYTHON_VERSION="2.7.2"
+PYTHON_EXE="python2.7"
 mkdir -p $PIP_DOWNLOAD_CACHE
 
 GOVER=go1
 GOTOOLCHAIN=go.$GOVER.linux-amd64.tar.gz
 URL=http://go.googlecode.com/files/$GOTOOLCHAIN
 
+export PATH=:/usr/local/bin:$PATH
+
+
 if test -e $BUILD/bin && ! test -d $BUILD/bin
 then
-    echo >&2 '-----> ERROR: GOTOOLCHAIN bin exists and is not a directory.'
+    echo >&2 '-----> ERROR: bin exists and is not a directory.'
     exit 1
 fi
+
+function virtualenv (){
+  python "$ROOT_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
+}
+
+indent() {
+  RE="s/^/       /"
+  [ $(uname) == "Darwin" ] && sed -l "$RE" || sed -u "$RE"
+}
+
 
 echo "-----> Using Go $GOVER"
 
@@ -44,8 +60,12 @@ GOROOT=$CACHE/go-$GOVER/go export GOROOT
 GOPATH=$CACHE/dependencies:$BUILD export GOPATH
 PATH=$BUILD/bin:$GOROOT/bin:$PATH
 
-echo "-----> Installing hg"
-pip install mercurial
+echo "-----> Setting up python"
+rm -rf $VENV_LOC/*
+virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VIRTUALENV_LOC 2>&1 | indent
+source $VIRTUALENV_LOC/bin/activate
+echo "-----> Setting up mercurial"
+pip install --use-mirrors mercurial | indent
 
 echo "-----> Running go get and go install"
 cd $BUILD
