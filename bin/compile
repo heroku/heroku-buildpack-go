@@ -18,6 +18,7 @@ PIP_DOWNLOAD_CACHE=$CACHE_DIR/pip export PIP_DOWNLOAD_CACHE
 PYTHON_VERSION="2.7.2"
 PYTHON_EXE="python2.7"
 mkdir -p $PIP_DOWNLOAD_CACHE
+PATH=/usr/local/bin:$VENV_LOC/bin:$PATH export PATH
 
 # Go
 GOVER=go1
@@ -25,13 +26,12 @@ GOTOOLCHAIN=go.$GOVER.linux-amd64.tar.gz
 GOURL=http://go.googlecode.com/files/$GOTOOLCHAIN
 GOROOT=$CACHE_DIR/go-$GOVER/go export GOROOT
 GOPATH=$CACHE_DIR/dependencies:$APP_DIR export GOPATH
-
-PATH=:/usr/local/bin:$APP_DIR/bin:$GOROOT/bin:$PATH export PATH
+PATH=$APP_DIR/bin:$GOROOT/bin:$PATH export PATH
 
 # Helper functions
 
 virtualenv() {
-    python "$ROOT_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
+    python "$BUILDPACK_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
 }
 
 indent() {
@@ -71,10 +71,15 @@ putsstep "Installing Go $GOVER"
 )
 
 
-putsstep "Setting up python"
 (
+    set +e
+    putsstep "Checking for mercurial"
+    which hg && exit
+    putsstep "Not found. Installing"
+
     OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
-    if [ "$0" -ne 0 ]; then
+    if [ "$?" -ne 0 ]; then
+        putswarn "Python environment corrupted. Rebuilding"
         rm -rf $VENV_LOC/* || true
         OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
     fi
@@ -82,7 +87,7 @@ putsstep "Setting up python"
     . $VENV_LOC/bin/activate
 
     putsstep "Setting up mercurial"
-    (which hg || pip install --use-mirrors mercurial) | indent
+    pip install --use-mirrors mercurial | indent
 )
 
 putsstep "Compiling app..."
