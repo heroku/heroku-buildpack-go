@@ -1,44 +1,52 @@
 #!/bin/sh
-# usage: bin/compile <build-dir> <cache-dir>
+# usage: bin/compile <BUILD-dir> <CACHE-dir>
 
 set -e
 
-mkdir -p "$1" "$2"
-build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
-ver=go1
-file=go.$ver.linux-amd64.tar.gz
-url=http://go.googlecode.com/files/$file
+unset GIT_DIR # unset git dir or it will mess with goinstall
 
-if test -e $build/bin && ! test -d $build/bin
+mkdir -p "$1" "$2"
+BUILD=$(cd "$1/" && pwd)
+CACHE=$(cd "$2/" && pwd)
+
+PIP_DOWNLOAD_CACHE=$CACHE/pip
+mkdir -p $PIP_DOWNLOAD_CACHE
+
+GOVER=go1
+GOTOOLCHAIN=go.$GOVER.linux-amd64.tar.gz
+URL=http://go.googlecode.com/files/$GOTOOLCHAIN
+
+if test -e $BUILD/bin && ! test -d $BUILD/bin
 then
-    echo >&2 '-----> ERROR: File bin exists and is not a directory.'
+    echo >&2 '-----> ERROR: GOTOOLCHAIN bin exists and is not a directory.'
     exit 1
 fi
 
-echo "-----> Using Go $ver"
+echo "-----> Using Go $GOVER"
 
 (
     set -e
 
     # Already cached?
-    test -d $cache/go-$ver/go && exit
+    test -d $CACHE/go-$GOVER/go && exit
 
-    rm -rf $cache/* # be sure not to build up cruft
-    mkdir -p $cache/go-$ver
-    mkdir -p $cache/dependencies
-    cd $cache/go-$ver
-    echo "-----> Fetching Go $ver"
-    curl -sO $url
-    tar zxf $file
-    rm -f $file
+    rm -rf $CACHE/* # be sure not to BUILD up cruft
+    mkdir -p $CACHE/go-$GOVER
+    mkdir -p $CACHE/dependencies
+    cd $CACHE/go-$GOVER
+    echo "-----> Fetching Go $GOVER"
+    curl -sO $URL
+    tar zxf $GOTOOLCHAIN
+    rm -f $GOTOOLCHAIN
 )
 
-GOROOT=$cache/go-$ver/go export GOROOT
-GOPATH=$cache/dependencies:$build export GOPATH
-PATH=$build/bin:$GOROOT/bin:$PATH
+GOROOT=$CACHE/go-$GOVER/go export GOROOT
+GOPATH=$CACHE/dependencies:$BUILD export GOPATH
+PATH=$BUILD/bin:$GOROOT/bin:$PATH
 
-unset GIT_DIR # unset git dir or it will mess with goinstall
+echo "-----> Installing hg"
+pip install mercurial
+
 echo "-----> Running go get and go install"
-cd $build
+cd $BUILD
 go get -fix ./...
