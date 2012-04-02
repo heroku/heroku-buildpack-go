@@ -1,76 +1,90 @@
 #!/bin/sh
-# usage: bin/compile <BUILD-dir> <CACHE-dir>
+# usage: bin/compile <BUILD-dir> <CACHE_DIR-dir>
 
+# fail fast
 set -e
-
 unset GIT_DIR # unset git dir or it will mess with goinstall
 
-
-BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
-ROOT_DIR=$(dirname $BIN_DIR)
-
+# Heroku
+BUILDPACK_BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+BUILDPACK_DIR=$(dirname $BUILDPACK_BIN_DIR)
 mkdir -p "$1" "$2"
-BUILD=$(cd "$1/" && pwd)
-CACHE=$(cd "$2/" && pwd)
+APP_DIR=$(cd "$1/" && pwd)
+CACHE_DIR=$(cd "$2/" && pwd)
 
-VENV_LOC=$CACHE/venv
-export PIP_DOWNLOAD_CACHE=$CACHE/pip
+# Python
+VENV_LOC=$CACHE_DIR/venv
+PIP_DOWNLOAD_CACHE=$CACHE_DIR/pip export PIP_DOWNLOAD_CACHE
 PYTHON_VERSION="2.7.2"
 PYTHON_EXE="python2.7"
 mkdir -p $PIP_DOWNLOAD_CACHE
 
+# Go
 GOVER=go1
 GOTOOLCHAIN=go.$GOVER.linux-amd64.tar.gz
-URL=http://go.googlecode.com/files/$GOTOOLCHAIN
+GOURL=http://go.googlecode.com/files/$GOTOOLCHAIN
+GOROOT=$CACHE_DIR/go-$GOVER/go export GOROOT
+GOPATH=$CACHE_DIR/dependencies:$APP_DIR export GOPATH
 
-export PATH=:/usr/local/bin:$PATH
+PATH=:/usr/local/bin:$APP_DIR/bin:$GOROOT/bin:$PATH export PATH
 
-
-if test -e $BUILD/bin && ! test -d $BUILD/bin
-then
-    echo >&2 '-----> ERROR: bin exists and is not a directory.'
-    exit 1
-fi
+# Helper functions
 
 virtualenv() {
-  python "$ROOT_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
+    python "$ROOT_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
 }
 
 indent() {
-  RE="s/^/       /"
-  sed -u "$RE"
+    RE="s/^/       /"
+    sed -u "$RE"
 }
 
+putsstep () {
+    echo "-----> $@"
+}
 
-echo "-----> Using Go $GOVER"
+putswarn() {
+    echo " !     $@"
+}
 
+if test -e $BUILD/bin && ! test -d $BUILD/bin
+then
+    putswarn 'ERROR: bin exists and is not a directory.'
+    exit 1
+fi
+
+putsstep "Installing Go $GOVER"
 (
     set -e
 
     # Already cached?
-    test -d $CACHE/go-$GOVER/go && exit
+    test -d $CACHE_DIR/go-$GOVER/go && exit
 
-    rm -rf $CACHE/* # be sure not to BUILD up cruft
-    mkdir -p $CACHE/go-$GOVER
-    mkdir -p $CACHE/dependencies
-    cd $CACHE/go-$GOVER
-    echo "-----> Fetching Go $GOVER"
-    curl -sO $URL
+    rm -rf $CACHE_DIR/* # be sure not to BUILD up cruft
+    mkdir -p $CACHE_DIR/go-$GOVER
+    mkdir -p $CACHE_DIR/dependencies
+    cd $CACHE_DIR/go-$GOVER
+    putsstep "Fetching Go $GOVER"
+    curl -sO $GOURL
     tar zxf $GOTOOLCHAIN
     rm -f $GOTOOLCHAIN
 )
 
-GOROOT=$CACHE/go-$GOVER/go export GOROOT
-GOPATH=$CACHE/dependencies:$BUILD export GOPATH
-PATH=$BUILD/bin:$GOROOT/bin:$PATH
 
-echo "-----> Setting up python"
-rm -rf $VENV_LOC/*
-virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1 | indent
-. $VENV_LOC/bin/activate
-echo "-----> Setting up mercurial"
-pip install --use-mirrors mercurial | indent
+putsstep "Setting up python"
+(
+    OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
+    if [ "$0" -ne 0 ]; then
+        rm -rf $VENV_LOC/* || true
+        OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
+    fi
+    echo $OUT | indent
+    . $VENV_LOC/bin/activate
 
-echo "-----> Running go get and go install"
-cd $BUILD
+    putsstep "Setting up mercurial"
+    (which hg || pip install --use-mirrors mercurial) | indent
+)
+
+putsstep "Compiling app..."
+cd $APP_DIR
 go get -fix ./...
