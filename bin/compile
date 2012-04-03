@@ -9,7 +9,7 @@ unset GIT_DIR # unset git dir or it will mess with goinstall
 BUILDPACK_BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
 BUILDPACK_DIR=$(dirname $BUILDPACK_BIN_DIR)
 mkdir -p "$1" "$2"
-APP_DIR=$(cd "$1/" && pwd)
+REPO_DIR=$(cd "$1/" && pwd)
 CACHE_DIR=$(cd "$2/" && pwd)
 
 # Python
@@ -18,15 +18,15 @@ PIP_DOWNLOAD_CACHE=$CACHE_DIR/pip export PIP_DOWNLOAD_CACHE
 PYTHON_VERSION="2.7.2"
 PYTHON_EXE="python2.7"
 mkdir -p $PIP_DOWNLOAD_CACHE
-PATH=/usr/local/bin:$VENV_LOC/bin:$PATH export PATH
+PATH=$VENV_LOC/bin:$PATH export PATH
 
 # Go
 GOVER=go1
 GOTOOLCHAIN=go.$GOVER.linux-amd64.tar.gz
 GOURL=http://go.googlecode.com/files/$GOTOOLCHAIN
 GOROOT=$CACHE_DIR/go-$GOVER/go export GOROOT
-GOPATH=$CACHE_DIR/dependencies:$APP_DIR export GOPATH
-PATH=$APP_DIR/bin:$GOROOT/bin:$PATH export PATH
+GOPATH=$CACHE_DIR/dependencies export GOPATH
+PATH=$GOROOT/bin:$PATH export PATH
 
 # Helper functions
 
@@ -62,7 +62,6 @@ putsstep "Installing Go $GOVER"
 
     rm -rf $CACHE_DIR/* # be sure not to BUILD up cruft
     mkdir -p $CACHE_DIR/go-$GOVER
-    mkdir -p $CACHE_DIR/dependencies
     cd $CACHE_DIR/go-$GOVER
     putsstep "Fetching Go $GOVER"
     curl -sO $GOURL
@@ -72,12 +71,12 @@ putsstep "Installing Go $GOVER"
 
 
 (
-    set +e
+    set -e
     putsstep "Checking for mercurial"
     which hg && exit
     putsstep "Not found. Installing"
 
-    OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
+    OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1 || true)
     if [ "$?" -ne 0 ]; then
         putswarn "Python environment corrupted. Rebuilding"
         rm -rf $VENV_LOC/* || true
@@ -90,6 +89,27 @@ putsstep "Installing Go $GOVER"
     pip install --use-mirrors mercurial | indent
 )
 
-putsstep "Compiling app..."
-cd $APP_DIR
+putsstep "Removing old binaries"
+rm -rf $CACHE_DIR/code/* >/dev/null || true
+rm -rf $CACHE_DIR/dependencies/* >/dev/null || true
+mkdir -p $CACHE_DIR/code/src $CACHE_DIR/dependencies/src
+
+putsstep "Compiling app"
+cd $REPO_DIR
+if [ -d "src" ]; then
+    # Path where the app will be built
+    putsstep 'Found `src` directory. Modifying $GOPATH'
+    BUILD_DIR=$REPO_DIR
+    export BUILD_DIR=$REPO_DIR
+else
+    putsstep 'No `src` directory found. Copying code to $GOPATH'
+    mkdir -p $REPO_DIR/src
+    cp -rv $REPO_DIR/* $CACHE_DIR/code/src/ | indent
+    export BUILD_DIR=$CACHE_DIR/code
+fi
+export GOPATH=$GOPATH:$BUILD_DIR
+cd $BUILD_DIR
 go get -fix ./...
+# This fails if the first branch of the previous if has been taken
+# because of trying to move bin to itself.
+mv $BUILD_DIR/bin $REPO_DIR/bin 2>/dev/null || true
