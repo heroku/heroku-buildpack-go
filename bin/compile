@@ -72,8 +72,8 @@ putsstep "Installing Go $GOVER"
 
 (
     set -e
-    putsstep "Checking for mercurial"
-    which hg && exit
+    putsstep "Checking for mercurial and bazaar"
+    which hg && which bzr && exit
     putsstep "Not found. Installing"
 
     OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1 || true)
@@ -87,6 +87,8 @@ putsstep "Installing Go $GOVER"
 
     putsstep "Setting up mercurial"
     pip install --use-mirrors mercurial | indent
+    putsstep "Setting up bazaar"
+    pip install --use-mirrors bzr | indent
 )
 
 putsstep "Removing old binaries"
