@@ -1,48 +1,51 @@
-# Heroku Buildpak: Go
+# Heroku Buildpack: Go
 
 This is a [Heroku buildpack][buildpack] for Go.
 
-This repository is useful if you want to inspect or
-change the behavior of the buildpack itself. See the [Go
-Buildpack Quickstart][quickstart] for a gentle
-introduction suitable for all Heroku users.
+## Usage
+This buildpack supports to directory structures to accomodate the two basic types of Go programmers.
 
-## Example
+### Layout 1
+Either put your packages side by side in their own folder:
 
-    $ find . -type f -print
-    ./.godir
-    ./Procfile
-    ./app.go
+    $ tree
+    .
+    |-- Procfile
+    |-- app
+    |   `-- app.go
+    `-- consts
+        `-- consts.go
 
-    $ heroku create -s cedar --buildpack git@github.com:kr/heroku-buildpack-go.git
-    ...
+When using this layout, the repository will be copied to a prepared `$GOPATH`.
 
-    $ git push heroku master
-    ...
-    -----> Heroku receiving push
-    -----> Fetching custom buildpack... done
-    -----> Go app detected
-    -----> Using Go weekly.2012-03-13
-    -----> Running go get and go install
-    -----> Discovering process types
-           Procfile declares types -> web
-    -----> Compiled slug size is 1.0MB
-    -----> Launching... done, v1
-           http://pure-sunrise-3607.herokuapp.com deployed to Heroku
+### Layout 2
+The alternative is make the repository `$GOPATH` compliant:
 
-The buildpack will detect your repository as Go if it
-contains a `.go` file.
+    $ tree
+    .
+    |-- Procfile
+    `-- src
+        |-- app
+        |   `-- app.go
+        |-- consts
+            `-- consts.go
 
-## Hacking
+When using this layout, `$GOPATH` will be set to your repository's path.
 
-To change this buildpack, fork it on GitHub. Push
-changes to your fork, then create a test app with
-`--buildpack YOUR_GITHUB_GIT_URL` and push to it. If you
-already have an existing app you may use `heroku config
-add BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of
-`--buildpack`.
+If you wrote a new app, create it on Heroku using:
 
-(example forthcoming)
+    $ heroku create --stack cedar --buildpack git@github.com:surma/heroku-buildpack-go.git
+
+If the app already exists on Heroku, do:
+
+    $ heroku config:add BUILDPACK_URL=git@github.com:surma/heroku-buildpack-go.git
+
+
+## Example Repository
+
+An example Heroku-deployable App can be found at [heroku-buildpack-go-app](http://github.com/surma/heroku-buildpack-go-app)
+
+Remote pacakges using `git` and `hg` are supported. `bzr` is next on the TODO list.
 
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [quickstart]: https://gist.github.com/299535bbf56bf3016cba
