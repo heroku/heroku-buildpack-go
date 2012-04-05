@@ -19,7 +19,19 @@ GOROOT=$CACHE/go-$GOVER/go export GOROOT
 GOPATH=$CACHE/.heroku/go export GOPATH
 PATH=$GOROOT/bin:$PATH export PATH
 
+# Python
+VENV_LOC=$CACHE/venv
+PIP_DOWNLOAD_CACHE=$CACHE/pip export PIP_DOWNLOAD_CACHE
+mkdir -p $PIP_DOWNLOAD_CACHE
+PYTHON_VERSION="2.7.2"
+PYTHON_EXE="python2.7"
+PATH=$VENV_LOC/bin:$PATH export PATH
+
 # Helper functions
+
+virtualenv() {
+    python "$BUILDPACK_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
+}
 
 indent() {
     RE="s/^/       /"
@@ -64,6 +76,26 @@ putsstep "Using Go $ver"
     rm -f $GOFILE
 )
 
+putsstep "Checking for mercurial and bazaar"
+(
+    set -e
+    which hg && which bzr && exit
+    putsstep "Not found. Installing"
+
+    OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1 || true)
+    if [ "$?" -ne 0 ]; then
+        putswarn "Python environment corrupted. Rebuilding"
+        rm -rf $VENV_LOC/* || true
+        OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
+    fi
+    echo $OUT | indent
+    . $VENV_LOC/bin/activate
+
+    putsstep "Setting up mercurial"
+    pip install --use-mirrors mercurial | indent
+    putsstep "Setting up bazaar"
+    pip install --use-mirrors bzr | indent
+)
 
 PACKAGENAME=$(cat $REPO/.godir)
 PACKAGE=$GOPATH/src/$PACKAGENAME
