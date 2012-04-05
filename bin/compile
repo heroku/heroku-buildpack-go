@@ -9,6 +9,17 @@ cache=$(cd "$2/" && pwd)
 ver=go1
 file=go.$ver.linux-amd64.tar.gz
 url=http://go.googlecode.com/files/$file
+buildpack=$(dirname $(dirname $0))
+
+# Python
+venv=$cache/venv
+mkdir -p $cache/pip
+python=python2.7
+PATH=$venv/bin:$PATH
+
+virtualenv() {
+    python "$buildpack/vendor/virtualenv-1.7/virtualenv.py" "$@"
+}
 
 if ! test -f $build/.godir
 then
@@ -43,6 +54,24 @@ echo "-----> Using Go $ver"
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
+
+echo "-----> Checking for Mercurial and Bazaar"
+(
+    set -e
+    which hg && which bzr && exit
+    echo "Installing Mercurial and Bazaar"
+
+    virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv
+    if [ "$?" -ne 0 ]; then
+        echo "Warning: Python environment corrupted. Rebuilding"
+        rm -rf $venv/* || true
+        virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv
+    fi
+    . $venv/bin/activate
+
+    pip install --use-mirrors mercurial
+    pip install --use-mirrors bzr
+) 2>&1 | sed -u 's/^/       /'
 
 name=$(cat $build/.godir)
 p=$GOPATH/src/$name
