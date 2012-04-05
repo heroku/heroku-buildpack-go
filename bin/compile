@@ -1,63 +1,113 @@
 #!/bin/sh
-# usage: bin/compile <build-dir> <cache-dir>
+# usage: bin/compile <REPO-dir> <CACHE-dir>
 
 set -e
+unset GIT_DIR # unset git dir or it will mess with goinstall
 
+# Heroku
 mkdir -p "$1" "$2"
-build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
-ver=go1
-file=go.$ver.linux-amd64.tar.gz
-url=http://go.googlecode.com/files/$file
+REPO=$(cd "$1/" && pwd)
+CACHE=$(cd "$2/" && pwd)
+BUILDPACK_BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+BUILDPACK_DIR=$(dirname $BUILDPACK_BIN_DIR)
 
-if ! test -f $build/.godir
+# Go
+GOVER=go1
+GOFILE=go.$GOVER.linux-amd64.tar.gz
+GOURL=http://go.googlecode.com/files/$GOFILE
+GOROOT=$CACHE/go-$GOVER/go export GOROOT
+GOPATH=$CACHE/.heroku/go export GOPATH
+PATH=$GOROOT/bin:$PATH export PATH
+
+# Python
+VENV_LOC=$CACHE/venv
+PIP_DOWNLOAD_CACHE=$CACHE/pip export PIP_DOWNLOAD_CACHE
+mkdir -p $PIP_DOWNLOAD_CACHE
+PYTHON_VERSION="2.7.2"
+PYTHON_EXE="python2.7"
+PATH=$VENV_LOC/bin:$PATH export PATH
+
+# Helper functions
+
+virtualenv() {
+    python "$BUILDPACK_DIR/vendor/virtualenv-1.7/virtualenv.py" "$@"
+}
+
+indent() {
+    RE="s/^/       /"
+    sed -u "$RE"
+}
+
+putsstep () {
+    echo "-----> $@"
+}
+
+putswarn() {
+    echo " !     $@"
+}
+
+
+if ! test -f $REPO/.godir
 then
-    echo >&2 '-----> ERROR: Please create .godir'
-    echo >&2 '-----> See https://gist.github.com/4984b5d9fe9244776197 for instructions'
+    putswarn "ERROR: Please create .godir"
+    putswarn "See https://gist.github.com/4984b5d9fe9244776197 for instructions"
     exit 1
 fi
 
-if test -e $build/bin && ! test -d $build/bin
+if test -e $REPO/bin && ! test -d $REPO/bin
 then
-    echo >&2 '-----> ERROR: File bin exists and is not a directory.'
+    putswarn "ERROR: File bin exists and is not a directory."
     exit 1
 fi
 
-echo "-----> Using Go $ver"
-
+putsstep "Using Go $ver"
 (
     set -e
 
     # Already cached?
-    test -d $cache/go-$ver/go && exit
+    test -d $CACHE/go-$GOVER/go && exit
 
-    rm -rf $cache/* # be sure not to build up cruft
-    mkdir -p $cache/go-$ver
-    cd $cache/go-$ver
-    echo "-----> Fetching Go $ver"
-    curl -sO $url
-    tar zxf $file
-    rm -f $file
+    rm -rf $CACHE/* # be sure not to REPO up cruft
+    mkdir -p $CACHE/go-$GOVER
+    cd $CACHE/go-$GOVER
+    putsstep "Fetching Go $ver"
+    curl -sO $GOURL
+    tar zxf $GOFILE
+    rm -f $GOFILE
 )
 
-GOROOT=$cache/go-$ver/go export GOROOT
-GOPATH=$build/.heroku/g export GOPATH
-PATH=$GOROOT/bin:$PATH
+putsstep "Checking for mercurial and bazaar"
+(
+    set -e
+    which hg && which bzr && exit
+    putsstep "Not found. Installing"
 
-name=$(cat $build/.godir)
-p=$GOPATH/src/$name
-mkdir -p $p
-cp -R $build/* $p
+    OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1 || true)
+    if [ "$?" -ne 0 ]; then
+        putswarn "Python environment corrupted. Rebuilding"
+        rm -rf $VENV_LOC/* || true
+        OUT=$(virtualenv --python $PYTHON_EXE --distribute --never-download --prompt='(venv) ' $VENV_LOC 2>&1)
+    fi
+    echo $OUT | indent
+    . $VENV_LOC/bin/activate
 
-unset GIT_DIR # unset git dir or it will mess with goinstall
-echo "-----> Running go get and go install"
-cd $p
-for f in $(find . -type f -name '*.go')
-do
-    go get $(dirname $f)
-    go install $(dirname $f)
-done
+    putsstep "Setting up mercurial"
+    pip install --use-mirrors mercurial | indent
+    putsstep "Setting up bazaar"
+    pip install --use-mirrors bzr | indent
+)
 
-mkdir -p $build/bin
-mv $GOPATH/bin/* $build/bin
-rm -rf $build/.heroku
+PACKAGENAME=$(cat $REPO/.godir)
+PACKAGE=$GOPATH/src/$PACKAGENAME
+mkdir -p $PACKAGE
+cp -R $REPO/* $PACKAGE
+
+putsstep "Compiling app"
+cd $PACKAGE
+go get ./... # Build workers, packages etc
+go get . # Build main app
+
+putsstep "Installing app"
+mkdir -p $REPO/bin
+mv $GOPATH/bin/* $REPO/bin
+rm -rf $REPO/.heroku
