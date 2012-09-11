@@ -24,7 +24,7 @@ virtualenv() {
 if ! test -f $build/.godir
 then
     echo >&2 '-----> ERROR: Please create .godir'
-    echo >&2 '-----> See https://gist.github.com/4984b5d9fe9244776197 for instructions'
+    echo >&2 '-----> See https://gist.github.com/299535bbf56bf3016cba for instructions'
     exit 1
 fi
 

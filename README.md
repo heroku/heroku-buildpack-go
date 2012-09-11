@@ -22,7 +22,7 @@ introduction suitable for all Heroku users.
     -----> Heroku receiving push
     -----> Fetching custom buildpack... done
     -----> Go app detected
-    -----> Using Go weekly.2012-03-13
+    -----> Using Go 1.0.2
     -----> Running go get and go install
     -----> Discovering process types
            Procfile declares types -> web
@@ -41,8 +41,6 @@ changes to your fork, then create a test app with
 already have an existing app you may use `heroku config
 add BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of
 `--buildpack`.
-
-(example forthcoming)
 
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [quickstart]: https://gist.github.com/299535bbf56bf3016cba
