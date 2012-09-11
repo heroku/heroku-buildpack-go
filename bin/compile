@@ -79,13 +79,9 @@ mkdir -p $p
 cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
-echo "-----> Running go get and go install"
+echo "-----> Running go get"
 cd $p
-for f in $(find . -type f -name '*.go')
-do
-    go get $(dirname $f)
-    go install $(dirname $f)
-done
+go get ./...
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
