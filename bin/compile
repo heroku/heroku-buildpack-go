@@ -34,14 +34,10 @@ then
     exit 1
 fi
 
-echo "-----> Using Go $ver"
-
-(
-    set -e
-
-    # Already cached?
-    test -d $cache/go-$ver/go && exit
-
+if test -d $cache/go-$ver/go
+then
+    echo "-----> Using Go $ver"
+else
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
@@ -49,7 +45,7 @@ echo "-----> Using Go $ver"
     curl -sO $url
     tar zxf $file
     rm -f $file
-)
+fi
 
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
