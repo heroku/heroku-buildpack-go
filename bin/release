@@ -6,4 +6,3 @@ cat <<EOF
 config_vars:
   PATH: /app/bin:/usr/local/bin:/usr/bin:/bin
 EOF
-

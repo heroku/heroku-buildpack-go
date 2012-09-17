@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 # usage: bin/compile <build-dir> <cache-dir>
 
-set -e
+set -eo pipefail
 
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
@@ -23,55 +23,51 @@ virtualenv() {
 
 if ! test -f $build/.godir
 then
-    echo >&2 '-----> ERROR: Please create .godir'
-    echo >&2 '-----> See https://gist.github.com/299535bbf56bf3016cba for instructions'
+    echo >&2 " !     A .godir is required."
+    echo >&2 " !     See https://gist.github.com/299535bbf56bf3016cba for instructions."
     exit 1
 fi
 
 if test -e $build/bin && ! test -d $build/bin
 then
-    echo >&2 '-----> ERROR: File bin exists and is not a directory.'
+    echo >&2 " !     File bin exists and is not a directory."
     exit 1
 fi
 
-echo "-----> Using Go $ver"
-
-(
-    set -e
-
-    # Already cached?
-    test -d $cache/go-$ver/go && exit
-
+if test -d $cache/go-$ver/go
+then
+    echo "-----> Using Go $ver"
+else
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
-    echo "-----> Fetching Go $ver"
+    echo -n "-----> Installing Go $ver..."
     curl -sO $url
     tar zxf $file
     rm -f $file
-)
+    echo " done"
+fi
 
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-echo "-----> Checking for Mercurial and Bazaar"
-(
-    set -e
-    which hg && which bzr && exit
-    echo "Installing Mercurial and Bazaar"
 
-    virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv
-    if [ "$?" -ne 0 ]; then
-        echo "Warning: Python environment corrupted. Rebuilding"
-        rm -rf $venv/* || true
-        virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv
-    fi
-    . $venv/bin/activate
+if ! (which hg > /dev/null && which bzr > /dev/null)
+then
+    echo -n "       Installing Virtualenv..."
+    virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
+    . $venv/bin/activate > /dev/null 2>&1
+    echo " done"
 
-    pip install --use-mirrors mercurial
-    pip install --use-mirrors bzr
-) 2>&1 | sed -u 's/^/       /'
+    echo -n "       Installing Mercurial..."
+    pip install --use-mirrors mercurial > /dev/null 2>&1
+    echo " done"
+
+    echo -n "       Installing Bazaar..."
+    pip install --use-mirrors bzr > /dev/null 2>&1
+    echo " done"
+fi
 
 name=$(cat $build/.godir)
 p=$GOPATH/src/$name
@@ -79,9 +75,9 @@ mkdir -p $p
 cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
-echo "-----> Running go get"
+echo "-----> Running: go get ./..."
 cd $p
-go get ./...
+go get ./... | sed -u 's/^/       /'
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
