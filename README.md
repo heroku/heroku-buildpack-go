@@ -14,7 +14,7 @@ introduction suitable for all Heroku users.
     ./Procfile
     ./app.go
 
-    $ heroku create -s cedar --buildpack git://github.com/kr/heroku-buildpack-go.git
+    $ heroku create --buildpack git://github.com/kr/heroku-buildpack-go.git
     ...
 
     $ git push heroku master
