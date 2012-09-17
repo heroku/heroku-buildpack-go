@@ -41,7 +41,7 @@ else
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
-    echo "-----> Fetching Go $ver"
+    echo "-----> Installing Go $ver"
     curl -sO $url
     tar zxf $file
     rm -f $file
@@ -51,7 +51,6 @@ GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-echo "-----> Checking for Mercurial and Bazaar"
 (
     set -e
     which hg && which bzr && exit
