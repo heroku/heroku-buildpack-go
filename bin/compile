@@ -53,10 +53,8 @@ GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
 
-if which hg > /dev/null && which bzr > /dev/null
+if ! (which hg > /dev/null && which bzr > /dev/null)
 then
-    # already installed
-else
     virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv
     if [ "$?" -ne 0 ]; then
         echo " !     Python environment corrupted - rebuilding."
