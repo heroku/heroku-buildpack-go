@@ -20,10 +20,10 @@ introduction suitable for all Heroku users.
     $ git push heroku master
     ...
     -----> Heroku receiving push
-    -----> Fetching custom buildpack... done
+    -----> Fetching custom git buildpack... done
     -----> Go app detected
     -----> Using Go 1.0.2
-    -----> Running go get and go install
+    -----> Running: go get ./...
     -----> Discovering process types
            Procfile declares types -> web
     -----> Compiled slug size is 1.0MB
