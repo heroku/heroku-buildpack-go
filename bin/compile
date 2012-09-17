@@ -23,14 +23,14 @@ virtualenv() {
 
 if ! test -f $build/.godir
 then
-    echo >&2 ' !     A .godir is required.'
-    echo >&2 ' !     See https://gist.github.com/299535bbf56bf3016cba for instructions.'
+    echo >&2 " !     A .godir is required."
+    echo >&2 " !     See https://gist.github.com/299535bbf56bf3016cba for instructions."
     exit 1
 fi
 
 if test -e $build/bin && ! test -d $build/bin
 then
-    echo >&2 ' !     File bin exists and is not a directory.'
+    echo >&2 " !     File bin exists and is not a directory."
     exit 1
 fi
 
