@@ -1,7 +1,6 @@
 #!/bin/bash
 # usage: bin/compile <build-dir> <cache-dir>
 
-set -x
 set -eo pipefail
 
 mkdir -p "$1" "$2"
