@@ -1,4 +1,4 @@
-# Heroku Buildpak: Go
+# Heroku Buildpack: Go
 
 This is a [Heroku buildpack][buildpack] for Go.
 
@@ -43,4 +43,4 @@ add BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of
 `--buildpack`.
 
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
-[quickstart]: https://gist.github.com/299535bbf56bf3016cba
+[quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
