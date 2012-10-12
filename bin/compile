@@ -45,6 +45,7 @@ else
     curl -sO $url
     tar zxf $file
     rm -f $file
+    cd ../../..
     echo " done"
 fi
 
