@@ -52,7 +52,6 @@ GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-
 if ! (which hg > /dev/null && which bzr > /dev/null)
 then
     echo -n "       Installing Virtualenv..."
@@ -72,7 +71,7 @@ fi
 name=$(cat $build/.godir)
 p=$GOPATH/src/$name
 mkdir -p $p
-cp -R $build/* $p
+cp -R $build/src/$name/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running: go get ./..."
