@@ -1,46 +1,30 @@
 #!/bin/sh
 
-# Default Go version is r59
-rdir=$PWD/cache/src/go/release.r59
+ver=1.0.3
 
 before() {
-  mkdir -p build cache
-  cp -r test/* build
+  rm -rf build cache
+  cp -r test build
+  mkdir cache
 }
 
 after() {
-  rm -rf tmp build
+  rm -rf build cache
 }
 
 compile() {
-  : === Compiling
   sh bin/compile build cache 2>&1
-  : === Done compiling
 }
 
-# You can skip the long compile test by setting GOROOT
-[ -n "$GOROOT" ] &&
-  mkdir -p $(dirname $rdir) &&
-  rm -f $rdir &&
-  # Fake a compile
-  ln -s $GOROOT $rdir
-
-it_compiles_go() {
-  # Skip this test if GOROOT is set
-  [ -n "$GOROOT" ] && exit 0
-
-  rm -rf cache
-  mkdir cache
-  ! test -f cache/src/go/release.r59/bin/gofmt
+it_installs_go() {
   compile
-  test -f cache/src/go/release.r59/bin/gofmt
+  test -f cache/go-$ver/go/bin/go
+  test -x cache/go-$ver/go/bin/go
 }
 
 it_skips_go_compile_if_exists() {
-  # We don't delete the cache dir in the tests so this
-  # doesn't need to rebuild Go.
-  test -f cache/src/go/release.r59/bin/gofmt
-  compile | grep "Skipping build"
+  mkdir -p cache/go-$ver/go
+  compile | grep Using
 }
 
 it_compiles_app() {
@@ -48,9 +32,4 @@ it_compiles_app() {
   test -f build/bin/mytest
   test -x build/bin/mytest
   test "$(./build/bin/mytest 2>&1)" = "ok"
-}
-
-it_deletes_cache() {
-  # Here only to delete the cache dir
-  rm -rf cache
 }
