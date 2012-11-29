@@ -6,9 +6,9 @@ set -eo pipefail
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
-ver=1.0.3
-file=go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz
-url=http://go.googlecode.com/files/$file
+ver=${GOVERSION:-1.0.3}
+file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
+url=${GOURL:-http://go.googlecode.com/files/$file}
 buildpack=$(dirname $(dirname $0))
 
 # Python
