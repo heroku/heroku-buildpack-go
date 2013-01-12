@@ -38,9 +38,8 @@ contains a `.go` file.
 To change this buildpack, fork it on GitHub. Push
 changes to your fork, then create a test app with
 `--buildpack YOUR_GITHUB_GIT_URL` and push to it. If you
-already have an existing app you may use `heroku config
-add BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of
-`--buildpack`.
+already have an existing app you may use `heroku config:add
+BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of `--buildpack`.
 
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
