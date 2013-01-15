@@ -23,7 +23,7 @@ introduction suitable for all Heroku users.
     -----> Fetching custom git buildpack... done
     -----> Go app detected
     -----> Using Go 1.0.2
-    -----> Running: go get ./...
+    -----> Running: go get -tags heroku ./...
     -----> Discovering process types
            Procfile declares types -> web
     -----> Compiled slug size is 1.0MB
