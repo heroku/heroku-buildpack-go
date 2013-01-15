@@ -33,6 +33,10 @@ introduction suitable for all Heroku users.
 The buildpack will detect your repository as Go if it
 contains a `.go` file.
 
+The buildpack adds a `heroku` [build constraint][build-constraint],
+to enable heroku-specific code. See the [App Engine build constraints article][app-engine-build-constraints]
+for more.
+
 ## Hacking
 
 To change this buildpack, fork it on GitHub. Push
@@ -43,3 +47,6 @@ BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of `--buildpack`.
 
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
+[build-constraint]: http://golang.org/pkg/go/build/
+[app-engine-build-constraints]: http://blog.golang.org/2013/01/the-app-engine-sdk-and-workspaces-gopath.html
+
