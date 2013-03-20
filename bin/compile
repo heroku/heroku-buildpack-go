@@ -23,8 +23,8 @@ virtualenv() {
 
 if ! test -f $build/.godir
 then
-    echo >&2 " !     A .godir is required."
-    echo >&2 " !     See https://gist.github.com/299535bbf56bf3016cba for instructions."
+    echo >&2 " !     A .godir is required. For instructions:"
+    echo >&2 " !     http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku"
     exit 1
 fi
 
