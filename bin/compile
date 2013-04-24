@@ -48,9 +48,13 @@ else
     echo " done"
 fi
 
+echo "-----> Setting up ENV variables"
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
+echo "       GOROOT=$GOROOT"
+echo "       GOPATH=$GOPATH"
+echo "       PATH=$PATH"
 
 
 if ! (which hg > /dev/null && which bzr > /dev/null)
@@ -69,10 +73,14 @@ then
     echo " done"
 fi
 
+echo "-----> Setting up the directory structure"
 name=$(cat $build/.godir)
 p=$GOPATH/src/$name
+echo "       Creating directory $p" 
 mkdir -p $p
 cp -R $build/* $p
+echo "       Copied [`ls -m $p`] into the GOPATH/src directory"
+
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 echo "-----> Running: go get -tags heroku ./..."
@@ -84,4 +92,5 @@ mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
+
 echo 'export PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
