@@ -1,6 +1,6 @@
 # Heroku Buildpack: Go
 
-This is a [Heroku buildpack][buildpack] for [Go][go].
+This is a [Heroku buildpack][buildpack] for [Go][go]. It currently supports Go v1.1.1.
 
 ## Getting Started
 
@@ -12,6 +12,12 @@ There's also a hello world sample app at
 
 ## Example
 
+Create a new Heroku application with the buildpack:
+
+`$ heroku create -b https://github.com/kr/heroku-buildpack-go.git`
+
+You'll need these files to tell Heroku where your application is, and how to run it (see the [guide](http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku.html)):
+
 ```
 $ ls -A1
 ./.git
@@ -19,14 +25,16 @@ $ ls -A1
 ./Procfile
 ./web.go
 
-$ heroku create -b https://github.com/kr/heroku-buildpack-go.git
-...
+```
 
+Push your application up to Heroku:
+
+```
 $ git push heroku master
 ...
 -----> Fetching custom git buildpack... done
 -----> Go app detected
------> Installing Go 1.0.3... done
+-----> Installing Go 1.1.1... done
        Installing Virtualenv... done
        Installing Mercurial... done
        Installing Bazaar... done
@@ -38,8 +46,7 @@ $ git push heroku master
        http://pure-sunrise-3607.herokuapp.com deployed to Heroku
 ```
 
-The buildpack will detect your repository as Go if it
-contains a `.go` file.
+The buildpack will detect your repository as Go if it contains a `.go` file.
 
 The buildpack adds a `heroku` [build constraint][build-constraint],
 to enable heroku-specific code. See the [App Engine build constraints article][app-engine-build-constraints]
