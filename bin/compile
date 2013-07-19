@@ -10,19 +10,27 @@ ver=${GOVERSION:-1.1.2}
 file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
 url=${GOURL:-http://go.googlecode.com/files/$file}
 buildpack=$(dirname $(dirname $0))
+arch=$(uname -m|tr A-Z a-z)
+if test $arch = x86_64
+then arch=amd64
+fi
+plat=$(uname|tr A-Z a-z)-$arch
 
 # Python
 venv=$cache/venv
 mkdir -p $cache/pip
 python=python2.7
-PATH=$venv/bin:$PATH
+PATH=$buildpack/$plat/bin:$venv/bin:$PATH
 
 virtualenv() {
     python "$buildpack/vendor/virtualenv-1.7/virtualenv.py" "$@"
 }
 
-if ! test -f $build/.godir
-then
+if test -f $build/Godeps
+then name=$(<$build/Godeps jq -r .ImportPath)
+elif test -f $build/.godir
+then name=$(cat $build/.godir)
+else
     echo >&2 " !     A .godir is required. For instructions:"
     echo >&2 " !     http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku"
     exit 1
@@ -69,15 +77,20 @@ then
     echo " done"
 fi
 
-name=$(cat $build/.godir)
 p=$GOPATH/src/$name
 mkdir -p $p
 cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
-echo "-----> Running: go get -tags heroku ./..."
 cd $p
-go get -tags heroku ./...
+if test -f $build/Godeps
+then
+    echo "-----> Running: godep go get -tags heroku ./..."
+    godep go get -tags heroku ./...
+else
+    echo "-----> Running: go get -tags heroku ./..."
+    go get -tags heroku ./...
+fi
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
