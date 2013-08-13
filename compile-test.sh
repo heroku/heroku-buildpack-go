@@ -1,6 +1,6 @@
 #!/bin/sh
 
-ver=1.1.1
+ver=1.1.2
 
 before() {
   rm -rf build cache
