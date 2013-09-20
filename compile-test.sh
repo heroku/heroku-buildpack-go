@@ -1,30 +1,30 @@
 #!/bin/sh
 
-ver=1.1.2
-
 before() {
   rm -rf build cache
   cp -r test build
   mkdir cache
 }
 
-after() {
-  rm -rf build cache
-}
-
 compile() {
-  sh bin/compile build cache 2>&1
+  pushd .
+  source bin/compile build cache 2>&1
+  popd
 }
 
 it_installs_go() {
+  unset GOROOT
   compile
-  test -f cache/go-$ver/go/bin/go
-  test -x cache/go-$ver/go/bin/go
+  test -f $GOROOT/bin/go
+  test -x $GOROOT/bin/go
+  rm -rf build cache
 }
 
 it_skips_go_compile_if_exists() {
-  mkdir -p cache/go-$ver/go
+  GOVERSION=foo
+  mkdir -p cache/go-$GOVERSION/go
   compile | grep Using
+  rm -rf build cache
 }
 
 it_compiles_app() {
@@ -32,4 +32,5 @@ it_compiles_app() {
   test -f build/bin/mytest
   test -x build/bin/mytest
   test "$(./build/bin/mytest 2>&1)" = "ok"
+  rm -rf build cache
 }
