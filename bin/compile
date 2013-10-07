@@ -87,7 +87,6 @@ echo " done"
 
 p=$GOPATH/src/$name
 mkdir -p $p
-echo "P IS $p"
 cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
@@ -100,9 +99,10 @@ done
 
 echo "       Building app with godag..."
 
-dirname=`dirname $name`
-mkdir -p $GOPATH/bin/$dirname
-gd $p -o $GOPATH/bin/$name
+appname=`basename $name`
+
+mkdir $GOPATH/bin
+gd $p -o $GOPATH/bin/$appname
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
