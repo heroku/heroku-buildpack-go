@@ -81,7 +81,8 @@ fi
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ ../godag
 cd ../godag
-go run mk.go install
+go run mk.go build
+mv gd $GOROOT/bin/
 echo " done"
 
 p=$GOPATH/src/$name
