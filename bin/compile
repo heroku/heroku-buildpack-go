@@ -90,6 +90,9 @@ do
     go get -tags heroku $dep
 done
 
+echo "       Building app with godag..."
+gd $p -o $GOPATH/bin/$name
+
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
