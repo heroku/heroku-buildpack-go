@@ -87,6 +87,7 @@ echo " done"
 
 p=$GOPATH/src/$name
 mkdir -p $p
+echo "P IS $p"
 cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
@@ -108,4 +109,5 @@ mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
+echo `cat $build/.profile.d/go.sh`
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
