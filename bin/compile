@@ -1,6 +1,6 @@
 #!/bin/bash
 # usage: bin/compile <build-dir> <cache-dir>
-DEPENDENCIES=( github.com/drone/routes github.com/jmoiron/modl github.com/lib/pq code.google.com/p/go.crypto/scrypt github.com/remogatto/prettytest )
+DEPENDENCIES=( github.com/drone/routes github.com/jmoiron/modl github.com/lib/pq code.google.com/p/go.crypto/scrypt github.com/remogatto/prettytest github.com/gorilla/sessions )
 
 set -eo pipefail
 
@@ -109,5 +109,4 @@ mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
-echo `cat $build/.profile.d/go.sh`
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
