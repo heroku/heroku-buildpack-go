@@ -1,6 +1,5 @@
 #!/bin/bash
 # usage: bin/compile <build-dir> <cache-dir>
-DEPENDENCIES=( github.com/drone/routes github.com/jmoiron/modl github.com/lib/pq code.google.com/p/go.crypto/scrypt github.com/remogatto/prettytest github.com/gorilla/sessions )
 
 set -eo pipefail
 
@@ -91,11 +90,7 @@ cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
-for dep in "${DEPENDENCIES[@]}"
-do
-    echo "-----> Running: go get -tags heroku $dep"
-    go get -tags heroku $dep
-done
+./build -heroku
 
 echo "       Building app with godag..."
 
