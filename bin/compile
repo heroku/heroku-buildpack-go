@@ -28,6 +28,8 @@ virtualenv() {
 
 if test -f $build/Godeps
 then name=$(<$build/Godeps jq -r .ImportPath)
+elif test -d $build/Godeps
+then name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
 elif test -f $build/.godir
 then name=$(cat $build/.godir)
 else
@@ -61,7 +63,7 @@ GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
 
-if ! (which hg > /dev/null && which bzr > /dev/null)
+if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
     echo -n "       Installing Virtualenv..."
     virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
@@ -83,7 +85,7 @@ cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
-if test -f $build/Godeps
+if test -e $build/Godeps
 then
     echo "-----> Running: godep go get -tags heroku ./..."
     godep go get -tags heroku ./...
