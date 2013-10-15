@@ -87,8 +87,8 @@ unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
 if test -e $build/Godeps
 then
-    echo "-----> Running: godep go get -tags heroku ./..."
-    godep go get -tags heroku ./...
+    echo "-----> Running: godep go install -tags heroku ./..."
+    godep go install -tags heroku ./...
 else
     echo "-----> Running: go get -tags heroku ./..."
     go get -tags heroku ./...
