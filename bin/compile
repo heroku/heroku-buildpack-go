@@ -65,6 +65,12 @@ PATH=$GOROOT/bin:$PATH
 
 if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
+    echo
+    echo "       Tired of waiting for bzr and hg?"
+    echo "       Try godep save -copy"
+    echo "       See https://github.com/kr/godep for more info."
+    echo
+
     echo -n "       Installing Virtualenv..."
     virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
     . $venv/bin/activate > /dev/null 2>&1
