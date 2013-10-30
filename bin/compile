@@ -6,9 +6,6 @@ set -eo pipefail
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
-ver=${GOVERSION:-1.1.2}
-file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
-url=${GOURL:-http://go.googlecode.com/files/$file}
 buildpack=$(dirname $(dirname $0))
 arch=$(uname -m|tr A-Z a-z)
 if test $arch = x86_64
@@ -27,16 +24,25 @@ virtualenv() {
 }
 
 if test -f $build/Godeps
-then name=$(<$build/Godeps jq -r .ImportPath)
+then
+    name=$(<$build/Godeps jq -r .ImportPath)
+    ver=$(<$build/Godeps jq -r .GoVersion)
 elif test -d $build/Godeps
-then name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
+then
+    name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
+    ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
 elif test -f $build/.godir
-then name=$(cat $build/.godir)
+then
+    name=$(cat $build/.godir)
+    ver=go${GOVERSION:-1.1.2}
 else
     echo >&2 " !     A .godir is required. For instructions:"
     echo >&2 " !     http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku"
     exit 1
 fi
+
+file=${GOFILE:-$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
+url=${GOURL:-http://go.googlecode.com/files/$file}
 
 if test -e $build/bin && ! test -d $build/bin
 then
@@ -44,21 +50,21 @@ then
     exit 1
 fi
 
-if test -d $cache/go-$ver/go
+if test -d $cache/$ver/go
 then
-    echo "-----> Using Go $ver"
+    echo "-----> Using $ver"
 else
     rm -rf $cache/* # be sure not to build up cruft
-    mkdir -p $cache/go-$ver
-    cd $cache/go-$ver
-    echo -n "-----> Installing Go $ver..."
+    mkdir -p $cache/$ver
+    cd $cache/$ver
+    echo -n "-----> Installing $ver..."
     curl -sO $url
     tar zxf $file
     rm -f $file
     echo " done"
 fi
 
-GOROOT=$cache/go-$ver/go export GOROOT
+GOROOT=$cache/$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
