@@ -2,7 +2,7 @@
 
 before() {
   rm -rf build cache
-  cp -r test build
+  cp -r test-godir build
   mkdir cache
 }
 
@@ -21,7 +21,8 @@ it_installs_go() {
 }
 
 it_skips_go_compile_if_exists() {
-  mkdir -p cache/go1.1/go
+  GOVERSION=foo
+  mkdir -p cache/go$GOVERSION/go
   compile | grep Using
   rm -rf build cache
 }
