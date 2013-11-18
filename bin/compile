@@ -59,6 +59,8 @@ fi
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
+PYTHONPATH="`which python`"
+ln -s $PYTHONPATH /app/tmp/repo.git/.cache/venv/bin/python2.7
 
 
 if ! (which hg > /dev/null && which bzr > /dev/null)
@@ -77,18 +79,10 @@ then
     echo " done"
 fi
 
-echo -n "       Installing Mercurial..."
-export PYTHONPATH="`which python`"
-sudo ln -s $PYTHONPATH /app/tmp/repo.git/.cache/venv/bin/python2.7
-echo " done"
-
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ ../godag
-echo "cd godag"
 cd /app/tmp/godag
-echo "go run mk.go build -- godag"
 go run mk.go build
-echo "move godag to $GOROOT/bin"
 mv gd $GOROOT/bin/
 echo " done"
 
