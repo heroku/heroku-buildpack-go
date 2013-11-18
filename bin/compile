@@ -59,8 +59,9 @@ fi
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
-PYTHONPATH="`which python`"
-ln -s /app/tmp/repo.git/.cache/venv/bin/python2.7 $PYTHONPATH
+PYTHONPATH="`which python2.7`"
+mkdir -p /app/tmp/repo.git/.cache/venv/bin
+ln -s $PYTHONPATH /app/tmp/repo.git/.cache/venv/bin/python2.7
 
 
 if ! (which hg > /dev/null && which bzr > /dev/null)
