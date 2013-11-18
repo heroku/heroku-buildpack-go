@@ -77,10 +77,12 @@ then
     echo " done"
 fi
 
+echo -n "       Installing Mercurial..."
+pip install --upgrade mercurial > /dev/null 2>&1
+echo " done"
+
 echo "       Installing godag..."
-export PYTHONPATH="/app/tmp/cache/venv/bin"
-export PYTHONHOME="/app/tmp/cache/venv/bin"
-hg clone https://godag.googlecode.com/hg/ /app/tmp/godag
+hg clone https://godag.googlecode.com/hg/ ../godag
 echo "cd godag"
 cd /app/tmp/godag
 echo "go run mk.go build -- godag"
