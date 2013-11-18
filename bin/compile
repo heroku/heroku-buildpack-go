@@ -77,14 +77,10 @@ then
     echo " done"
 fi
 
-echo "LS CACHE/VENV/BIN: `ls -a $cache/venv/bin`"
-echo "WHICH HG? `which hg`"
-echo "WHICH PYTHON? `which python`"
-echo "WHICH PYTHON2.7? `which python2.7`"
-echo "PYTHON: $PYTHONHOME $PYTHON_HOME $PYTHON_PATH"
-echo "PATH $PATH"
+export 
 echo "       Installing godag..."
-hg clone https://godag.googlecode.com/hg/ godag
+export PYTHONPATH="/app/tmp/cache/venv/bin/python2.7"
+export PYTHONHOME="/app/tmp/cache/venv/bin/python2.7"
 echo "cd godag"
 cd godag
 echo "go run mk.go build -- godag"
