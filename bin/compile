@@ -77,11 +77,10 @@ then
     echo " done"
 fi
 
-echo "LS TMP:"
-echo `ls -a /app/tmp`
-echo "LS REPO.GIT:"
-echo `ls -a /app/tmp/repo.git`
+echo "WD: `pwd`"
+echo "LS WD: `ls -a pwd`"
 echo "CACHE DIR: $cache"
+echo "LS CACHE DIR: `ls -a $cache`"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
 echo "cd godag"
