@@ -78,7 +78,7 @@ then
 fi
 
 echo -n "       Installing Mercurial..."
-pip install --upgrade mercurial > /dev/null 2>&1
+pip install --upgrade mercurial
 echo " done"
 
 echo "       Installing godag..."
