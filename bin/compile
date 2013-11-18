@@ -79,6 +79,8 @@ fi
 
 echo "LS CACHE/VENV/BIN: `ls -a $cache/venv/bin`"
 echo "WHICH HG? `which hg`"
+echo "WHICH PYTHON? `which python`"
+echo "LS /USR/BIN/ENV: `ls -a /usr/bin/env`"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
 echo "cd godag"
