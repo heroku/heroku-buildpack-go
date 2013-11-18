@@ -78,6 +78,10 @@ then
 fi
 
 echo "       Installing godag..."
+echo "BIN -hg: "
+echo `ls /app/tmp/cache/venv/bin`
+echo "BIN -python2.7: "
+echo `ls /app/tmp/repo.git/.cache/venv/bin`
 hg clone https://godag.googlecode.com/hg/ ../godag
 cd ../godag
 go run mk.go build
