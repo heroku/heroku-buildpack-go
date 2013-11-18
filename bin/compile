@@ -78,17 +78,9 @@ then
 fi
 
 echo "       Installing godag..."
-echo "BIN -hg: "
-echo `ls /app/tmp/cache/venv/bin`
-echo "BIN -python2.7: "
-echo `ls /app/tmp/repo.git/.cache/venv`
-wd=`pwd`
-echo "PWD is $wd"
-echo `ls -a $wd`
-echo "cloning godag into ../godag"
-hg clone https://godag.googlecode.com/hg/ ../godag
-echo "cd ../godag"
-cd ../godag
+hg clone https://godag.googlecode.com/hg/ godag
+echo "cd godag"
+cd godag
 echo "go run mk.go build -- godag"
 go run mk.go build
 echo "move godag to $GOROOT/bin"
