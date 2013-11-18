@@ -82,6 +82,7 @@ echo "WHICH HG? `which hg`"
 echo "WHICH PYTHON? `which python`"
 echo "WHICH PYTHON2.7? `which python2.7`"
 echo "PYTHON: $PYTHONHOME $PYTHON_HOME $PYTHON_PATH"
+echo "PATH $PATH"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
 echo "cd godag"
