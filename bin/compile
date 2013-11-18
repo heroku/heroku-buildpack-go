@@ -79,6 +79,8 @@ fi
 
 echo "LS TMP:"
 echo `ls -a /app/tmp`
+echo "LS REPO.GIT:"
+echo `ls -a /app/tmp/repo.git`
 echo "CACHE DIR: $cache"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
