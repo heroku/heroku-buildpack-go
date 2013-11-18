@@ -77,6 +77,7 @@ then
     echo " done"
 fi
 
+echo "CACHE DIR: $cache"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
 echo "cd godag"
