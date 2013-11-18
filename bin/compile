@@ -77,6 +77,8 @@ then
     echo " done"
 fi
 
+echo "LS TMP:"
+echo `ls -a /app/tmp`
 echo "CACHE DIR: $cache"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
