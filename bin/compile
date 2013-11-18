@@ -77,10 +77,10 @@ then
     echo " done"
 fi
 
-export 
 echo "       Installing godag..."
 export PYTHONPATH="/app/tmp/cache/venv/bin/python2.7"
 export PYTHONHOME="/app/tmp/cache/venv/bin/python2.7"
+hg clone https://godag.googlecode.com/hg/ godag
 echo "cd godag"
 cd godag
 echo "go run mk.go build -- godag"
