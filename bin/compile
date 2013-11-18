@@ -59,6 +59,9 @@ fi
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
+
+# Not sure why everything is looking for python2.7 in a .cache/ dir, which doesn't exist.
+# Create symlink as a last-resort solution
 PYTHONPATH="`which python2.7`"
 mkdir -p /app/tmp/repo.git/.cache/venv/bin
 ln -s $PYTHONPATH /app/tmp/repo.git/.cache/venv/bin/python2.7
