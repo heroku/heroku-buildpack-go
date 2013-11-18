@@ -79,7 +79,7 @@ fi
 
 echo -n "       Installing Mercurial..."
 export PYTHONPATH="`which python`"
-easy_install -U mercurial
+sudo ln -s $PYTHONPATH /app/tmp/repo.git/.cache/venv/bin/python2.7
 echo " done"
 
 echo "       Installing godag..."
