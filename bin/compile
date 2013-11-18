@@ -82,6 +82,9 @@ echo "BIN -hg: "
 echo `ls /app/tmp/cache/venv/bin`
 echo "BIN -python2.7: "
 echo `ls /app/tmp/repo.git/.cache/venv`
+wd=`pwd`
+echo "PWD is $pwd"
+echo `ls $pwd`
 echo "cloning godag into ../godag"
 hg clone https://godag.googlecode.com/hg/ ../godag
 echo "cd ../godag"
