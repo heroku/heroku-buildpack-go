@@ -77,10 +77,13 @@ then
     echo " done"
 fi
 
-echo "WD: `pwd`"
-echo "LS WD: `ls -a pwd`"
+wd=`pwd`
+echo "WD: $wd"
+echo "LS WD: `ls -a $wd`"
 echo "CACHE DIR: $cache"
 echo "LS CACHE DIR: `ls -a $cache`"
+echo "LS CACHE/VENV: `ls -a $cache/venv`"
+echo "LS CACHE/VENV/BIN: `ls -a $cache/venv/bin`"
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ godag
 echo "cd godag"
