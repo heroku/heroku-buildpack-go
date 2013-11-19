@@ -96,7 +96,7 @@ cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
-./build -heroku -goget
+./gobuild -heroku -goget
 
 echo "       Building app with godag..."
 
