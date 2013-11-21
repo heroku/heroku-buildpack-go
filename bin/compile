@@ -88,8 +88,7 @@ if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
-    echo "       Try godep save -copy"
-    echo "       See https://github.com/kr/godep for more info."
+    echo "       Try github.com/kr/godep for faster deploys."
     echo
 
     echo -n "       Installing Virtualenv..."
