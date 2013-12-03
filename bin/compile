@@ -84,7 +84,7 @@ then
 fi
 
 echo "       Installing godag..."
-hg clone https://godag.googlecode.com/hg/ ../godag
+hg clone https://godag.googlecode.com/hg/ /app/tmp/godag
 cd /app/tmp/godag
 go run mk.go build
 mv gd $GOROOT/bin/
