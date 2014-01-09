@@ -49,7 +49,7 @@ then
 elif test -f $build/.godir
 then
     name=$(cat $build/.godir)
-    ver=go${GOVERSION:-1.2rc3}
+    ver=go${GOVERSION:-1.2}
 else
     echo >&2 " !     A .godir is required. For instructions:"
     echo >&2 " !     http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku"
