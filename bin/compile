@@ -79,6 +79,8 @@ else
     echo " done"
 fi
 
+mkdir -p $build/bin
+GOBIN=$build/bin export GOBIN
 GOROOT=$cache/$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
@@ -120,8 +122,6 @@ else
     go get -tags heroku ./...
 fi
 
-mkdir -p $build/bin
-mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
