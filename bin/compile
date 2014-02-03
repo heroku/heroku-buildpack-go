@@ -98,7 +98,7 @@ unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
 
 echo "       Installing goose..."
-go get bitbucket.org/liamstask/goose/cmd/goose
+go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
 ./gobuild -heroku -goget
 
 echo "       Building app with godag..."
