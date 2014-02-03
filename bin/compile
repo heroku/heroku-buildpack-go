@@ -99,8 +99,6 @@ cd $p
 
 echo "-----> Installing goose..."
 go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
-go build bitbucket.org/liamstask/goose/cmd/goose
-go install bitbucket.org/liamstask/goose/cmd/goose
 
 echo "-----> go-getting dependencies..."
 ./gobuild -heroku -goget
@@ -117,3 +115,6 @@ rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+
+echo "-----> Copying go binary into \$PATH..."
+cp `which go` $GOROOT/bin
