@@ -104,6 +104,7 @@ echo "-----> Building app with godag..."
 
 appname=`basename $name`
 
+mkdir -p $GOPATH/bin
 gd $p -o $GOPATH/bin/$appname -M init
 
 mkdir -p $build/bin
