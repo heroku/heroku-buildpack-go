@@ -99,7 +99,8 @@ cd $p
 
 echo "-----> Installing goose..."
 go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
-mv $GOPATH/bin/goose $GOROOT/bin/goose
+go build bitbucket.org/liamstask/goose/cmd/goose
+go install bitbucket.org/liamstask/goose/cmd/goose
 
 echo "-----> go-getting dependencies..."
 ./gobuild -heroku -goget
