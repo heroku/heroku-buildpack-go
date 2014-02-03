@@ -115,6 +115,3 @@ rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
-
-echo "-----> Copying go binary into \$PATH..."
-cp `which go` $GOROOT/bin
