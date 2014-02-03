@@ -83,6 +83,10 @@ then
     echo " done"
 fi
 
+echo "       Installing goose..."
+go get bitbucket.org/liamstask/goose/cmd/goose
+echo " done"
+
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ ../godag
 cd /app/tmp/godag
@@ -103,7 +107,7 @@ echo "       Building app with godag..."
 appname=`basename $name`
 
 mkdir $GOPATH/bin
-gd $p -o $GOPATH/bin/$appname
+gd $p -o $GOPATH/bin/$appname -M init
 
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
