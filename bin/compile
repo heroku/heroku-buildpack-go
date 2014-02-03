@@ -83,10 +83,6 @@ then
     echo " done"
 fi
 
-echo "       Installing goose..."
-go get bitbucket.org/liamstask/goose/cmd/goose
-echo " done"
-
 echo "       Installing godag..."
 hg clone https://godag.googlecode.com/hg/ /app/tmp/godag
 cd /app/tmp/godag
@@ -100,6 +96,7 @@ cp -R $build/* $p
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
+go get bitbucket.org/liamstask/goose/cmd/goose
 ./gobuild -heroku -goget
 
 echo "       Building app with godag..."
