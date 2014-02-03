@@ -83,7 +83,7 @@ then
     echo " done"
 fi
 
-echo "       Installing godag..."
+echo "-----> Installing godag..."
 hg clone https://godag.googlecode.com/hg/ /app/tmp/godag
 cd /app/tmp/godag
 go run mk.go build
@@ -97,8 +97,12 @@ cp -R $build/* $p
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
 
-echo "       Installing goose..."
+echo "-----> Installing goose..."
 go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
+echo "WHICH GOOSE: `which goose`"
+echo "GOPATH: $GOPATH"
+echo "GOROOT: $GOROOT"
+mv `which goose` $GOROOT/bin/
 ./gobuild -heroku -goget
 
 echo "       Building app with godag..."
