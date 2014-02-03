@@ -99,6 +99,7 @@ cd $p
 
 echo "-----> Installing goose..."
 go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
+go install bitbucket.org/liamstask/goose/cmd/goose
 echo "WHICH GOOSE: `which goose`"
 echo "GOPATH: $GOPATH"
 echo "GOROOT: $GOROOT"
