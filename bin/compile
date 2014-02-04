@@ -97,8 +97,11 @@ cp -R $build/* $p
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
 
-echo "-----> go-getting dependencies..."
+echo "-----> go get dependencies..."
 ./gobuild -heroku -goget
+
+echo "-----> Installing goose..."
+go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
 
 echo "-----> Building app with godag..."
 
@@ -110,6 +113,9 @@ gd $p -o $GOPATH/bin/$appname -M init
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
+
+echo "-----> Migrating db with goose..."
+./gobuild --migrate-up
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
