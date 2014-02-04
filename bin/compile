@@ -110,6 +110,7 @@ mkdir -p $GOPATH/bin
 gd $p -o $GOPATH/bin/$appname -M init
 
 echo "-----> Migrating db with goose..."
+echo "$DATABASE_URL"
 ./gobuild --migrate-up
 
 mkdir -p $build/bin
