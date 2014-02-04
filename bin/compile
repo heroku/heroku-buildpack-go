@@ -110,12 +110,12 @@ appname=`basename $name`
 mkdir -p $GOPATH/bin
 gd $p -o $GOPATH/bin/$appname -M init
 
+echo "-----> Migrating db with goose..."
+./gobuild --migrate-up
+
 mkdir -p $build/bin
 mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
-
-echo "-----> Migrating db with goose..."
-./gobuild --migrate-up
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
