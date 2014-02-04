@@ -102,9 +102,6 @@ cd $p
 echo "-----> go get dependencies..."
 ./gobuild -heroku -goget
 
-echo "-----> Installing goose..."
-go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
-
 echo "-----> Building app with godag..."
 
 appname=`basename $name`
