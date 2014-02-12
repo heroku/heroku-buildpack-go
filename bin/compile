@@ -102,14 +102,18 @@ cd $p
 echo "-----> go get dependencies..."
 ./gobuild -heroku -goget
 
-go get -u -tags heroku bitbucket.org/liamstask/goose/cmd/goose
-
 echo "-----> Building app with godag..."
 
 appname=`basename $name`
 
 mkdir -p $GOPATH/bin
 gd $p -o $GOPATH/bin/$appname -M init
+
+echo "WHICH GOOSE"
+echo `which goose`
+
+echo "GOROOT/goose"
+$GOROOT/bin/goose
 
 echo "-----> Migrating db with goose..."
 ./gobuild --migrate-up
