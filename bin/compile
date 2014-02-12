@@ -112,8 +112,8 @@ gd $p -o $GOPATH/bin/$appname -M init
 echo "WHICH GOOSE"
 echo `which goose`
 
-echo "GOROOT/goose"
-$GOROOT/bin/goose
+echo "GOPATH/goose"
+$GOPATH/bin/goose
 
 echo "-----> Migrating db with goose..."
 ./gobuild --migrate-up
