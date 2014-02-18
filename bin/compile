@@ -26,6 +26,19 @@ virtualenv() {
     python "$buildpack/vendor/virtualenv-1.7/virtualenv.py" "$@"
 }
 
+export_env_dir() {
+  env_dir=$1
+  whitelist_regex=${2:-''}
+  blacklist_regex=${3:-'^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'}
+  if [ -d "$env_dir" ]; then
+    for e in $(ls $env_dir); do
+      echo "$e" | grep -E "$whitelist_regex" | grep -qvE "$blacklist_regex" &&
+      export "$e=$(cat $env_dir/$e)"
+      :
+    done
+  fi
+}
+
 if test -f $build/Godeps
 then name=$(<$build/Godeps jq -r .ImportPath)
 elif test -f $build/.godir
@@ -56,9 +69,12 @@ else
     echo " done"
 fi
 
+
+echo "-----> Setting up environment..."
 GOROOT=$cache/go-$ver/go export GOROOT
 GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
+export_env_dir
 
 # Not sure why everything is looking for python2.7 in a .cache/ dir, which doesn't exist.
 # Create symlink as a last-resort solution
@@ -116,3 +132,5 @@ rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+
+
