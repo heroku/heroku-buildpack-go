@@ -79,10 +79,23 @@ else
     echo " done"
 fi
 
-GOROOT=$cache/$ver/go export GOROOT
-GOPATH=$build/.heroku/g export GOPATH
-PATH=$GOROOT/bin:$PATH
+if test -d $build/.goroot
+then
+    echo -n "-----> Preserving GOROOT due to .goroot directory presence"
+    cp -R $cache/$ver/go/* $build/.goroot
+    GOROOT=$build/.goroot export GOROOT
+else
+    GOROOT=$cache/$ver/go export GOROOT
+fi
 
+if test -d $build/.gopath
+then
+    echo -n "-----> Preserving GOPATH due to .gopath directory presence"
+    GOPATH=$build/.gopath export GOPATH
+else
+    GOPATH=$build/.heroku/g export GOPATH
+fi
+PATH=$GOPATH/bin:$PATH
 
 if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
@@ -125,4 +138,17 @@ mv $GOPATH/bin/* $build/bin
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
+
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+
+if test -f $build/.gopath
+then
+    echo 'PATH=$PATH:$HOME/.gopath/bin' >> $build/.profile.d/go.sh
+    echo 'export GOPATH=$HOME/.gopath' >> $build/.profile.d/go.sh
+fi
+
+if test -f $build/.goroot
+then
+    echo 'PATH=$PATH:$HOME/.goroot/bin' >> $build/.profile.d/go.sh
+    echo 'export GOROOT=$HOME/.goroot' >> $build/.profile.d/go.sh
+fi
