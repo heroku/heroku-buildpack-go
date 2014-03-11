@@ -58,3 +58,9 @@ BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of `--buildpack`.
 [quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
 [build-constraint]: http://golang.org/pkg/go/build/
 [app-engine-build-constraints]: http://blog.golang.org/2013/01/the-app-engine-sdk-and-workspaces-gopath.html
+
+
+
+## .godir and Godeps/
+
+Early versions of this buildpack required users to create a `.godir` file in the root of the project, containing the application name in order to build the project. While using a `.godir` file is still supported, it has been deprecated in favor of using [kr/godep](https://github.com/kr/godep) in your project to manage dependencies, and including the generated `Godep/` folder in your git repository. 
