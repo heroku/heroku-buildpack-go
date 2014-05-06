@@ -11,7 +11,7 @@ set -eo pipefail
 # for testing on Darwin systems.
 platext() {
     case $1 in
-    go1.0*|go1.1|go1.1.*) return ;;
+    go1.0*|go1.1beta*|go1.1rc*|go1.1|go1.1.*) return ;;
     esac
     case $(uname|tr A-Z a-z) in
     darwin) printf %s -osx10.8 ;;
