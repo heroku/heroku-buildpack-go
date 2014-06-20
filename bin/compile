@@ -1,5 +1,5 @@
 #!/bin/bash
-# usage: bin/compile <build-dir> <cache-dir>
+# usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
 set -eo pipefail
 
@@ -127,6 +127,20 @@ fi
 p=$GOPATH/src/$name
 mkdir -p $p
 cp -R $build/* $p
+
+# allow apps to specify cgo flags and set up /app symlink so things like CGO_CFLAGS=-I/app/... work
+ln -s $build /app/code
+env_dir="$3"
+if [ -d "$env_dir" ]
+then
+    for cgo_opt in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS
+    do
+        if [ -f "$env_dir/$cgo_opt" ]
+        then
+            export "$cgo_opt=$(cat "$env_dir/$cgo_opt")"
+        fi
+    done
+fi
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
