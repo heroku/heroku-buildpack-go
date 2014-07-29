@@ -142,12 +142,6 @@ then
     done
 fi
 
-# Allow passing extra ldflags to go install. To use this,
-# 1. Set the `GO_GIT_DESCRIBE_SYMBOL` to point to the variable name that you
-# want to set at build time, e.g. run:
-#   heroku config:set GO_GIT_DESCRIBE_SYMBOL=main.version
-# 2. Don't forget to push tags to heroku:
-#   git tag 2.0.1 && git push heroku 2.0.1
 FLAGS=(-tags heroku)
 if test -f "$env_dir/GO_GIT_DESCRIBE_SYMBOL"
 then
