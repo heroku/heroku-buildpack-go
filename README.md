@@ -84,9 +84,9 @@ Postgres header files in `vendor/include/postgresql/` in your app.
 
 If you set the `GO_GIT_DESCRIBE_SYMBOL` to the name of a
 string variable, it will be set at build time to the
-output of `git describe --tags --always`, if any. This
-lets you access the commit id or tag in your app. For
-example, in your `main.go`:
+output of `git describe --tags --always`. This lets you
+access the commit id or tag in your app. For example, in
+your `main.go`:
 
 ```go
 package main
