@@ -84,9 +84,9 @@ Postgres header files in `vendor/include/postgresql/` in your app.
 
 If you set the `GO_GIT_DESCRIBE_SYMBOL` to the name of a
 string variable, it will be set at build time to the
-output of `git describe --tags`, if any. This is useful
-for setting the version at build time, for example, in
-your `main.go`:
+output of `git describe --tags --always`, if any. This
+lets you access the commit id or tag in your app. For
+example, in your `main.go`:
 
 ```go
 package main
@@ -94,12 +94,8 @@ package main
 var version string
 ```
 
-To set this variable at build time, you would need to do
-the following:
+To set this variable at build time, set the config var:
 
 ```bash
-heroku config:set GO_GIT_DESCRIBE_SYMBOL=main.version
-
-git tag 1.2.3
-git push heroku 1.2.3
+$ heroku set GO_GIT_DESCRIBE_SYMBOL=main.version
 ```
