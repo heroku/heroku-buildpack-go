@@ -52,7 +52,7 @@ python=python2.7
 PATH=$buildpack/$plat/bin:$venv/bin:$PATH
 
 virtualenv() {
-    python "$buildpack/vendor/virtualenv-1.7/virtualenv.py" "$@"
+    python "$buildpack/vendor/virtualenv-1.11.6/virtualenv.py" "$@"
 }
 
 if test -f $build/Godeps
