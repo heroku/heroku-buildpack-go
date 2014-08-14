@@ -132,7 +132,7 @@ cp -R $build/* $p
 env_dir="$3"
 if [ -d "$env_dir" ]
 then
-    ln -s $build /app/code
+    ln -sfn $build /app/code
     for cgo_opt in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS
     do
         if [ -f "$env_dir/$cgo_opt" ]
