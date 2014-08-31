@@ -7,7 +7,4 @@ BUILD_DIR=$1
 echo "testing"
 echo $BUILD_DIR
 
-if test -n "$(find "$1" -type f -name '*.go' | sed 1q)" || [ ! -f $BUILD_DIR/Godeps/Godeps.json ]
-then echo Go
-else echo no; exit 1
-fi
+echo Go
