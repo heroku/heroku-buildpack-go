@@ -4,7 +4,8 @@ set -e
 
 BUILD_DIR=$1
 
-echo "testing"
-echo $BUILD_DIR
-
-echo Go
+# Do we have a godeps file or directory?
+if test -e $BUILD_DIR/Godeps
+then echo Go
+else echo no; exit 1
+fi
