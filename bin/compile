@@ -161,8 +161,9 @@ then
     echo "-----> Running: godep restore"
     echo "GOROOT" $GOROOT
     echo "GOPATH" $GOPATH
-    echo "wtf"
-    godep restore
+    godep go install github.com/codegangsta/negroni
+    
+    # godep restore
     ls -R $GOPATH
 else
     echo "-----> Running: go get ${FLAGS[@]} ./..."
