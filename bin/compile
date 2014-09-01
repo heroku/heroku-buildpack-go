@@ -152,19 +152,11 @@ fi
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
-if test -d $build/Godeps
+if test -f $build/Godeps
 then
     echo "-----> Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
-elif test -f $build/Godeps
-then
-    echo "-----> Running: godep restore"
-    echo "GOROOT" $GOROOT
-    echo "GOPATH" $GOPATH
-    godep go install github.com/codegangsta/negroni
-    
-    # godep restore
-    ls -R $GOPATH
+
 else
     echo "-----> Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
