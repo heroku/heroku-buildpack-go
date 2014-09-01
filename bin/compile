@@ -164,6 +164,7 @@ then
     echo "GODEP PATH"
     godep path
     godep go install github.com/codegangsta/negroni
+    godep go install "${FLAGS[@]}" ./...
     
     # godep restore
     ls -R $GOPATH
@@ -171,8 +172,6 @@ else
     echo "-----> Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
 fi
-
-go build ./...
 
 rm -rf $build/.heroku
 
