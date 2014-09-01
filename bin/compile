@@ -163,7 +163,8 @@ then
     echo "GOPATH" $GOPATH
     echo "GODEP PATH"
     godep path
-    godep go install github.com/codegangsta/negroni
+    # godep go install github.com/codegangsta/negroni
+    godep restore
     godep go install "${FLAGS[@]}" ./...
     
     # godep restore
