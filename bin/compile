@@ -103,7 +103,7 @@ GOPATH=$build/.heroku/g export GOPATH
 PATH=$GOROOT/bin:$PATH
 
 
-if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
+if ! (test -e $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
@@ -152,6 +152,13 @@ fi
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
+
+if test -f $build/Godeps
+then
+    echo "-----> Running: godep restore"
+    godep restore
+fi
+
 if test -e $build/Godeps
 then
     echo "-----> Running: godep go install ${FLAGS[@]} ./..."
