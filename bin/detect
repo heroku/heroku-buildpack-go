@@ -2,7 +2,10 @@
 # bin/detect <build-dir>
 set -e
 
-if test -n "$(find "$1" -type f -name '*.go' | sed 1q)"
+BUILD_DIR=$1
+
+# Do we have a godeps file or directory?
+if test -e $BUILD_DIR/Godeps
 then echo Go
 else echo no; exit 1
 fi
