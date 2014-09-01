@@ -159,8 +159,9 @@ then
 elif test -f $build/Godeps
 then
     echo "-----> Running: godep restore"
-    echo $GOROOT
-    echo $GOPATH
+    echo "GOROOT" $GOROOT
+    echo "GOPATH" $GOPATH
+    echo "wtf"
     godep restore
     ls -R $GOPATH
 else
