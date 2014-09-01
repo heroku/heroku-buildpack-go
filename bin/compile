@@ -159,7 +159,8 @@ then
 elif test -f $build/Godeps
 then
     echo "-----> Running: godep restore"
-    godep restore
+    godep restore "${FLAGS[@]}"
+    ls -R $GOPATH
 else
     echo "-----> Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
