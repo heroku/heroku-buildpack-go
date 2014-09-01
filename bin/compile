@@ -156,7 +156,15 @@ if test -f $build/Godeps
 then
     echo "-----> Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
-
+elif test -f $build/Godeps
+then
+    echo "-----> Running: godep restore"
+    echo "GOROOT" $GOROOT
+    echo "GOPATH" $GOPATH
+    echo "GODEP PATH"
+    godep path
+    godep go install github.com/codegangsta/negroni
+    
     # godep restore
     ls -R $GOPATH
 else
