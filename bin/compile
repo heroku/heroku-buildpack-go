@@ -133,20 +133,20 @@ env_dir="$3"
 if [ -d "$env_dir" ]
 then
     ln -sfn $build /app/code
-    for cgo_opt in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS
+    for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_GIT_DESCRIBE_SYMBOL
     do
-        if [ -f "$env_dir/$cgo_opt" ]
+        if [ -f "$env_dir/$key" ]
         then
-            export "$cgo_opt=$(cat "$env_dir/$cgo_opt")"
+            export "$key=$(cat "$env_dir/$key")"
         fi
     done
 fi
 
 FLAGS=(-tags heroku)
-if test -f "$env_dir/GO_GIT_DESCRIBE_SYMBOL"
+if test -n "$GO_GIT_DESCRIBE_SYMBOL"
 then
     git_describe=$(git describe --tags --always)
-    git_describe_symbol=$(cat "$env_dir/GO_GIT_DESCRIBE_SYMBOL")
+    git_describe_symbol=$(echo "$GO_GIT_DESCRIBE_SYMBOL")
     FLAGS=(${FLAGS[@]} -ldflags "-X $git_describe_symbol $git_describe")
 fi
 
