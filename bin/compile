@@ -146,8 +146,7 @@ FLAGS=(-tags heroku)
 if test -n "$GO_GIT_DESCRIBE_SYMBOL"
 then
     git_describe=$(git describe --tags --always)
-    git_describe_symbol=$(echo "$GO_GIT_DESCRIBE_SYMBOL")
-    FLAGS=(${FLAGS[@]} -ldflags "-X $git_describe_symbol $git_describe")
+    FLAGS=(${FLAGS[@]} -ldflags "-X $GO_GIT_DESCRIBE_SYMBOL $git_describe")
 fi
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
