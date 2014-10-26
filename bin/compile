@@ -36,6 +36,7 @@ urlfor() {
 }
 
 mkdir -p "$1" "$2"
+gitdir=$(pwd)
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 buildpack=$(dirname $(dirname $0))
@@ -83,9 +84,9 @@ then
 fi
 
 pwd
-echo git dir $GIT_DIR
-git describe --tags --always
-git log -1
+echo git dir $gitdir
+git --git-dir=$gitdir describe --tags --always
+git --git-dir=$gitdir log -1
 
 if test -d $cache/$ver/go
 then
@@ -104,9 +105,9 @@ else
 fi
 
 pwd
-echo git dir $GIT_DIR
-git describe --tags --always
-git log -1
+echo git dir $gitdir
+git --git-dir=$gitdir describe --tags --always
+git --git-dir=$gitdir log -1
 
 mkdir -p $build/bin
 GOBIN=$build/bin export GOBIN
@@ -155,14 +156,14 @@ then
 fi
 
 pwd
-echo git dir $GIT_DIR
-git describe --tags --always
-git log -1
+echo git dir $gitdir
+git --git-dir=$gitdir describe --tags --always
+git --git-dir=$gitdir log -1
 
 FLAGS=(-tags heroku)
 if test -n "$GO_GIT_DESCRIBE_SYMBOL"
 then
-    git_describe=$(git describe --tags --always)
+    git_describe=$(git --git-dir=$gitdir describe --tags --always)
     FLAGS=(${FLAGS[@]} -ldflags "-X $GO_GIT_DESCRIBE_SYMBOL $git_describe")
 fi
 
