@@ -83,7 +83,8 @@ then
 fi
 
 pwd
-ls -al
+echo git dir $GIT_DIR
+git log -1
 
 if test -d $cache/$ver/go
 then
@@ -102,7 +103,8 @@ else
 fi
 
 pwd
-ls -al
+echo git dir $GIT_DIR
+git log -1
 
 mkdir -p $build/bin
 GOBIN=$build/bin export GOBIN
@@ -151,7 +153,8 @@ then
 fi
 
 pwd
-ls -al
+echo git dir $GIT_DIR
+git log -1
 
 FLAGS=(-tags heroku)
 if test -n "$GO_GIT_DESCRIBE_SYMBOL"
