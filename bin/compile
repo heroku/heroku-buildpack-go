@@ -84,6 +84,7 @@ fi
 
 pwd
 echo git dir $GIT_DIR
+git describe --tags --always
 git log -1
 
 if test -d $cache/$ver/go
@@ -104,6 +105,7 @@ fi
 
 pwd
 echo git dir $GIT_DIR
+git describe --tags --always
 git log -1
 
 mkdir -p $build/bin
@@ -154,6 +156,7 @@ fi
 
 pwd
 echo git dir $GIT_DIR
+git describe --tags --always
 git log -1
 
 FLAGS=(-tags heroku)
