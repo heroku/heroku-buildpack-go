@@ -82,6 +82,9 @@ then
     exit 1
 fi
 
+pwd
+ls -al
+
 if test -d $cache/$ver/go
 then
     echo "-----> Using $ver"
@@ -94,9 +97,12 @@ else
         curl -sO $url
         tar zxf $file
         rm -f $file
-        echo " done"
     )
+    echo " done"
 fi
+
+pwd
+ls -al
 
 mkdir -p $build/bin
 GOBIN=$build/bin export GOBIN
@@ -143,6 +149,9 @@ then
         fi
     done
 fi
+
+pwd
+ls -al
 
 FLAGS=(-tags heroku)
 if test -n "$GO_GIT_DESCRIBE_SYMBOL"
