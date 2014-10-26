@@ -86,14 +86,16 @@ if test -d $cache/$ver/go
 then
     echo "-----> Using $ver"
 else
+    echo -n "-----> Installing $ver..."
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/$ver
-    cd $cache/$ver
-    echo -n "-----> Installing $ver..."
-    curl -sO $url
-    tar zxf $file
-    rm -f $file
-    echo " done"
+    (
+        cd $cache/$ver
+        curl -sO $url
+        tar zxf $file
+        rm -f $file
+        echo " done"
+    )
 fi
 
 mkdir -p $build/bin
