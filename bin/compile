@@ -86,10 +86,10 @@ fi
 pwd
 echo git dir $gitdir
 echo HEAD $(cat $gitdir/HEAD)
-git --git-dir=$gitdir symbolic-ref HEAD
-git --git-dir=$gitdir rev-parse HEAD
-git --git-dir=$gitdir describe --tags --always
-git --git-dir=$gitdir log -1
+git --git-dir=$gitdir symbolic-ref HEAD || true
+git --git-dir=$gitdir rev-parse HEAD || true
+git --git-dir=$gitdir describe --tags --always || true
+git --git-dir=$gitdir log -1 || true
 
 if test -d $cache/$ver/go
 then
@@ -110,10 +110,10 @@ fi
 pwd
 echo git dir $gitdir
 echo HEAD $(cat $gitdir/HEAD)
-git --git-dir=$gitdir symbolic-ref HEAD
-git --git-dir=$gitdir rev-parse HEAD
-git --git-dir=$gitdir describe --tags --always
-git --git-dir=$gitdir log -1
+git --git-dir=$gitdir symbolic-ref HEAD || true
+git --git-dir=$gitdir rev-parse HEAD || true
+git --git-dir=$gitdir describe --tags --always || true
+git --git-dir=$gitdir log -1 || true
 
 mkdir -p $build/bin
 GOBIN=$build/bin export GOBIN
@@ -164,10 +164,10 @@ fi
 pwd
 echo git dir $gitdir
 echo HEAD $(cat $gitdir/HEAD)
-git --git-dir=$gitdir symbolic-ref HEAD
-git --git-dir=$gitdir rev-parse HEAD
-git --git-dir=$gitdir describe --tags --always
-git --git-dir=$gitdir log -1
+git --git-dir=$gitdir symbolic-ref HEAD || true
+git --git-dir=$gitdir rev-parse HEAD || true
+git --git-dir=$gitdir describe --tags --always || true
+git --git-dir=$gitdir log -1 || true
 
 FLAGS=(-tags heroku)
 if test -n "$GO_GIT_DESCRIBE_SYMBOL"
