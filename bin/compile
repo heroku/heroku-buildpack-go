@@ -85,6 +85,7 @@ fi
 
 pwd
 echo git dir $gitdir
+echo HEAD $(cat $gitdir/HEAD)
 git --git-dir=$gitdir describe --tags --always
 git --git-dir=$gitdir log -1
 
@@ -106,6 +107,7 @@ fi
 
 pwd
 echo git dir $gitdir
+echo HEAD $(cat $gitdir/HEAD)
 git --git-dir=$gitdir describe --tags --always
 git --git-dir=$gitdir log -1
 
@@ -157,6 +159,7 @@ fi
 
 pwd
 echo git dir $gitdir
+echo HEAD $(cat $gitdir/HEAD)
 git --git-dir=$gitdir describe --tags --always
 git --git-dir=$gitdir log -1
 
