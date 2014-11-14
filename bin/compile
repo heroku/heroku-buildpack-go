@@ -145,7 +145,7 @@ fi
 FLAGS=(-tags heroku)
 if test -n "$GO_GIT_DESCRIBE_SYMBOL"
 then
-    git fetch --tags
+    git fetch --tags || :
     git_describe=$(git describe --tags --always)
     FLAGS=(${FLAGS[@]} -ldflags "-X $GO_GIT_DESCRIBE_SYMBOL $git_describe")
 fi
