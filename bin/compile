@@ -94,6 +94,7 @@ else
     tar zxf $file
     rm -f $file
     echo " done"
+    cd - >/dev/null
 fi
 
 mkdir -p $build/bin
