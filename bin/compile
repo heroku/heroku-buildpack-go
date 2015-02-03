@@ -129,9 +129,6 @@ p=$GOPATH/src/$name
 mkdir -p $p
 cp -R $build/* $p
 
-# Default to $VERSION environment variable
-GO_LINKER_VALUE=${VERSION}
-
 # allow apps to specify cgo flags and set up /app symlink so things like CGO_CFLAGS=-I/app/... work
 env_dir="$3"
 if [ -d "$env_dir" ]
