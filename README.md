@@ -67,8 +67,16 @@ to, e.g., specify paths for vendored dependencies. E.g., to build
 `CGO_CFLAGS` with the value `-I/app/code/vendor/include/postgresql` and include
 the relevant Postgres header files in `vendor/include/postgresql/` in your app.
 
+## Passing a symbol (and optional string) to the linker
+
+This buildpack supports the go [linker's][go-linker] ability (`-X symbol
+value`) to set the value of a string at link time. This can be done by setting
+`GO_LINKER_SYMBOL` and `GO_LINKER_VALUE` in the application's config before
+pushing code.
+
 [go]: http://golang.org/
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
+[go-linker]: https://golang.org/cmd/ld/
 [godep]: https://github.com/tools/godep
 [quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
 [build-constraint]: http://golang.org/pkg/go/build/
