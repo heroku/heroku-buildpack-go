@@ -155,8 +155,12 @@ fi
 
 if test -f "$env_dir/POST_BUILD_COMMAND"
 then
-    echo "-----> Running: $(cat $env_dir/POST_BUILD_COMMAND)"
-    source "$env_dir/POST_BUILD_COMMAND"
+    for key in "$env_dir"/*
+    do
+        ENV="$ENV $(basename $key)=\"$(cat $key)\""
+    done
+    echo "-----> Running: $(cat "$env_dir"/POST_BUILD_COMMAND)"
+    eval "$ENV $(cat "$env_dir"/POST_BUILD_COMMAND)"
 fi
 
 rm -rf $build/.heroku
