@@ -153,6 +153,12 @@ else
     go get -tags heroku ./...
 fi
 
+if test -f "$env_dir/POST_BUILD_COMMAND"
+then
+    echo "-----> Running: $(cat $env_dir/POST_BUILD_COMMAND)"
+    source "$env_dir/POST_BUILD_COMMAND"
+fi
+
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
