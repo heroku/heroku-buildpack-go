@@ -67,7 +67,7 @@ containing the application name in order to build the
 project. While using a `.godir` file is still supported,
 it has been deprecated in favor of using
 [godep](https://github.com/kr/godep) in your project to
-manage dependencies, and including the generated `Godep`
+manage dependencies, and including the generated `Godeps`
 directory in your git repository.
 
 ## Using with cgo
