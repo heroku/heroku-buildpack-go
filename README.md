@@ -61,7 +61,7 @@ go toolchain to download dependencies.
 ## Using with cgo
 
 This buildpack supports building with C dependencies via
-[cgo](http://golang.org/cmd/cgo/). You can set config vars to specify CGO flags
+[cgo][cgo]. You can set config vars to specify CGO flags
 to, e.g., specify paths for vendored dependencies. E.g., to build
 [gopgsqldriver](https://github.com/jbarham/gopgsqldriver), add the config var
 `CGO_CFLAGS` with the value `-I/app/code/vendor/include/postgresql` and include
@@ -72,7 +72,11 @@ the relevant Postgres header files in `vendor/include/postgresql/` in your app.
 This buildpack supports the go [linker's][go-linker] ability (`-X symbol
 value`) to set the value of a string at link time. This can be done by setting
 `GO_LINKER_SYMBOL` and `GO_LINKER_VALUE` in the application's config before
-pushing code.
+pushing code. If `GO_LINKER_SYMBOL` is set, but `GO_LINKER_VALUE` isn't set
+then `GO_LINKER_VALUE` defaults to [`$SOURCE_VERSION`][source-version].
+
+This can be used to embed the commit sha, or other build specific data directly
+into the compiled executable.
 
 [go]: http://golang.org/
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
@@ -81,4 +85,5 @@ pushing code.
 [quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
 [build-constraint]: http://golang.org/pkg/go/build/
 [app-engine-build-constraints]: http://blog.golang.org/2013/01/the-app-engine-sdk-and-workspaces-gopath.html
-
+[source-version]: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
+[cgo]: http://golang.org/cmd/cgo/
