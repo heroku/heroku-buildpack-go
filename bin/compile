@@ -68,8 +68,8 @@ then
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-1.4.2}
 else
-    echo >&2 " !     A .godir is required. For instructions:"
-    echo >&2 " !     http://mmcgrana.github.io/2012/09/getting-started-with-go-on-heroku"
+    echo >&2 " !     Godeps are required. For instructions:"
+    echo >&2 " !     https://medium.com/@freeformz/hello-world-with-go-heroku-38295332f07b"
     exit 1
 fi
 
