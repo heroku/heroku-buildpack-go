@@ -100,7 +100,7 @@ fi
 mkdir -p $build/bin
 GOBIN=$build/bin export GOBIN
 GOROOT=$cache/$ver/go export GOROOT
-GOPATH=$build/.heroku/g export GOPATH
+GOPATH=$build/.heroku/go export GOPATH
 PATH=$GOROOT/bin:$PATH
 
 
