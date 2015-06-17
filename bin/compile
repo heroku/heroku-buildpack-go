@@ -62,12 +62,6 @@ echo_urls() {
   warn "or http://tip.golang.org/doc/go1.4#canonicalimports"
 }
 
-abort_required() {
-  warn "Godeps or a canonical import path are required. For instructions:"
-  echo_urls
-  exit 1
-}
-
 warn() {
   echo >&2 " !      $1"
 }
@@ -87,16 +81,14 @@ then
     echo_urls
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-$DEFAULT_GOVERSION}
-elif go list -f {{.ImportComment}}
+elif test ! -z "$(go list -f {{.ImportComment}} 2>/dev/null)"
 then
     name=$(go list -f {{.ImportComment}})
     ver=go${GOVERSION:-$DEFAULT_GOVERSION}
-    if test -z "$name"
-    then
-      abort_required
-    fi
 else
-  abort_required
+  warn "Godeps or a canonical import path are required. For instructions:"
+  echo_urls
+  exit 1
 fi
 
 file=${GOFILE:-$ver.$(uname|tr A-Z a-z)-amd64$(platext $ver).tar.gz}
