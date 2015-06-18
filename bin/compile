@@ -168,3 +168,14 @@ rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+
+# Add to end of bin/compile in heroku go buildpack
+if test -f $build/Godeps; then
+    echo "-----> Checking for build artifacts from godep sandbox"
+    for dep in $(echo `godep path` | tr ":" "\n"); do
+        if test -d $dep/bin; then
+            echo "       Moving: `ls -m $dep/bin`"
+            mv $dep/bin/* $build/bin
+        fi
+    done
+fi
