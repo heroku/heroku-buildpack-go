@@ -164,6 +164,16 @@ else
     go get "${FLAGS[@]}" ./...
 fi
 
+if test -f "$env_dir/POST_BUILD_COMMAND"
+then
+    for key in "$env_dir"/*
+    do
+        ENV="$ENV $(basename $key)=\"$(cat $key)\""
+    done
+    echo "-----> Running: $(cat "$env_dir"/POST_BUILD_COMMAND)"
+    eval "$ENV $(cat "$env_dir"/POST_BUILD_COMMAND)"
+fi
+
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
