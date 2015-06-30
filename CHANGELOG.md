@@ -1,5 +1,9 @@
 ### Unreleased
 
+### v13
+
+* Set GOMAXPROCS based on dyno size.
+
 ### v12
 
 * https://github.com/heroku/heroku-buildpack-go/pull/82
