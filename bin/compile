@@ -35,6 +35,8 @@ urlfor() {
     esac
 }
 
+DEFAULT_GOVERSION=1.4.2
+
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
@@ -55,6 +57,15 @@ virtualenv() {
     python "$buildpack/vendor/virtualenv-1.11.6/virtualenv.py" "$@"
 }
 
+echo_urls() {
+  warn "https://medium.com/@freeformz/hello-world-with-go-heroku-38295332f07b"
+  warn "or http://tip.golang.org/doc/go1.4#canonicalimports"
+}
+
+warn() {
+  echo >&2 " !      $1"
+}
+
 if test -f $build/Godeps
 then
     name=$(<$build/Godeps jq -r .ImportPath)
@@ -65,12 +76,19 @@ then
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
 elif test -f $build/.godir
 then
+    warn "WARNING: .godir is deprecated and will be removed."
+    warn "Please use godeps or a canonical import path. For instructions:"
+    echo_urls
     name=$(cat $build/.godir)
-    ver=go${GOVERSION:-1.4.2}
+    ver=go${GOVERSION:-$DEFAULT_GOVERSION}
+elif test ! -z "$(go list -f {{.ImportComment}} 2>/dev/null)"
+then
+    name=$(go list -f {{.ImportComment}})
+    ver=go${GOVERSION:-$DEFAULT_GOVERSION}
 else
-    echo >&2 " !     Godeps are required. For instructions:"
-    echo >&2 " !     https://medium.com/@freeformz/hello-world-with-go-heroku-38295332f07b"
-    exit 1
+  warn "Godeps or a canonical import path are required. For instructions:"
+  echo_urls
+  exit 1
 fi
 
 file=${GOFILE:-$ver.$(uname|tr A-Z a-z)-amd64$(platext $ver).tar.gz}
@@ -78,7 +96,7 @@ url=${GOURL:-$(urlfor $ver $file)}
 
 if test -e $build/bin && ! test -d $build/bin
 then
-    echo >&2 " !     File bin exists and is not a directory."
+    warn "File bin exists and is not a directory."
     exit 1
 fi
 
