@@ -4,11 +4,12 @@ This is the [Heroku buildpack][buildpack] for [Go][go].
 
 ## Getting Started
 
+
 Follow the guide at
-<http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html>.
+<https://devcenter.heroku.com/articles/getting-started-with-go>
 
 There's also a hello world sample app at
-<https://github.com/kr/go-heroku-example>.
+<https://github.com/heroku/go-getting-started> 
 
 ## Example
 
@@ -19,7 +20,7 @@ Godeps
 Procfile
 web.go
 
-$ heroku create -b https://github.com/heroku/heroku-buildpack-go.git
+$ heroku create
 Creating polar-waters-4785...
 ...
 
@@ -57,6 +58,8 @@ install the project and it's vendored dependencies if a `Godeps/Godep.json`
 file exists. Otherwise this buildpack requires a file named `.godir` in the
 root of your project to determine the name of the project and will use the
 go toolchain to download dependencies.
+
+See [Go Dependencies via Godep](https://devcenter.heroku.com/articles/go-dependencies-via-godep) for more.
 
 ## Using with cgo
 
