@@ -54,7 +54,7 @@ BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of `--buildpack`.
 ## Godeps vs .godir
 
 This buildpack supports the use of [godep][godep], which will be used to
-install the project and it's vendored dependencies if a `Godeps/Godep.json`
+install the project and its vendored dependencies if a `Godeps/Godep.json`
 file exists. Otherwise this buildpack requires a file named `.godir` in the
 root of your project to determine the name of the project and will use the
 go toolchain to download dependencies.
