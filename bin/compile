@@ -50,26 +50,53 @@ venv=$cache/venv
 mkdir -p $cache/pip
 python=python2.7
 PATH=$buildpack/$plat/bin:$venv/bin:$PATH
+steptxt="----->"
 
 virtualenv() {
     python "$buildpack/vendor/virtualenv-1.11.6/virtualenv.py" "$@"
 }
 
+warn() {
+    echo >&2 " !     $@"
+}
+
+step() {
+    echo "$steptxt $@"
+}
+
+start() {
+  echo -n "$steptxt $@... "
+}
+
+finished() {
+  echo "done"
+}
+
 if test -f $build/Godeps
 then
+    warn "Deprecated, old ./Godeps file found!"
+    warn "Please upgrade godeps (go get -u github.com/tools/godeps) and"
+    warn "re-save your dependencies: godep save -r ./..."
     name=$(<$build/Godeps jq -r .ImportPath)
     ver=$(<$build/Godeps jq -r .GoVersion)
-elif test -d $build/Godeps
+elif test -f $build/Godeps/Godeps.json
 then
+    step "Checking Godeps/Godeps.json file."
+    if ! jq -r . < $build/Godeps/Godeps.json > /dev/null; then
+        warn "Bad Godeps/Godeps.json file"
+        exit 1
+    fi
     name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
 elif test -f $build/.godir
 then
+    warn "Deprecated, .godir file found!"
+    warn "Please switch to godeps (github.com/tools/godeps) ASAP"
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-1.4.2}
 else
-    echo >&2 " !     Godeps are required. For instructions:"
-    echo >&2 " !     https://medium.com/@freeformz/hello-world-with-go-heroku-38295332f07b"
+    warn "Godeps are required. For instructions:"
+    warn "https://devcenter.heroku.com/articles/go-support"
     exit 1
 fi
 
@@ -78,22 +105,22 @@ url=${GOURL:-$(urlfor $ver $file)}
 
 if test -e $build/bin && ! test -d $build/bin
 then
-    echo >&2 " !     File bin exists and is not a directory."
+    warn "File bin exists and is not a directory."
     exit 1
 fi
 
 if test -d $cache/$ver/go
 then
-    echo "-----> Using $ver"
+    step "Using $ver"
 else
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/$ver
     cd $cache/$ver
-    echo -n "-----> Installing $ver..."
-    curl -sO $url
-    tar zxf $file
-    rm -f $file
-    echo " done"
+    start "Installing $ver"
+        curl -sO $url
+        tar zxf $file
+        rm -f $file
+    finished
     cd - >/dev/null
 fi
 
@@ -108,21 +135,21 @@ if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
-    echo "       Try github.com/kr/godep for faster deploys."
+    echo "       Use github.com/kr/godep for faster deploys."
     echo
 
-    echo -n "       Installing Virtualenv..."
-    virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
-    . $venv/bin/activate > /dev/null 2>&1
-    echo " done"
+    start "Installing Virtualenv"
+        virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
+        . $venv/bin/activate > /dev/null 2>&1
+    finished
 
-    echo -n "       Installing Mercurial..."
-    pip install mercurial > /dev/null 2>&1
-    echo " done"
+    start "Installing Mercurial"
+        pip install mercurial > /dev/null 2>&1
+    finished
 
-    echo -n "       Installing Bazaar..."
-    pip install bzr > /dev/null 2>&1
-    echo " done"
+    start "Installing Bazaar"
+        pip install bzr > /dev/null 2>&1
+    finished
 fi
 
 p=$GOPATH/src/$name
@@ -157,10 +184,10 @@ unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
 if test -e $build/Godeps
 then
-    echo "-----> Running: godep go install ${FLAGS[@]} ./..."
+    step "Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
 else
-    echo "-----> Running: go get ${FLAGS[@]} ./..."
+    step "Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
 fi
 
