@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Basic validation of Godeps/Godeps.json file
+
 ### v13
 
 * Set GOMAXPROCS based on dyno size.
