@@ -75,14 +75,15 @@ finished() {
 if test -f $build/Godeps
 then
     warn "Deprecated, old ./Godeps file found!"
-    warn "Please upgrade godeps (go get -u github.com/tools/godeps) and"
+    warn "Please upgrade godeps (go get -u github.com/tools/godep) and"
     warn "re-save your dependencies: godep save -r ./..."
     name=$(<$build/Godeps jq -r .ImportPath)
     ver=$(<$build/Godeps jq -r .GoVersion)
 elif test -f $build/Godeps/Godeps.json
 then
     step "Checking Godeps/Godeps.json file."
-    if ! jq -r . < $build/Godeps/Godeps.json > /dev/null; then
+    if ! jq -r . < $build/Godeps/Godeps.json > /dev/null
+    then
         warn "Bad Godeps/Godeps.json file"
         exit 1
     fi
@@ -91,7 +92,7 @@ then
 elif test -f $build/.godir
 then
     warn "Deprecated, .godir file found!"
-    warn "Please switch to godeps (github.com/tools/godeps) ASAP"
+    warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-1.4.2}
 else
@@ -135,7 +136,7 @@ if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
-    echo "       Use github.com/kr/godep for faster deploys."
+    echo "       Use github.com/tools/godep for faster deploys."
     echo
 
     start "Installing Virtualenv"
