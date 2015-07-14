@@ -1,6 +1,9 @@
 ### Unreleased
 
-* Basic validation of Godeps/Godeps.json file
+### V14
+
+* Basic validation of Godeps/Godeps.json file: 
+    https://github.com/heroku/heroku-buildpack-go/commit/c01751fdfcd5476421a6229ac4168a9c76823d4b
 
 ### v13
 
