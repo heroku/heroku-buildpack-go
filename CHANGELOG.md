@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Use a canonical import path if it exists.
+
 ### V14
 
 * Basic validation of Godeps/Godeps.json file: 
