@@ -3,8 +3,6 @@
 
 set -eo pipefail
 
-DEFAULT_GOVERSION=1.4.2
-
 # Go releases for Darwin beginning with 1.2rc1
 # have included more than one build, depending
 # on the specific version of Mac OS X. Try to
@@ -40,6 +38,7 @@ urlfor() {
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
+env_dir="$3"
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 arch=$(uname -m|tr A-Z a-z)
 if test $arch = x86_64
@@ -78,6 +77,17 @@ abort_required() {
     warn "Godeps or a canonical import path are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
     exit 1
+}
+
+determine_go_version_from_app_env() {
+    f="$env_dir/GO_VERSION"
+    if [ -f "$f" ]
+    then
+        export GO_VERSION="$(cat "$f")"
+    else
+        export GO_VERSION="1.4.2"
+    fi
+    export ver="go${GO_VERSION}"
 }
 
 install_go() {
@@ -133,11 +143,10 @@ then
     warn "Deprecated, .godir file found!"
     warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
-    ver=go${GOVERSION:-$DEFAULT_GOVERSION}
+    determine_go_version_from_app_env=
     install_go
 else
-    ver=go${GOVERSION:-$DEFAULT_GOVERSION}
-
+    determine_go_version_from_app_env
     # Attempt to determine the canonical import path from the import comments
     install_go
 
@@ -187,7 +196,7 @@ cp -R $build/* $p
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
 # allow apps to specify cgo flags and set up /app symlink so things like CGO_CFLAGS=-I/app/... work
-env_dir="$3"
+
 if [ -d "$env_dir" ]
 then
     ln -sfn $build /app/code

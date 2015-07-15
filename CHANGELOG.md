@@ -1,6 +1,7 @@
 ### Unreleased
 
 * Use a canonical import path if it exists.
+* Respect apps current GO_VERSION if defined when not using Godeps.
 
 ### V14
 
