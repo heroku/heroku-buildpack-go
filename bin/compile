@@ -38,6 +38,7 @@ urlfor() {
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
+env_dir="$3"
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 arch=$(uname -m|tr A-Z a-z)
 if test $arch = x86_64
@@ -72,6 +73,52 @@ finished() {
     echo "done"
 }
 
+abort_required() {
+    warn "Godeps or a canonical import path are required. For instructions:"
+    warn "https://devcenter.heroku.com/articles/go-support"
+    exit 1
+}
+
+determine_go_version_from_app_env() {
+    f="$env_dir/GO_VERSION"
+    if [ -f "$f" ]
+    then
+        export GO_VERSION="$(cat "$f")"
+    else
+        export GO_VERSION="1.4.2"
+    fi
+    export ver="go${GO_VERSION}"
+}
+
+install_go() {
+    local file=${GOFILE:-$ver.$(uname|tr A-Z a-z)-amd64$(platext $ver).tar.gz}
+    local url=${GOURL:-$(urlfor $ver $file)}
+
+    if test -d $cache/$ver/go
+    then
+        step "Using $ver"
+    else
+        rm -rf $cache/* # be sure not to build up cruft
+        mkdir -p $cache/$ver
+        cd $cache/$ver
+        start "Installing $ver"
+            curl -sO $url
+            tar zxf $file
+            rm -f $file
+        finished
+        cd - >/dev/null
+    fi
+
+    GOROOT=$cache/$ver/go export GOROOT
+    PATH=$GOROOT/bin:$PATH
+}
+
+if test -e $build/bin && ! test -d $build/bin
+then
+    warn "File bin exists and is not a directory."
+    exit 1
+fi
+
 if test -f $build/Godeps
 then
     warn "Deprecated, old ./Godeps file found!"
@@ -79,6 +126,7 @@ then
     warn "re-save your dependencies: godep save -r ./..."
     name=$(<$build/Godeps jq -r .ImportPath)
     ver=$(<$build/Godeps jq -r .GoVersion)
+    install_go
 elif test -f $build/Godeps/Godeps.json
 then
     step "Checking Godeps/Godeps.json file."
@@ -89,48 +137,35 @@ then
     fi
     name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
+    install_go
 elif test -f $build/.godir
 then
     warn "Deprecated, .godir file found!"
     warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
-    ver=go${GOVERSION:-1.4.2}
+    determine_go_version_from_app_env=
+    install_go
 else
-    warn "Godeps are required. For instructions:"
-    warn "https://devcenter.heroku.com/articles/go-support"
-    exit 1
+    determine_go_version_from_app_env
+    # Attempt to determine the canonical import path from the import comments
+    install_go
+
+    if test ! -z "$(cd $build; go list -f {{.ImportComment}} 2>/dev/null)"
+    then
+        name=$(cd $build; go list -f {{.ImportComment}})
+        if test -z "$name"
+        then
+            abort_required
+        fi
+    else
+        abort_required
+    fi
 fi
 
-file=${GOFILE:-$ver.$(uname|tr A-Z a-z)-amd64$(platext $ver).tar.gz}
-url=${GOURL:-$(urlfor $ver $file)}
-
-if test -e $build/bin && ! test -d $build/bin
-then
-    warn "File bin exists and is not a directory."
-    exit 1
-fi
-
-if test -d $cache/$ver/go
-then
-    step "Using $ver"
-else
-    rm -rf $cache/* # be sure not to build up cruft
-    mkdir -p $cache/$ver
-    cd $cache/$ver
-    start "Installing $ver"
-        curl -sO $url
-        tar zxf $file
-        rm -f $file
-    finished
-    cd - >/dev/null
-fi
 
 mkdir -p $build/bin
 GOBIN=$build/bin export GOBIN
-GOROOT=$cache/$ver/go export GOROOT
 GOPATH=$build/.heroku/go export GOPATH
-PATH=$GOROOT/bin:$PATH
-
 
 if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
 then
@@ -161,7 +196,7 @@ cp -R $build/* $p
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
 # allow apps to specify cgo flags and set up /app symlink so things like CGO_CFLAGS=-I/app/... work
-env_dir="$3"
+
 if [ -d "$env_dir" ]
 then
     ln -sfn $build /app/code
