@@ -1,17 +1,19 @@
-### Unreleased
+# Go Buildpack Changelog
 
-### V14
+## Unreleased
 
-* Basic validation of Godeps/Godeps.json file: 
-    https://github.com/heroku/heroku-buildpack-go/commit/c01751fdfcd5476421a6229ac4168a9c76823d4b
+## V14 (2015-07-10)
 
-### v13
+Basic validation of Godeps/Godeps.json file.
 
-* Set GOMAXPROCS based on dyno size.
+* https://github.com/heroku/heroku-buildpack-go/commit/c01751fdfcd5476421a6229ac4168a9c76823d4b
 
-### v12
+## v13 (2015-06-30)
+
+Set GOMAXPROCS based on dyno size.
+
+## v12 (2015-06-29)
+
+GOPATH naming changed & update godep
 
 * https://github.com/heroku/heroku-buildpack-go/pull/82
-    fix GOPATH naming. Ended in 'g', now ends in 'go'
-* Update vendored godep to the latest version
-
