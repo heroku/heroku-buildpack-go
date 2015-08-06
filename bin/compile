@@ -72,8 +72,14 @@ finished() {
     echo "done"
 }
 
-(cd $build && gb info)
-is_gb_app=$?
+# the if here is to guard against exits if gb info doesn't detect a gb app
+# because we have pipefail on.
+if (cd $build && gb info > /dev/null)
+then
+     is_gb_app=$?
+else
+     is_gb_app=0
+fi
 
 if test -f $build/Godeps
 then
