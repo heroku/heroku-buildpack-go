@@ -98,7 +98,8 @@ then
 elif test -f $build/vendor/manifest
 then
     warn "gb project detected"
-    name=$(cat $build/.godir)
+    warn "Build flags are not currently supported by gb"
+    name=""
     ver=go${GOVERSION:-1.4.2}
 else
     warn "Godeps are required. For instructions:"
@@ -191,10 +192,13 @@ if test -e $build/Godeps
 then
     step "Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
-if test -e $build/vendor/manifest
+elif test -e $build/vendor/manifest
 then
-    step "Running: gb build ${FLAGS[@]} ./..."
-    gb build ${FLAGS[@]} ./...
+    # NOTE: gb doesn't currently support building with tags :-(
+    # https://github.com/constabulary/gb/issues/81
+    cd $build
+    step "Running: gb build ./..."
+    gb build ./...
 else
     step "Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
