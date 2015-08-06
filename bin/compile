@@ -95,6 +95,11 @@ then
     warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-1.4.2}
+elif test -f $build/vendor/manifest
+then
+    warn "gb project detected"
+    name=$(cat $build/.godir)
+    ver=go${GOVERSION:-1.4.2}
 else
     warn "Godeps are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
@@ -131,8 +136,7 @@ GOROOT=$cache/$ver/go export GOROOT
 GOPATH=$build/.heroku/go export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-
-if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
+if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null) || test -f $build/vendor/manifest)
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
@@ -187,6 +191,10 @@ if test -e $build/Godeps
 then
     step "Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
+if test -e $build/vendor/manifest
+then
+    step "Running: gb build ${FLAGS[@]} ./..."
+    gb build ${FLAGS[@]} ./...
 else
     step "Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
