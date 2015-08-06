@@ -72,6 +72,9 @@ finished() {
     echo "done"
 }
 
+(cd $build && gb info)
+is_gb_app=$?
+
 if test -f $build/Godeps
 then
     warn "Deprecated, old ./Godeps file found!"
@@ -95,7 +98,7 @@ then
     warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-1.4.2}
-elif test -f $build/vendor/manifest
+elif [ $is_gb_app -eq 0 ]
 then
     warn "gb project detected"
     warn "Build flags are not currently supported by gb"
@@ -137,7 +140,7 @@ GOROOT=$cache/$ver/go export GOROOT
 GOPATH=$build/.heroku/go export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null) || test -f $build/vendor/manifest)
+if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null) || [ $is_gb_app -eq 0 ])
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
@@ -192,7 +195,7 @@ if test -e $build/Godeps
 then
     step "Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
-elif test -e $build/vendor/manifest
+elif [ $is_gb_app -eq 0 ]
 then
     # NOTE: gb doesn't currently support building with tags :-(
     # https://github.com/constabulary/gb/issues/81
