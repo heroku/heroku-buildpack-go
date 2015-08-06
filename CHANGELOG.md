@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V15 (2015-08-06)
+
+Update godeps (bug fixes and version command)
+
 ## V14 (2015-07-10)
 
 Basic validation of Godeps/Godeps.json file.
