@@ -5,14 +5,14 @@ case $(ulimit -u) in
   export GOMAXPROCS=${GOMAXPROCS:-2}
   ;;
 
-# Intermediate DYNO
+# Performance-M
 16384)
   export GOMAXPROCS=${GOMAXPROCS:-2}
   ;;
 
-# Performance DYNO
+# Performance-L
 32768)
-  export GOMAXPROCS=${GOMAXPROCS:-4}
+  export GOMAXPROCS=${GOMAXPROCS:-8}
   ;;
 
 # Default for other types, including Standard-1X
