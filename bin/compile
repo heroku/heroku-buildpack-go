@@ -72,6 +72,15 @@ finished() {
     echo "done"
 }
 
+# the if here is to guard against exits if gb info doesn't detect a gb app
+# because we have pipefail on.
+if (cd $build && gb info > /dev/null)
+then
+     is_gb_app=$?
+else
+     is_gb_app=0
+fi
+
 if test -f $build/Godeps
 then
     warn "Deprecated, old ./Godeps file found!"
@@ -94,6 +103,12 @@ then
     warn "Deprecated, .godir file found!"
     warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
+    ver=go${GOVERSION:-1.4.2}
+elif [ $is_gb_app -eq 0 ]
+then
+    warn "gb project detected"
+    warn "Build flags are not currently supported by gb"
+    name=""
     ver=go${GOVERSION:-1.4.2}
 else
     warn "Godeps are required. For instructions:"
@@ -131,8 +146,7 @@ GOROOT=$cache/$ver/go export GOROOT
 GOPATH=$build/.heroku/go export GOPATH
 PATH=$GOROOT/bin:$PATH
 
-
-if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
+if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null) || [ $is_gb_app -eq 0 ])
 then
     echo
     echo "       Tired of waiting for bzr and hg?"
@@ -187,6 +201,13 @@ if test -e $build/Godeps
 then
     step "Running: godep go install ${FLAGS[@]} ./..."
     godep go install "${FLAGS[@]}" ./...
+elif [ $is_gb_app -eq 0 ]
+then
+    # NOTE: gb doesn't currently support building with tags :-(
+    # https://github.com/constabulary/gb/issues/81
+    cd $build
+    step "Running: gb build ./..."
+    gb build ./...
 else
     step "Running: go get ${FLAGS[@]} ./..."
     go get "${FLAGS[@]}" ./...
