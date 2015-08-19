@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V16 (2015-08-19)
+
+Default to Go 1.5 if no version is specified
+
 ## V15 (2015-08-06)
 
 Update godeps (bug fixes and version command)

@@ -94,7 +94,7 @@ then
     warn "Deprecated, .godir file found!"
     warn "Please switch to godeps (github.com/tools/godep) ASAP"
     name=$(cat $build/.godir)
-    ver=go${GOVERSION:-1.4.2}
+    ver=go${GOVERSION:-1.5}
 else
     warn "Godeps are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
