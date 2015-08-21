@@ -3,35 +3,15 @@
 
 set -eo pipefail
 
-# Go releases for Darwin beginning with 1.2rc1
-# have included more than one build, depending
+# Go releases for Darwin
+# include more than one build, depending
 # on the specific version of Mac OS X. Try to
 # account for that, but don't try too hard.
 # This doesn't affect Heroku builds, it's only
 # for testing on Darwin systems.
 platext() {
-    case $1 in
-    go1.0*|go1.1beta*|go1.1rc*|go1.1|go1.1.*) return ;;
-    esac
     case $(uname|tr A-Z a-z) in
     darwin) printf %s -osx10.8 ;;
-    esac
-}
-
-# Go releases have moved to a new URL scheme
-# starting with Go version 1.2.2. Return the old
-# location for known old versions and the new
-# location otherwise.
-urlfor() {
-    ver=$1
-    file=$2
-    case $ver in
-    go1.0*|go1.1beta*|go1.1rc*|go1.1|go1.1.*|go1.2beta*|go1.2rc*|go1.2|go1.2.1)
-        echo http://go.googlecode.com/files/$file
-        ;;
-    *)
-        echo https://storage.googleapis.com/golang/$file
-        ;;
     esac
 }
 
@@ -102,7 +82,7 @@ else
 fi
 
 file=${GOFILE:-$ver.$(uname|tr A-Z a-z)-amd64$(platext $ver).tar.gz}
-url=${GOURL:-$(urlfor $ver $file)}
+url=${GOURL:-https://storage.googleapis.com/golang/$file}
 
 if test -e $build/bin && ! test -d $build/bin
 then
