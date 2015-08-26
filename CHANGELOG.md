@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V18 (2015-08-26)
+
+Fix a typo (wanr -> warn)
+
 ## V17 (2015-08-26)
 
 Support GO15VENDOREXPERIMENT flag (experimentally) & jq updated from 1.3 to 1.5
