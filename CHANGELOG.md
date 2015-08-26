@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V17 (2015-08-26)
+
+Support GO15VENDOREXPERIMENT flag (experimentally)
+
 ## V16 (2015-08-19)
 
 Default to Go 1.5 if no version is specified
