@@ -165,13 +165,39 @@ env_dir="$3"
 if [ -d "$env_dir" ]
 then
     ln -sfn $build /app/code
-  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE
+  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT
     do
         if [ -f "$env_dir/$key" ]
         then
             export "$key=$(cat "$env_dir/$key")"
         fi
     done
+fi
+
+pkgs="./..."
+
+if test "$GO15VENDOREXPERIMENT" = "1"
+then
+  case $ver in
+  go1.5*)
+      warn ""
+      warn "\$GO15VENDOREXPERIMENT=1. This is an experiment. Things may not work as expected."
+      wanr "See https://devcenter.heroku.com/articles/go-support#go-1-5-vendor-experiment for more info."
+      warn ""
+      pkgs=$(<$build/Godeps/Godeps.json jq -r '.Packages | join(" ")')
+      if test ! -d "$build/vendor"
+      then
+        warn ""
+        warn "vendor/ directory does not exist."
+        warn ""
+        exit 1
+      fi
+      ;;
+  *)
+      warn "\$GO15VENDOREXPERIMENT=1 set, but unsupported on $ver"
+      exit 1
+      ;;
+  esac
 fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
@@ -185,11 +211,17 @@ unset GIT_DIR # unset git dir or it will mess with goinstall
 cd $p
 if test -e $build/Godeps
 then
-    step "Running: godep go install ${FLAGS[@]} ./..."
-    godep go install "${FLAGS[@]}" ./...
+    if test "$GO15VENDOREXPERIMENT" = "1"
+    then
+      step "Running: go install -v ${FLAGS[@]} $pkgs"
+      go install -v "${FLAGS[@]}" $pkgs
+    else
+      step "Running: godep go install ${FLAGS[@]} $pkgs"
+      godep go install "${FLAGS[@]}" $pkgs
+    fi
 else
-    step "Running: go get ${FLAGS[@]} ./..."
-    go get "${FLAGS[@]}" ./...
+    step "Running: go get ${FLAGS[@]} $pkgs"
+    go get "${FLAGS[@]}" $pkgs
 fi
 
 rm -rf $build/.heroku
