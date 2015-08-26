@@ -4,7 +4,7 @@
 
 ## V17 (2015-08-26)
 
-Support GO15VENDOREXPERIMENT flag (experimentally)
+Support GO15VENDOREXPERIMENT flag (experimentally) & jq updated from 1.3 to 1.5
 
 ## V16 (2015-08-19)
 
