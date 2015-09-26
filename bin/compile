@@ -89,6 +89,20 @@ then
     fi
     name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
+elif test -f $build/Nut.toml
+then
+    step "Checking Nut.toml file."
+    if ! tomlv $build/Nut.toml &> /dev/null
+    then
+        warn "Bad Nut.toml file"
+        exit 1
+    fi
+    name=$(
+      toml-decoder \
+      < $build/Nut.toml \
+      | jq -r .application.import_path.value
+    )
+    ver=go${GOVERSION:-1.5}
 elif test -f $build/.godir
 then
     warn "Deprecated, .godir file found!"
@@ -96,7 +110,7 @@ then
     name=$(cat $build/.godir)
     ver=go${GOVERSION:-1.5}
 else
-    warn "Godeps are required. For instructions:"
+    warn "Godeps or Nut required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
     exit 1
 fi
@@ -219,6 +233,11 @@ then
       step "Running: godep go install ${FLAGS[@]} $pkgs"
       godep go install "${FLAGS[@]}" $pkgs
     fi
+elif test -e $build/Nut.toml
+then
+    step "Running: nut install && go install ${FLAGS[@]} $pkgs"
+    nut install
+    go install "${FLAGS[@]}" $pkgs
 else
     step "Running: go get ${FLAGS[@]} $pkgs"
     go get "${FLAGS[@]}" $pkgs
