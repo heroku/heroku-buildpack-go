@@ -204,7 +204,15 @@ fi
 FLAGS=(-tags heroku)
 if [ -n "$GO_LINKER_SYMBOL" -a -n "$GO_LINKER_VALUE" ]
 then
-  FLAGS=(${FLAGS[@]} -ldflags "-X $GO_LINKER_SYMBOL $GO_LINKER_VALUE")
+  case $ver in
+  go1.5*)
+    xval="$GO_LINKER_SYMBOL=$GO_LINKER_VALUE"
+    ;;
+  *)
+    xval="$GO_LINKER_SYMBOL $GO_LINKER_VALUE"
+    ;;
+  esac
+  FLAGS=(${FLAGS[@]} -ldflags "-X $xval")
 fi
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
