@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V19 (2015-10-06)
+
+Use new linker -X option format for go1.5
+
 ## V18 (2015-08-26)
 
 Fix a typo (wanr -> warn)
