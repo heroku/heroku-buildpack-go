@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V20 (2015-11-10)
+
+Default to Package "." when using GO15VENDOREXPERIMENT
+
 ## V19 (2015-10-06)
 
 Use new linker -X option format for go1.5
