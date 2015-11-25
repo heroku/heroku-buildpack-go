@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Always detect packages from Godeps.json file. Previously this was only done for projects using GO15VENDOREXPERIMENT.
+
 ## V20 (2015-11-10)
 
 Default to Package "." when using GO15VENDOREXPERIMENT

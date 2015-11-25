@@ -174,7 +174,7 @@ then
     done
 fi
 
-pkgs="./..."
+pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
 
 if test "$GO15VENDOREXPERIMENT" = "1"
 then
@@ -184,7 +184,6 @@ then
       warn "\$GO15VENDOREXPERIMENT=1. This is an experiment. Things may not work as expected."
       warn "See https://devcenter.heroku.com/articles/go-support#go-1-5-vendor-experiment for more info."
       warn ""
-      pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
       if test ! -d "$build/vendor"
       then
         warn ""
