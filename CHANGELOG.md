@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## V21 (2015-12-03)
+
 Always detect packages from Godeps.json file. Previously this was only done for projects using GO15VENDOREXPERIMENT.
 
 ## V20 (2015-11-10)
