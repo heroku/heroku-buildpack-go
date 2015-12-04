@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## V22 (2015-12-03)
+
+Default back to `./...` when not using Godeps/Godeps.json at all (.godir & old Godeps file).
+
 ## V21 (2015-12-03)
 
 Always detect packages from Godeps.json file. Previously this was only done for projects using GO15VENDOREXPERIMENT.

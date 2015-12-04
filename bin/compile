@@ -174,7 +174,12 @@ then
     done
 fi
 
-pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
+if test -e $build/Godeps/Godeps.json
+then
+  pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
+else
+  pkgs="./..."
+fi
 
 if test "$GO15VENDOREXPERIMENT" = "1"
 then
