@@ -27,6 +27,9 @@ urlfor() {
 # All specific or other versions, take as is.
 expand_ver() {
   case $1 in
+    go1.6)
+      echo "go1.6beta1"
+      ;;
     go1.5)
       echo "go1.5.2"
       ;;
@@ -43,7 +46,7 @@ expand_ver() {
 # Use after expand_ver
 report_ver() {
   case $1 in
-    go1.5.2|go1.4.3)
+    go1.6beta1|go1.5.2|go1.4.3)
       # Noop
     ;;
     *)
