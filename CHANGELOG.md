@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v24 (2016-01-07)
+
+Better support for go1.6: Support GO15VENDOREXPERIMENT=0, go.1.6 uses newer -X $GO_LINKER_SYMBOL=$GO_LINKER_VALUE ldflag, like 1.5  
+
 ## v23 (2015-12-17)
 
 Deprecate .godir, Godeps file (not Godeps/Godeps.json) and older Go versions.
