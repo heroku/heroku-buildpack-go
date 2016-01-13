@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v25 (2016-01-13)
+
+Default to `go1.5.3` when `go1.5` is specified.
+
 ## v24 (2016-01-07)
 
 Better support for go1.6: Support GO15VENDOREXPERIMENT=0, go.1.6 uses newer -X $GO_LINKER_SYMBOL=$GO_LINKER_VALUE ldflag, like 1.5  
