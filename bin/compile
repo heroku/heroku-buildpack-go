@@ -3,6 +3,7 @@
 
 set -eo pipefail
 
+GB="false"
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
@@ -22,6 +23,8 @@ urlfor() {
         ;;
     esac
 }
+
+DEFAULT_GO_VERSION="go1.5"
 
 # Expand to supported versions of Go, (e.g. expand "go1.5" to latest release go1.5.2)
 # All specific or other versions, take as is.
@@ -58,9 +61,10 @@ report_ver() {
   esac
 }
 
-mkdir -p "$1" "$2"
+mkdir -p "$1" "$2" "$3"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
+env_dir=$(cd "$3/" && pwd)
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 arch=$(uname -m|tr A-Z a-z)
 if test $arch = x86_64
@@ -95,7 +99,37 @@ finished() {
     echo "done"
 }
 
-if test -f $build/Godeps
+# Default to $SOURCE_VERSION environment variable
+GO_LINKER_VALUE=${SOURCE_VERSION}
+
+# allow apps to specify cgo flags and set up /app symlink so things like CGO_CFLAGS=-I/app/... work
+if [ -d "$env_dir" ]
+then
+    ln -sfn $build /app/code
+  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION
+    do
+        if [ -f "$env_dir/$key" ]
+        then
+            export "$key=$(cat "$env_dir/$key")"
+        fi
+    done
+fi
+
+if test -f "$build/Godeps/Godeps.json"
+then
+    step "Checking Godeps/Godeps.json file."
+    if ! jq -r . < $build/Godeps/Godeps.json > /dev/null
+    then
+        warn "Bad Godeps/Godeps.json file"
+        exit 1
+    fi
+    name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
+    ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
+elif (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' | sed 1q)")
+then
+    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+    GB="true"
+elif test -f "$build/Godeps" #deprecated, remove 2016/02/01
 then
     warn ""
     warn "Deprecated, old ./Godeps file found!"
@@ -109,17 +143,7 @@ then
     warn ""
     name=$(<$build/Godeps jq -r .ImportPath)
     ver=$(<$build/Godeps jq -r .GoVersion)
-elif test -f $build/Godeps/Godeps.json
-then
-    step "Checking Godeps/Godeps.json file."
-    if ! jq -r . < $build/Godeps/Godeps.json > /dev/null
-    then
-        warn "Bad Godeps/Godeps.json file"
-        exit 1
-    fi
-    name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
-    ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
-elif test -f $build/.godir
+elif test -f "$build/.godir" #deprecated, remove 2016/02/01
 then
     warn ""
     warn "Deprecated, .godir file found!"
@@ -128,9 +152,9 @@ then
     warn "See also: https://devcenter.heroku.com/articles/go-dependencies-via-godep"
     warn ""
     name=$(cat $build/.godir)
-    ver=go${GOVERSION:-1.5}
+    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
 else
-    warn "Godeps are required. For instructions:"
+    warn "Godep or GB are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
     exit 1
 fi
@@ -164,122 +188,137 @@ else
 fi
 
 mkdir -p $build/bin
-GOBIN=$build/bin export GOBIN
 GOROOT=$cache/$ver/go export GOROOT
-GOPATH=$build/.heroku/go export GOPATH
-PATH=$GOROOT/bin:$PATH
-
-
-if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
-then
-    echo
-    echo "       Tired of waiting for bzr and hg?"
-    echo "       Use github.com/tools/godep for faster deploys."
-    echo
-
-    start "Installing Virtualenv"
-        virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
-        . $venv/bin/activate > /dev/null 2>&1
-    finished
-
-    start "Installing Mercurial"
-        pip install mercurial > /dev/null 2>&1
-    finished
-
-    start "Installing Bazaar"
-        pip install bzr > /dev/null 2>&1
-    finished
-fi
-
-p=$GOPATH/src/$name
-mkdir -p $p
-cp -R $build/* $p
-
-# Default to $SOURCE_VERSION environment variable
-GO_LINKER_VALUE=${SOURCE_VERSION}
-
-# allow apps to specify cgo flags and set up /app symlink so things like CGO_CFLAGS=-I/app/... work
-env_dir="$3"
-if [ -d "$env_dir" ]
-then
-    ln -sfn $build /app/code
-  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT
-    do
-        if [ -f "$env_dir/$key" ]
-        then
-            export "$key=$(cat "$env_dir/$key")"
-        fi
-    done
-fi
-
-if test -e $build/Godeps/Godeps.json
-then
-  pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
-else
-  pkgs="./..."
-fi
-
-case $ver in
-  go1.5*)
-    if test "$GO15VENDOREXPERIMENT" = "1"
-    then
-      warn ""
-      warn "\$GO15VENDOREXPERIMENT=1. This is an experiment. Things may not work as expected."
-      warn "See https://devcenter.heroku.com/articles/go-support#go-1-5-vendor-experiment for more info."
-      warn ""
-      if test ! -d "$build/vendor"
-      then
-        warn ""
-        warn "vendor/ directory does not exist."
-        warn ""
-        exit 1
-      fi
-      VendorExperiment="true"
-    fi
-  ;;
-  go1.6*)
-    if test "$GO15VENDOREXPERIMENT" = "0"
-    then
-      VendorExperiment="false"
-    else
-      VendorExperiment="true"
-    fi
-  ;;
-  *)
-    VendorExperiment="false"
-  ;;
-esac
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 FLAGS=(-tags heroku)
 if [ -n "$GO_LINKER_SYMBOL" -a -n "$GO_LINKER_VALUE" ]
 then
-  case $ver in
-  go1.5*|go1.6*)
-    xval="$GO_LINKER_SYMBOL=$GO_LINKER_VALUE"
-    ;;
-  *)
-    xval="$GO_LINKER_SYMBOL $GO_LINKER_VALUE"
-    ;;
-  esac
-  FLAGS=(${FLAGS[@]} -ldflags "-X $xval")
+    case $ver in
+    go1.5*|go1.6*)
+        xval="$GO_LINKER_SYMBOL=$GO_LINKER_VALUE"
+        ;;
+    *)
+        xval="$GO_LINKER_SYMBOL $GO_LINKER_VALUE"
+        ;;
+    esac
+    FLAGS=(${FLAGS[@]} -ldflags "-X $xval")
 fi
 
-unset GIT_DIR # unset git dir or it will mess with goinstall
-cd $p
-if test -e $build/Godeps
+if test "$GB" = "true"
 then
-    if test "$VendorExperiment" = "true"
+    # gb path
+    gbver="0.3.5"
+    GOPATH="$cache/gb/$gbver" export GOPATH
+    PATH=$GOPATH/bin:$GOROOT/bin:$PATH export PATH
+    cp="$GOPATH/src/github.com/constabulary"
+    if test -d "$GOPATH"
     then
-      step "Running: go install -v ${FLAGS[@]} $pkgs"
-      go install -v "${FLAGS[@]}" $pkgs
+        step "Using GB $gbver"
     else
-      step "Running: godep go install ${FLAGS[@]} $pkgs"
-      godep go install "${FLAGS[@]}" $pkgs
+        rm -rf "$cache/gb/*" # cruft bad
+        mkdir -p "$cp"
+        cd $cp
+        start "Installing GB v$gbver"
+          curl -s "https://codeload.github.com/constabulary/gb/tar.gz/v$gbver" | tar zxf -
+          mv gb-$gbver gb
+          go install ./...
+        finished
     fi
+
+    cd $build
+    step "Running: gb build ${FLAGS[@]}"
+    gb build "${FLAGS[@]}"
+
+    step "Post Compile Cleanup"
+    for f in bin/*-heroku; do mv "$f" "${f/-heroku}"; done
+    rm -rf pkg
 else
-    step "Running: go get ${FLAGS[@]} $pkgs"
-    go get "${FLAGS[@]}" $pkgs
+    GOBIN=$build/bin export GOBIN
+    GOPATH=$build/.heroku/go export GOPATH
+    PATH=$GOROOT/bin:$PATH
+    
+    # godep + other older paths
+    if ! (test -d $build/Godeps || (which hg >/dev/null && which bzr >/dev/null))
+    then
+        echo
+        echo "       Tired of waiting for bzr and hg?"
+        echo "       Use github.com/tools/godep for faster deploys."
+        echo
+
+        start "Installing Virtualenv"
+            virtualenv --python $python --distribute --never-download --prompt='(venv) ' $venv > /dev/null 2>&1
+            . $venv/bin/activate > /dev/null 2>&1
+        finished
+
+        start "Installing Mercurial"
+            pip install mercurial > /dev/null 2>&1
+        finished
+
+        start "Installing Bazaar"
+            pip install bzr > /dev/null 2>&1
+        finished
+    fi
+
+    p=$GOPATH/src/$name
+    mkdir -p $p
+    cp -R $build/* $p
+
+    if test -e $build/Godeps/Godeps.json
+    then
+        pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
+    else
+        pkgs="./..."
+    fi
+
+    case $ver in
+    go1.5*)
+        if test "$GO15VENDOREXPERIMENT" = "1"
+        then
+            warn ""
+            warn "\$GO15VENDOREXPERIMENT=1. This is an experiment. Things may not work as expected."
+            warn "See https://devcenter.heroku.com/articles/go-support#go-1-5-vendor-experiment for more info."
+            warn ""
+            if test ! -d "$build/vendor"
+            then
+                warn ""
+                warn "vendor/ directory does not exist."
+                warn ""
+                exit 1
+            fi
+            VendorExperiment="true"
+        fi
+    ;;
+    go1.6*)
+        if test "$GO15VENDOREXPERIMENT" = "0"
+        then
+            VendorExperiment="false"
+        else
+            VendorExperiment="true"
+        fi
+    ;;
+    *)
+        VendorExperiment="false"
+    ;;
+    esac
+
+    unset GIT_DIR # unset git dir or it will mess with goinstall
+    cd $p
+    if test -e $build/Godeps
+    then
+        if test "$VendorExperiment" = "true"
+        then
+            step "Running: go install -v ${FLAGS[@]} $pkgs"
+            go install -v "${FLAGS[@]}" $pkgs
+        else
+            step "Running: godep go install ${FLAGS[@]} $pkgs"
+            godep go install "${FLAGS[@]}" $pkgs
+        fi
+    else
+        step "Running: go get ${FLAGS[@]} $pkgs"
+        go get "${FLAGS[@]}" $pkgs
+    fi
+
 fi
 
 rm -rf $build/.heroku
