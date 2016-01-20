@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+add a LICENSE file
+
 ## v25 (2016-01-13)
 
 Default to `go1.5.3` when `go1.5` is specified.
