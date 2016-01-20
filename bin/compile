@@ -208,6 +208,13 @@ fi
 if test "$GB" = "true"
 then
     # gb path
+
+    warn ""
+    warn "GB support is experimental"
+    warn "Please see https://devcenter.heroku.com/articles/go-dependencies-via-gb?preview=1 for more info"
+    warn "For support please file an issue: https://github.com/heroku/heroku-buildpack-go/issues"
+    warn ""
+
     gbver="0.3.5"
     GOPATH="$cache/gb/$gbver" export GOPATH
     PATH=$GOPATH/bin:$GOROOT/bin:$PATH export PATH
