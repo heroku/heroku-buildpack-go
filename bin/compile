@@ -215,7 +215,7 @@ then
     warn "For support please file an issue: https://github.com/heroku/heroku-buildpack-go/issues"
     warn ""
 
-    gbver="0.3.5"
+    gbver="0.4.0"
     GOPATH="$cache/gb/$gbver" export GOPATH
     PATH=$GOPATH/bin:$GOROOT/bin:$PATH export PATH
     cp="$GOPATH/src/github.com/constabulary"
