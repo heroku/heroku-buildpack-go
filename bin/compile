@@ -28,7 +28,7 @@ urlfor() {
 expand_ver() {
   case $1 in
     go1.6)
-      echo "go1.6beta2"
+      echo "go1.6rc1"
       ;;
     go1.5)
       echo "go1.5.3"
