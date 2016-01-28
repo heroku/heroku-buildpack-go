@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v27 (2016-01-28)
+
+Fix incorrect reporting of go1.6rc1 as deprecated
+
 ## v26 (2016-01-27)
 
 add a LICENSE file
