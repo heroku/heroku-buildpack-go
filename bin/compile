@@ -16,7 +16,7 @@ urlfor() {
     file=$2
     case $ver in
     go1.0*|go1.1beta*|go1.1rc*|go1.1|go1.1.*|go1.2beta*|go1.2rc*|go1.2|go1.2.1)
-        echo http://go.googlecode.com/files/$file
+        echo https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/go/$file
         ;;
     *)
         echo https://storage.googleapis.com/golang/$file

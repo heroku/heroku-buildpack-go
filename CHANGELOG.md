@@ -3,6 +3,7 @@
 ## Unreleased
 
 Support for GB, A project based build tool for the Go programming language.
+Fix the download of older go versions (< go1.3) now that googlecode is dead.
 
 ## v27 (2016-01-28)
 
