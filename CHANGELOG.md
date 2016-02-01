@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Support for GB, A project based build tool for the Go programming language.
+
 ## v27 (2016-01-28)
 
 Fix incorrect reporting of go1.6rc1 as deprecated
