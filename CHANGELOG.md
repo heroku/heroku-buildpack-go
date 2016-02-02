@@ -4,6 +4,8 @@
 
 Support for GB, A project based build tool for the Go programming language.
 Fix the download of older go versions (< go1.3) now that googlecode is dead.
+Only make/use env_dir if it's passed
+Remove support for .godir and `Godeps` file (used by *way* old, unsupported versions of godep)
 
 ## v27 (2016-01-28)
 
