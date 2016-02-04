@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v28 (2016-02-04)
+
 Support for GB, A project based build tool for the Go programming language.
 Fix the download of older go versions (< go1.3) now that googlecode is dead.
 Only make/use env_dir if it's passed
