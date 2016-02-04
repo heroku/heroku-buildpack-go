@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v30 (2016-02-04)
+
+Bump to go1.6rc2
+
 ## v29 (2016-02-04)
 
 Update support link
