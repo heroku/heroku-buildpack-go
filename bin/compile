@@ -237,9 +237,9 @@ case $TOOL in
     ;;
     gb)
         warn ""
-        warn "GB support is experimental"
+        warn "GB support is in beta"
         warn "Please see https://devcenter.heroku.com/articles/go-dependencies-via-gb for more info"
-        warn "For support please file an issue: https://github.com/heroku/heroku-buildpack-go/issues"
+        warn "For support please file a support issue: https://help.heroku.com"
         warn ""
 
         gbver="0.4.0"
