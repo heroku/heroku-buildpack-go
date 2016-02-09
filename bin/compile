@@ -104,7 +104,7 @@ then
     mkdir -p "$env_dir"
     env_dir=$(cd "$env_dir/" && pwd)
     ln -sfn $build /app/code
-  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION
+  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_APP
     do
         if [ -f "$env_dir/$key" ]
         then
@@ -124,6 +124,10 @@ then
     name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
     TOOL="godep"
+elif (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' | sed 1q)" && test $GO_APP)
+then
+    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+    TOOL="native"
 elif (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' | sed 1q)")
 then
     ver=${GOVERSION:-$DEFAULT_GO_VERSION}
@@ -186,7 +190,7 @@ case $TOOL in
         GOBIN=$build/bin export GOBIN
         GOPATH=$build/.heroku/go export GOPATH
         PATH=$GOROOT/bin:$PATH
-        
+
         p=$GOPATH/src/$name
         mkdir -p $p
         cp -R $build/* $p
@@ -266,6 +270,14 @@ case $TOOL in
 
         step "Post Compile Cleanup"
         for f in bin/*-heroku; do mv "$f" "${f/-heroku}"; done
+        rm -rf pkg
+    ;;
+    native)
+        GOPATH="$build" export GOPATH
+        PATH=$GOPATH/bin:$GOROOT/bin:$PATH export PATH
+        cd $build
+        step "Running: go build -v ${FLAGS[@]} $GO_APP"
+        go get -v ${FLAGS[@]} "$GO_APP"
         rm -rf pkg
     ;;
 esac
