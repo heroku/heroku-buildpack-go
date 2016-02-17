@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+go1.6 released, 1.4.3 deprecated
+
 ## v30 (2016-02-04)
 
 Bump to go1.6rc2
