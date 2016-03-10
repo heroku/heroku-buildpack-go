@@ -128,6 +128,10 @@ elif (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' 
 then
     ver=${GOVERSION:-$DEFAULT_GO_VERSION}
     TOOL="gb"
+elif (test "$GO15VENDOREXPERIMENT" = "1" && test -d "$build/vendor")
+then
+  ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+  TOOL="govendor"
 else
     warn "Godep or GB are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
@@ -186,7 +190,7 @@ case $TOOL in
         GOBIN=$build/bin export GOBIN
         GOPATH=$build/.heroku/go export GOPATH
         PATH=$GOROOT/bin:$PATH
-        
+
         p=$GOPATH/src/$name
         mkdir -p $p
         cp -R $build/* $p
@@ -267,6 +271,65 @@ case $TOOL in
         step "Post Compile Cleanup"
         for f in bin/*-heroku; do mv "$f" "${f/-heroku}"; done
         rm -rf pkg
+    ;;
+  govendor)
+        warn ""
+        warn "GO15VENDOREXPERIMENT, without another build tool, is unsupported."
+        warn ""
+        GOBIN=$build/bin export GOBIN
+        GOPATH=$build/.heroku/go export GOPATH
+        PATH=$GOROOT/bin:$PATH
+
+        p=$GOPATH/src/$name
+        mkdir -p $p
+        cp -R $build/* $p
+
+        pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $p | tr '\n' ' ')
+
+        case $ver in
+        go1.5*)
+            if test "$GO15VENDOREXPERIMENT" = "1"
+            then
+                warn ""
+                warn "\$GO15VENDOREXPERIMENT=1. This is an experiment. Things may not work as expected."
+                warn "See https://devcenter.heroku.com/articles/go-support#go-1-5-vendor-experiment for more info."
+                warn ""
+                if test ! -d "$build/vendor"
+                then
+                    warn ""
+                    warn "vendor/ directory does not exist."
+                    warn ""
+                    exit 1
+                fi
+                VendorExperiment="true"
+            fi
+        ;;
+        go1.6*)
+            if test "$GO15VENDOREXPERIMENT" = "0"
+            then
+                VendorExperiment="false"
+            else
+                VendorExperiment="true"
+            fi
+        ;;
+        *)
+            VendorExperiment="false"
+        ;;
+        esac
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd $p
+        if test "$VendorExperiment" = "true"
+        then
+            step "Running: go install -v -x ${FLAGS[@]} $pkgs"
+            go install "${FLAGS[@]}" -v $pkgs
+        else
+            warn ""
+            warn "BUILD FAILED. GO15VENDOREXPERIMENT is disabled."
+            warn "Set GO15VENDOREXPERIMENT=1, and try again."
+            warn ""
+            exit 1
+        fi
     ;;
 esac
 

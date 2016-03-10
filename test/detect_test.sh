@@ -3,16 +3,16 @@
 
 testDetect_NotFound()
 {
-  detect  
-  
+  detect
+
   assertNoAppDetected
 }
 
 testDetect_Go()
 {
   touch ${BUILD_DIR}/main.go
-  
-  detect  
+
+  detect
 
   assertAppDetected "Go"
 }

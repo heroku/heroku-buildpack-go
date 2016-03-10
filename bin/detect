@@ -6,6 +6,7 @@ build=$(cd "$1/" && pwd)
 
 if test -f "$build/Godeps/Godeps.json" ||
    (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' | sed 1q)") || # gb info will detect any dir with a src/ dir in it as good :-()
+   (test -d "$build/vendor") || # detect vendor folder. can't check value of $GO15VENDOREXPERIMENT (go1.7 which will drop the need for $GO15VENDOREXPERIMENT)
    test -f "$build/Godeps" -o -f "$build/.godir"  # deprecated remove on 2016/02/01
 then
   echo Go
