@@ -277,7 +277,7 @@ case $TOOL in
         warn "GO15VENDOREXPERIMENT, without another build tool, is unsupported."
         warn ""
         GOBIN=$build/bin export GOBIN
-        GOPATH=$build/.heroku/go export GOPATH
+        GOPATH=$build/vendor:$build/.heroku/go export GOPATH
         PATH=$GOROOT/bin:$PATH
 
         p=$GOPATH/src/$name
