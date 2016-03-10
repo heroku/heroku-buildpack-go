@@ -284,6 +284,8 @@ case $TOOL in
         mkdir -p $p
         cp -R $build/* $p
 
+        $pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" . | tr '\n' ' ')
+
         case $ver in
         go1.5*)
             if test "$GO15VENDOREXPERIMENT" = "1"
