@@ -283,7 +283,8 @@ case $TOOL in
         #p=$GOPATH/src/$name
         #mkdir -p $p
         #cp -R $build/* $p
-
+        
+        cd $build
         pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $build | tr '\n' ' ')
 
         case $ver in
