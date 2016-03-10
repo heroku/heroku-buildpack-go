@@ -319,8 +319,8 @@ case $TOOL in
         cd $p
         if test "$VendorExperiment" = "true"
         then
-            step "Running: go install -v ${FLAGS[@]} $pkgs"
-            go install -v "${FLAGS[@]}" $pkgs
+            step "Running: go install -v ${FLAGS[@]}"
+            go install -v "${FLAGS[@]}"
         else
             warn ""
             warn "BUILD FAILED. GO15VENDOREXPERIMENT is disabled."
