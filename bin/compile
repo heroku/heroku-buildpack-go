@@ -284,6 +284,8 @@ case $TOOL in
         mkdir -p $p
         cp -R $build/* $p
         
+        warn $name
+        warn $p
         pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $p | tr '\n' ' ')
 
         case $ver in
