@@ -284,8 +284,6 @@ case $TOOL in
         mkdir -p $p
         cp -R $build/* $p
 
-        pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
-
         case $ver in
         go1.5*)
             if test "$GO15VENDOREXPERIMENT" = "1"
