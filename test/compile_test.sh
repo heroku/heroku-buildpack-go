@@ -21,6 +21,17 @@ test
 EOF
 }
 
+
+_createGoVendorProject()
+{
+_createSimpleGoMain
+
+  mkdir -p ${BUILD_DIR}/vendor
+  cat > ${BUILD_DIR}/vendor/.gitkeep <<EOF
+test
+EOF
+}
+
 _createGodepsProject()
 {
 _createSimpleGoMain
@@ -59,6 +70,19 @@ testCompileGodirApp() {
   assertCapturedSuccess
   assertCaptured "should install default Go version" "-----> Installing go1.4.1... done"
   assertCaptured "should recommend godep" "Try github.com/kr/godep for faster deploys."
+  assertCaptured "should install Virtualenv" "Installing Virtualenv... done"
+  assertCaptured "should install Mercurial" "Installing Mercurial... done"
+  assertCaptured "should install Bazaar" "Installing Bazaar... done"
+  assertCaptured "should run go get" "-----> Running: go get -tags heroku ./..."
+}
+
+testCompileGoVendorApp() {
+  _createGoVendorProject
+
+  compile
+
+  assertCapturedSuccess
+  assertCaptured "should install default Go version" "-----> Installing go1.6... done"
   assertCaptured "should install Virtualenv" "Installing Virtualenv... done"
   assertCaptured "should install Mercurial" "Installing Mercurial... done"
   assertCaptured "should install Bazaar" "Installing Bazaar... done"
