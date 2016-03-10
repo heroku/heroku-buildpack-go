@@ -283,8 +283,10 @@ case $TOOL in
         p=$GOPATH/src/$name
         mkdir -p $p
         cp -R $build/* $p
-        
-        pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $p | tr -d "$p" | tr '.go\n' ' ')
+
+        warn ls -1 $p
+        warn ls -1 $build        
+        pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $p | tr '\n' ' ')
 
         case $ver in
         go1.5*)
