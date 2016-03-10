@@ -277,7 +277,7 @@ case $TOOL in
         warn "GO15VENDOREXPERIMENT, without another build tool, is unsupported."
         warn ""
         GOBIN=$build/bin export GOBIN
-        GOPATH=$build/vendor:$build/.heroku/go export GOPATH
+        GOPATH=$build/.heroku/go export GOPATH
         PATH=$GOROOT/bin:$PATH
 
         p=$GOPATH/src/$name
@@ -319,8 +319,8 @@ case $TOOL in
         cd $p
         if test "$VendorExperiment" = "true"
         then
-            step "Running: go install -v ${FLAGS[@]}"
-            go install -v "${FLAGS[@]}"
+            step "Running: go install -v ${FLAGS[@]} ."
+            go install -v "${FLAGS[@]} ."
         else
             warn ""
             warn "BUILD FAILED. GO15VENDOREXPERIMENT is disabled."
