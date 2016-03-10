@@ -284,10 +284,8 @@ case $TOOL in
         mkdir -p $p
         cp -R $build/* $p
 
-        warn $(ls -1 $p)
-        warn $(ls -1 $build)
         pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $p | tr '\n' ' ')
-
+        warn $pkgs
         case $ver in
         go1.5*)
             if test "$GO15VENDOREXPERIMENT" = "1"
