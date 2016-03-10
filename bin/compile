@@ -280,12 +280,11 @@ case $TOOL in
         GOPATH=$build/.heroku/go export GOPATH
         PATH=$GOROOT/bin:$PATH
 
-        #p=$GOPATH/src/$name
-        #mkdir -p $p
-        #cp -R $build/* $p
+        p=$GOPATH/src/$name
+        mkdir -p $p
+        cp -R $build/* $p
         
-        cd $build
-        pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $build | tr '\n' ' ')
+        pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $p | tr '\n' ' ')
 
         case $ver in
         go1.5*)
@@ -322,8 +321,8 @@ case $TOOL in
         cd $p
         if test "$VendorExperiment" = "true"
         then
-            step "Running: go install -v ${FLAGS[@]} $pkgs"
-            GO15VENDOREXPERIMENT=1 go install -v "${FLAGS[@]} $pkgs"
+            step "Running: go install -v -x ${FLAGS[@]} $pkgs"
+            GO15VENDOREXPERIMENT=1 go install -v -x "${FLAGS[@]} $pkgs"
         else
             warn ""
             warn "BUILD FAILED. GO15VENDOREXPERIMENT is disabled."
