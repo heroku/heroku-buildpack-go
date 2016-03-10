@@ -324,7 +324,7 @@ case $TOOL in
         if test "$VendorExperiment" = "true"
         then
             step "Running: go install -v -x ${FLAGS[@]} $pkgs"
-            GO15VENDOREXPERIMENT=1 go install -v -x "${FLAGS[@]} $pkgs"
+            go install -v -x "${FLAGS[@]}" $pkgs
         else
             warn ""
             warn "BUILD FAILED. GO15VENDOREXPERIMENT is disabled."
