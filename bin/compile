@@ -284,7 +284,7 @@ case $TOOL in
         mkdir -p $p
         cp -R $build/* $p
 
-        $pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" . | tr '\n' ' ')
+        $pkgs=$(grep -l -R --exclude-dir=vendor --exclude-dir=.git "func main" $build | tr '\n' ' ')
 
         case $ver in
         go1.5*)
@@ -321,8 +321,8 @@ case $TOOL in
         cd $p
         if test "$VendorExperiment" = "true"
         then
-            step "Running: go install -v ${FLAGS[@]} ."
-            go install -v "${FLAGS[@]} ./..."
+            step "Running: go install -v ${FLAGS[@]} $pkgs"
+            go install -v "${FLAGS[@]} $pkgs"
         else
             warn ""
             warn "BUILD FAILED. GO15VENDOREXPERIMENT is disabled."
