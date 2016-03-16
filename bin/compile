@@ -7,6 +7,20 @@ TOOL=""
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+handleDefaultPkgSpec() {
+    if [ "$pkgs" = "default" ];
+    then
+        warn "Installing package '.' (default)"
+        warn "To install a different package spec please see FIXME for more info."
+        if [ "$TOOL" = "govendor" ]
+        then
+          warn "TIP: jq --tab '{\"heroku\":{\"install\":[\"<pkg spec you want>\"]}} * .' vendor/vendor.json > tmp.json &&"
+          warn "       mv tmp.json vendor/vendor.json && git commit -am \"add install package spec\""
+        fi
+        pkgs="."
+    fi
+}
+
 # Go releases have moved to a new URL scheme
 # starting with Go version 1.2.2. Return the old
 # location for known old versions and the new
@@ -115,19 +129,51 @@ fi
 
 if test -f "$build/Godeps/Godeps.json"
 then
+    TOOL="godep"
     step "Checking Godeps/Godeps.json file."
-    if ! jq -r . < $build/Godeps/Godeps.json > /dev/null
+    if ! jq -r . < "$build/Godeps/Godeps.json" > /dev/null
     then
         warn "Bad Godeps/Godeps.json file"
         exit 1
     fi
     name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
-    TOOL="godep"
 elif (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' | sed 1q)")
 then
-    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
     TOOL="gb"
+    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+elif test -f "$build/vendor/vendor.json"
+then
+    f="$build/vendor/vendor.json"
+    TOOL="govendor"
+    step "Checking vendor/vendor.json file."
+    if ! jq -r . < "$f" > /dev/null
+    then
+        warn "Bad vendor/vendor.json file"
+        warn "For more details see: FIXME"
+        exit 1
+    fi
+    name=$(<$f jq -r .rootPath)
+    if [ "$name" = "null" -o -z "$name" ]
+    then
+        warn "rootPath field not specified in vendor/vendor.json"
+        warn "rootPath should be set to the root package name used by your repository"
+        warn "TIP: rp=\$(go list -e .) jq --tab '{ \"rootPath\":env.rp } + .' vendor/vendor.json > tmp.json &&"
+        warn "       mv tmp.json vendor/vendor.json && git commit -am \"add rootPath\""
+        warn "For more details see: FIXME"
+        exit 1
+
+    fi
+    ver=$(<$f jq -r .heroku.goVersion)
+    if [ "$ver" =  "null" -o -z "$ver" ]
+    then
+      ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+      warn "heroku.goVersion field not specified in vendor/vendor.json"
+      warn "defaulting to $ver"
+      warn "TIP: gv=\$(go version | cut -d \\  -f 3) jq --tab '{ \"heroku\": {\"goVersion\":env.gv }} * .' vendor/vendor.json > tmp.json &&"
+      warn "     mv tmp.json vendor/vendor.json && git commit -am \"add goVersion\""
+      warn "For more details see: FIXME"
+    fi
 else
     warn "Godep or GB are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
@@ -186,12 +232,13 @@ case $TOOL in
         GOBIN=$build/bin export GOBIN
         GOPATH=$build/.heroku/go export GOPATH
         PATH=$GOROOT/bin:$PATH
-        
+
         p=$GOPATH/src/$name
         mkdir -p $p
         cp -R $build/* $p
 
-        pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "." end')
+        pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "default" end')
+        handleDefaultPkgSpec
 
         case $ver in
         go1.5*)
@@ -234,6 +281,23 @@ case $TOOL in
             step "Running: godep go install ${FLAGS[@]} $pkgs"
             godep go install "${FLAGS[@]}" $pkgs
         fi
+    ;;
+    govendor)
+        GOBIN=$build/bin export GOBIN
+        GOPATH=$build/.heroku/go export GOPATH
+        PATH=$GOROOT/bin:$PATH
+
+        p=$GOPATH/src/$name
+        mkdir -p $p
+        cp -R $build/* $p
+
+        pkgs=$(<$build/vendor/vendor.json jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')
+        handleDefaultPkgSpec
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd $p
+        step "Running: go install -v ${FLAGS[@]} $pkgs"
+        go install -v "${FLAGS[@]}" $pkgs
     ;;
     gb)
         warn ""
