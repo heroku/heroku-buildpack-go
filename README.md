@@ -38,7 +38,7 @@ $ git push heroku master
        https://polar-waters-4785.herokuapp.com/ deployed to Heroku
 ```
 
-This buildpack will detect your repository as Go if it contains a `.go` file.
+This buildpack will detect your repository as Go if you are using either [Godep](https://github.com/tools/godep) or [GB](https://getgb.io/).
 
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
