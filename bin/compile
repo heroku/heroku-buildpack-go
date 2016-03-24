@@ -157,7 +157,7 @@ then
     if [ "$name" = "null" -o -z "$name" ]
     then
         warn "'rootPath' field not specified in vendor/vendor.json"
-        warn "'rootPath' should be set to the root package name used by your repository"
+        warn "'rootPath' must be set to the root package name used by your repository"
         warn "recent versions of govendor add this field automatically, please upgrade"
         warn "and re-run 'govendor init'"
         warn ""
