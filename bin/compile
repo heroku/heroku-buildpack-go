@@ -170,7 +170,7 @@ then
     if [ "$ver" =  "null" -o -z "$ver" ]
     then
       ver=${GOVERSION:-$DEFAULT_GO_VERSION}
-      warn "The 'heroku.goVersion' field not specified in 'vendor/vendor.json'."
+      warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
       warn ""
       warn "Defaulting to $ver"
       warn ""
