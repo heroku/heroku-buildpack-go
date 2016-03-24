@@ -50,23 +50,32 @@ article][app-engine-build-constraints] for more.
 
 ## govendor specifics
 
-The [vendor.json][vendor.json] spec that govendor follows for it's meta-data
+The [vendor.json][vendor.json] spec that govendor follows for it's metadata
 file allows for arbitrary, tool specific fields. This buildpack uses this
 feature to track build specific bits. These bits are encoded in the following
 top level json keys:
 
-- `"rootPath"` (String): the root package name of the packages your are pushing
-to Heroku. You can find this locally with `go list -e .`. There is no default for
-this and it must be specified. Note: New versions of govendor (after
-[this commit][grp]) add this field by default
-- `"heroku.goVersion"` (String): the major version of go you would like to use. If not specified
-the buildpack defaults to the most recent supported version of Go.
-- `"heroku.install"` (Array of strings): a list of the packages you wish the go command to
-install. This defaults to "." if not specified. "./cmd/..." or "./..." are other popular
-choices, but the exact choice depens on the layour of your repository.
+* `rootPath` (String): the root package name of the packages you are pushing to
+  Heroku. You can find this locally with `go list -e .`. There is no default for
+  this and it must be specified. Recent versions of govendor automatically fill
+  in this field for you. You can re-run `govendor init` after upgrading to have
+  this field filled in automatically, or it will be filled the next time you use
+   govendor to modify a dependency.
 
-Example with everything, for a project using go 1.6, located at
-`$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single  package
+* `heroku.goVersion` (String): the major version of go you would like Heroku to
+  use when compiling your code: if not specified defaults to the most recent
+  supported version of Go.
+
+* `heroku.install` (Array of Strings): a list of the packages you want to install.
+  If not specified, this defaults to `["."]`. Other common choices are:
+  `["./cmd/..."]` (all packages and sub packages in the `cmd` directory) and
+  `["./..."]` (all packages and sub packages of the current directory). The exact
+   choice depends on the layout of your repository though. Please note that `./...`
+   includes any packages in your `vendor` directory.
+
+
+Example with everything, for a project using `go1.6`, located at
+`$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single package
 spec of `./...` to install.
 
 ```json
@@ -82,8 +91,7 @@ spec of `./...` to install.
 ```
 
 A tool like jq or a text editor can be used to inject these variables into
-`vendor/vendor.json` and the buildpack suggests some quick one-liners if it
-detects these fields are not set.
+`vendor/vendor.json`.
 
 ## Hacking on this Buildpack
 

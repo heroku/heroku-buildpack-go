@@ -11,11 +11,11 @@ handleDefaultPkgSpec() {
     if [ "$pkgs" = "default" ];
     then
         warn "Installing package '.' (default)"
-        warn "To install a different package spec please see FIXME for more info."
         if [ "$TOOL" = "govendor" ]
         then
-          warn "TIP: jq --tab '{\"heroku\":{\"install\":[\"<pkg spec you want>\"]}} * .' vendor/vendor.json > tmp.json &&"
-          warn "       mv tmp.json vendor/vendor.json && git commit -am \"add install package spec\""
+          warn "To install a different package spec set `heroku.install` in vendor/vendor.json"
+          warn ""
+          warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
         fi
         pkgs="."
     fi
@@ -68,7 +68,7 @@ report_ver() {
     ;;
     *)
       warn ""
-      warn "Deprecated version of go ($1)"
+      warn "Deprecated or unsupported version of go ($1)"
       warn "See https://devcenter.heroku.com/articles/go-support#go-versions for supported version information."
       warn ""
     ;;
@@ -158,9 +158,10 @@ then
     then
         warn "rootPath field not specified in vendor/vendor.json"
         warn "rootPath should be set to the root package name used by your repository"
-        warn "TIP: rp=\$(go list -e .) jq --tab '{ \"rootPath\":env.rp } + .' vendor/vendor.json > tmp.json &&"
-        warn "       mv tmp.json vendor/vendor.json && git commit -am \"add rootPath\""
-        warn "For more details see: FIXME"
+        warn "recent versions of govendor add this field automatically, please upgrade"
+        warn "and re-run `govendor init`"
+        warn ""
+        warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
         exit 1
 
     fi
@@ -170,9 +171,8 @@ then
       ver=${GOVERSION:-$DEFAULT_GO_VERSION}
       warn "heroku.goVersion field not specified in vendor/vendor.json"
       warn "defaulting to $ver"
-      warn "TIP: gv=\$(go version | cut -d \\  -f 3) jq --tab '{ \"heroku\": {\"goVersion\":env.gv }} * .' vendor/vendor.json > tmp.json &&"
-      warn "     mv tmp.json vendor/vendor.json && git commit -am \"add goVersion\""
-      warn "For more details see: FIXME"
+      warn ""
+      warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
     fi
 else
     warn "Godep or GB are required. For instructions:"
