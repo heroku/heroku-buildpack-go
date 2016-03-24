@@ -13,9 +13,10 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         if [ "$TOOL" = "govendor" ]
         then
-          warn "To install a different package spec set 'heroku.install' in vendor/vendor.json"
+          warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
           warn ""
           warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+          warn ""
         fi
         pkgs="."
     fi
@@ -156,10 +157,10 @@ then
     name=$(<$f jq -r .rootPath)
     if [ "$name" = "null" -o -z "$name" ]
     then
-        warn "'rootPath' field not specified in vendor/vendor.json"
-        warn "'rootPath' must be set to the root package name used by your repository"
-        warn "recent versions of govendor add this field automatically, please upgrade"
-        warn "and re-run 'govendor init'"
+        warn "The 'rootPath' field not specified in 'vendor/vendor.json'."
+        warn "'rootPath' must be set to the root package name used by your repository."
+        warn "Recent versions of govendor add this field automatically, please upgrade"
+        warn "and re-run 'govendor init'."
         warn ""
         warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
         exit 1
@@ -169,10 +170,12 @@ then
     if [ "$ver" =  "null" -o -z "$ver" ]
     then
       ver=${GOVERSION:-$DEFAULT_GO_VERSION}
-      warn "'heroku.goVersion' field not specified in vendor/vendor.json"
-      warn "defaulting to $ver"
+      warn "The 'heroku.goVersion' field not specified in 'vendor/vendor.json'."
+      warn ""
+      warn "Defaulting to $ver"
       warn ""
       warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+      warn ""
     fi
 else
     warn "Godep or GB are required. For instructions:"
