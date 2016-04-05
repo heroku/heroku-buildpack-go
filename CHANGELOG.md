@@ -3,6 +3,7 @@
 ## Unreleased
 
 Initial support for govendor
+retry curls up to 15 times with a 2 second wait between retries
 
 ## v31 (2016-02-17)
 

@@ -6,7 +6,7 @@ set -eo pipefail
 TOOL=""
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
-CURL="curl --retry 15 --retry-delay 2" # retry for up to 30 seconds
+CURL="curl -s --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 handleDefaultPkgSpec() {
     if [ "$pkgs" = "default" ];
@@ -207,7 +207,7 @@ else
     mkdir -p $cache/$ver
     cd $cache/$ver
     start "Installing $ver"
-        $CURL -s $url | tar zxf -
+        $CURL $url | tar zxf -
     finished
     cd - >/dev/null
 fi
@@ -322,7 +322,7 @@ case $TOOL in
             mkdir -p "$cp"
             cd $cp
             start "Installing GB v$gbver"
-            $CURL -s "https://codeload.github.com/constabulary/gb/tar.gz/v$gbver" | tar zxf -
+            $CURL "https://codeload.github.com/constabulary/gb/tar.gz/v$gbver" | tar zxf -
             mv gb-$gbver gb
             go install ./...
             finished
