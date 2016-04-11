@@ -341,5 +341,5 @@ esac
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
-echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+echo 'export PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
 cp $buildpack/vendor/concurrency.sh $build/.profile.d/
