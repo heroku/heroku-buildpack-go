@@ -2,8 +2,12 @@
 
 ## Unreleased
 
+## v32 (2016-04-13)
+
 Initial support for govendor
 retry curls up to 15 times with a 2 second wait between retries
+go1.6.1 released, set as default for go1.6
+go1.5.4 released, set as default for go1.5
 
 ## v31 (2016-02-17)
 
