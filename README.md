@@ -109,6 +109,22 @@ to, e.g., specify paths for vendored dependencies. E.g., to build
 `CGO_CFLAGS` with the value `-I/app/code/vendor/include/postgresql` and include
 the relevant Postgres header files in `vendor/include/postgresql/` in your app.
 
+## Using a development version of Go
+
+The buildpack can install and use any specific commit of the Go compiler when
+the specified go version is `devel-<short sha>`. The version can be set either
+via the appropriate vendoring tools config file or via the `$GOVERSION`
+environment variable. The specific sha is downloaded from Github w/o git
+history. Builds may fail if GitHub is down, but the compiled go version is
+cached.
+
+When this is used the buildpack also downloads and installs the buildpack's
+current default Go version for use in bootstrapping the compiler.
+
+Build tests are NOT RUN. Go compilation failures will fail a build.
+
+No official support is provided for unreleased versions of Go.
+
 ## Passing a symbol (and optional string) to the linker
 
 This buildpack supports the go [linker's][go-linker] ability (`-X symbol

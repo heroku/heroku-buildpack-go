@@ -6,7 +6,7 @@ set -eo pipefail
 TOOL=""
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
-CURL="curl -s --retry 15 --retry-delay 2" # retry for up to 30 seconds
+CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 handleDefaultPkgSpec() {
     if [ "$pkgs" = "default" ];
@@ -28,13 +28,18 @@ handleDefaultPkgSpec() {
 # location for known old versions and the new
 # location otherwise.
 urlfor() {
-    ver=$1
-    file=$2
+    local ver=$1
     case $ver in
     go1.0*|go1.1beta*|go1.1rc*|go1.1|go1.1.*|go1.2beta*|go1.2rc*|go1.2|go1.2.1)
+        local file=${GOFILE:-$ver.linux-amd64.tar.gz}
         echo https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/go/$file
         ;;
+    devel*)
+        local sha=$(echo $ver | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
+        echo https://github.com/golang/go/archive/$sha.tar.gz
+    ;;
     *)
+        local file=${GOFILE:-$ver.linux-amd64.tar.gz}
         echo https://storage.googleapis.com/golang/$file
         ;;
     esac
@@ -67,6 +72,15 @@ report_ver() {
   case $1 in
     go1.6.1|go1.5.4)
       # Noop
+    ;;
+    devel*)
+      warn ""
+      warn "You are using a development build of Go."
+      warn "This is provided for users requiring an unreleased Go version"
+      warn "but is otherwise unsupported."
+      warn ""
+      warn "Build tests are NOT RUN!!"
+      warn ""
     ;;
     *)
       warn ""
@@ -179,15 +193,13 @@ then
       warn ""
     fi
 else
-    warn "Godep or GB are required. For instructions:"
+    warn "Godep, GB or govendor are required. For instructions:"
     warn "https://devcenter.heroku.com/articles/go-support"
     exit 1
 fi
 
 ver=$(expand_ver $ver)
-
-file=${GOFILE:-$ver.linux-amd64.tar.gz}
-url=${GOURL:-$(urlfor $ver $file)}
+url=${GOURL:-$(urlfor $ver)}
 
 if test -e $build/bin && ! test -d $build/bin
 then
@@ -205,11 +217,31 @@ then
 else
     rm -rf $cache/* # be sure not to build up cruft
     mkdir -p $cache/$ver
+    odir=$(pwd)
     cd $cache/$ver
     start "Installing $ver"
         $CURL $url | tar zxf -
     finished
-    cd - >/dev/null
+    case $ver in  # Rename 'go-<full sha>' (we have the short sha) to 'go'
+      devel*)
+        bver=$(expand_ver $DEFAULT_GO_VERSION)
+        burl=$(urlfor $bver)
+        start "Installing bootstrap Go version $bver"
+            $CURL $burl | tar zxf -
+        finished
+        mv go bgo
+        mv go-$(echo $ver | cut -d - -f 2)* go
+        step "Compiling development Go version $ver..."
+            cd go/src
+            echo "devel +$(echo $ver | cut -d - -f 2) $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
+            GOROOT_BOOTSTRAP=$(pushd $cache/$ver/bgo > /dev/null; pwd; popd > /dev/null) ./make.bash
+            cd - >/dev/null
+            go/bin/go version
+        finished
+        rm -rf bgo
+      ;;
+    esac
+    cd $odir
 fi
 
 mkdir -p $build/bin
