@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Support the downloading and compilation of development versions of go
+
 ## v32 (2016-04-13)
 
 Initial support for govendor
