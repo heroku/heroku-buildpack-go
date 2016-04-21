@@ -3,6 +3,7 @@
 ## Unreleased
 
 Support the downloading and compilation of development versions of go
+go1.6.2 released, set as default for go1.6
 
 ## v32 (2016-04-13)
 
