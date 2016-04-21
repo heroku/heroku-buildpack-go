@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+massage the installable package spec to include the name + vendor directory when vendor is used: https://github.com/heroku/heroku-buildpack-go/pull/120
+
 ## v33 (2016-04-21)
 
 Support the downloading and compilation of development versions of go
