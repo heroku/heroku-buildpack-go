@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Remove unused and outdated tests. An internal integration suite is run automatically.
+
 ## v34 (2016-04-25)
 
 massage the installable package spec to include the name + vendor directory when vendor is used: https://github.com/heroku/heroku-buildpack-go/pull/120
