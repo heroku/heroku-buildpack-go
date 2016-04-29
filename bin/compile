@@ -122,7 +122,7 @@ PATH=$buildpack/$plat/bin:$venv/bin:$PATH
 steptxt="----->"
 
 warn() {
-    echo -e >&2 "${YELLOW} !     $@${NC}"
+    echo -e "${YELLOW} !!    $@${NC}"
 }
 
 step() {
@@ -325,10 +325,10 @@ case $TOOL in
         then
             massagePkgSpecForVendor
             step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-            go install -v "${FLAGS[@]}" ${pkgs}
+            go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         else
             step "Running: godep go install ${FLAGS[@]} ${pkgs}"
-            godep go install "${FLAGS[@]}" ${pkgs}
+            godep go install "${FLAGS[@]}" ${pkgs} 2>&1
         fi
     ;;
     govendor)
@@ -347,7 +347,7 @@ case $TOOL in
         cd $p
         massagePkgSpecForVendor
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs}
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
     gb)
         warn ""
