@@ -307,7 +307,7 @@ case $TOOL in
             fi
         ;;
         go1.6*)
-            if test "$GO15VENDOREXPERIMENT" = "0"
+            if test "$GO15VENDOREXPERIMENT" = "0" || test -d "${build}/Godeps/_workspace/src"
             then
                 VendorExperiment="false"
             else
@@ -327,8 +327,8 @@ case $TOOL in
             step "Running: go install -v ${FLAGS[@]} ${pkgs}"
             go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         else
-            step "Running: godep go install ${FLAGS[@]} ${pkgs}"
-            godep go install "${FLAGS[@]}" ${pkgs} 2>&1
+            step "Running: godep go install -v ${FLAGS[@]} ${pkgs}"
+            godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         fi
     ;;
     govendor)

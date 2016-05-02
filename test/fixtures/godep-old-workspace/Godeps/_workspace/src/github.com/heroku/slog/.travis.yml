@@ -1,0 +1,9 @@
+language: go
+go:
+- 1.3.3
+script:
+- go test -v ./...
+notifications:
+  hipchat:
+    rooms:
+      secure: DMJfvw4gclxRXgc9PHk8o7Bb9E9TrFcasYky0wc9SgnseHRgW23pprLaolMzPQldei46x7sLWw8BJkNp1V7zUfNn2XnmyHjqo93mv7x7x7bJ6JMvKNS409fev5l2kgcQ3Rn9M5PZGVN3wTxqBrLGqw9L0bZ+/s4FgGOIMh2ZGoM=

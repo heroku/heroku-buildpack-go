@@ -6,13 +6,6 @@ testDetectGodepBasicApp() {
   assertCaptured "Go"
   assertCapturedSuccess
 }
-
-testDetectGovendorBasicApp() {
-  detect "govendor-basic"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-
 testCompileGodepBasicApp() {
   compile "godep-basic"
   assertCaptured "Checking Godeps/Godeps.json file."
@@ -23,6 +16,11 @@ testCompileGodepBasicApp() {
   assertCapturedSuccess
 }
 
+testDetectGovendorBasicApp() {
+  detect "govendor-basic"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
 testCompileGovendorBasicApp() {
   compile "govendor-basic"
   assertCaptured "Checking vendor/vendor.json file."
@@ -32,6 +30,37 @@ testCompileGovendorBasicApp() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
 }
+
+testDetectGodepOldWorkspaceApp() {
+  detect "godep-old-workspace"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepOldWorkspaceApp() {
+  compile "godep-old-workspace"
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: godep go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+}
+
+testDetectGodepVendorApp() {
+  detect "godep-vendor"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepVendorApp() {
+  compile "godep-vendor"
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+}
+
 
 # Utils
 
