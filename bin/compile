@@ -249,7 +249,7 @@ else
         step "Compiling development Go version $ver..."
             cd go/src
             echo "devel +$(echo $ver | cut -d - -f 2) $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
-            GOROOT_BOOTSTRAP=$(pushd $cache/$ver/bgo > /dev/null; pwd; popd > /dev/null) ./make.bash
+            GOROOT_BOOTSTRAP=$(pushd $cache/$ver/bgo > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
             cd - >/dev/null
             go/bin/go version
         finished

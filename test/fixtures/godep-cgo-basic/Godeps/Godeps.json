@@ -1,0 +1,11 @@
+{
+	"ImportPath": "github.com/heroku/fixture",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Deps": [
+		{
+			"ImportPath": "github.com/jbarham/gopgsqldriver",
+			"Rev": "f8287ee9bfe224aa4a7edcd73815ecbe69db7f68"
+		}
+	]
+}

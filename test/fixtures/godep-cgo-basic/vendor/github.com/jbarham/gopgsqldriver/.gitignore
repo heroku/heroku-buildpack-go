@@ -1,0 +1,4 @@
+*.out
+_*
+pgdriver.cgo*
+*.o

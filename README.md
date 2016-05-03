@@ -111,12 +111,11 @@ $ make test
 
 ## Using with cgo
 
-This buildpack supports building with C dependencies via
-[cgo][cgo]. You can set config vars to specify CGO flags
-to, e.g., specify paths for vendored dependencies. E.g., to build
-[gopgsqldriver][gopgsqldriver], add the config var
-`CGO_CFLAGS` with the value `-I/app/code/vendor/include/postgresql` and include
-the relevant Postgres header files in `vendor/include/postgresql/` in your app.
+This buildpack supports building with C dependencies via [cgo][cgo]. You can set
+config vars to specify CGO flags to specify paths for vendored dependencies. For
+example, if you added C headers to and `includes` directory, add the config var
+`CGO_CFLAGS` with the value `-I/app/code/includes` and include the relevant
+header files in `includes/` in your app.
 
 ## Using a development version of Go
 
@@ -136,11 +135,11 @@ No official support is provided for unreleased versions of Go.
 
 ## Passing a symbol (and optional string) to the linker
 
-This buildpack supports the go [linker's][go-linker] ability (`-X symbol
-value`) to set the value of a string at link time. This can be done by setting
+This buildpack supports the go [linker's][go-linker] ability (`-X symbol value`)
+to set the value of a string at link time. This can be done by setting
 `GO_LINKER_SYMBOL` and `GO_LINKER_VALUE` in the application's config before
-pushing code. If `GO_LINKER_SYMBOL` is set, but `GO_LINKER_VALUE` isn't set
-then `GO_LINKER_VALUE` defaults to [`$SOURCE_VERSION`][source-version].
+pushing code. If `GO_LINKER_SYMBOL` is set, but `GO_LINKER_VALUE` isn't set then
+`GO_LINKER_VALUE` defaults to [`$SOURCE_VERSION`][source-version].
 
 This can be used to embed the commit sha, or other build specific data directly
 into the compiled executable.

@@ -1,6 +1,38 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGodepCGOBasic() {
+  detect "godep-cgo-basic"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepCGOB() {
+  compile "godep-cgo-basic"
+  assertCaptured "Installing go"
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompileBinaryExists
+}
+
+testDetectGodepDevelGo() {
+  detect "godep-devel-go"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepDevelGo() {
+  compile "godep-devel-go"
+  assertCaptured "You are using a development build of Go."
+  assertCaptured "Installing devel-15f7a66"
+  assertCaptured "Installing bootstrap Go version go"
+  assertCaptured "Compiling development Go version devel-15f7a66"
+  assertCaptured "Installed Go for linux/amd64"
+  assertCaptured "go version devel +15f7a66"
+  assertCapturedSuccess
+  assertCompileBinaryExists
+  assertTrue "Binary has the right value" '[[ "$(${compile_dir}/bin/fixture)" == *"devel +15f7a66"* ]]'
+}
 
 testDetectGodepBinFile() {
   detect "godep-bin-file"
