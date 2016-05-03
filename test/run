@@ -2,53 +2,53 @@
 # See README.md for info on running these tests.
 
 
-testDetectGodepBinFileApp() {
+testDetectGodepBinFile() {
   detect "godep-bin-file"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGodepBinFileApp() {
+testCompileGodepBinFile() {
   compile "godep-bin-file"
   assertCapturedError 1 "File bin exists and is not a directory."
 }
 
-testDetectGovendorMissingRootPathApp() {
+testDetectGovendorMissingRootPath() {
   detect "govendor-missing-rootPath"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGovendorMissingRootPathApp() {
+testCompileGovendorMissingRootPath() {
   compile "govendor-missing-rootPath"
-  assertCapturedError 1 'The "rootPath" field not specified in "vendor/vendor.json".'
+  assertCapturedError 1 "The 'rootPath' field is not specified in 'vendor/vendor.json'."
 }
 
-testDetectGovendorMalformedApp() {
+testDetectGovendorMalformed() {
   detect "govendor-malformed"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGovendorMalformedApp() {
+testCompileGovendorMalformed() {
   compile "govendor-malformed"
   assertCapturedError 1 "Bad vendor/vendor.json file"
 }
 
-testDetectGodepMalformedApp() {
+testDetectGodepMalformed() {
   detect "godep-malformed"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGodepMalformedApp() {
+testCompileGodepMalformed() {
   compile "godep-malformed"
   assertCapturedError 1 "Bad Godeps/Godeps.json file"
 
 }
 
-testDetectGBVendorApp() {
+testDetectGBVendor() {
   detect "gb-vendor"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGBVendorApp() {
+testCompileGBVendor() {
   compile "gb-vendor"
   assertCaptured "Installing go"
   assertCaptured "GB support is in beta"
@@ -60,12 +60,12 @@ testCompileGBVendorApp() {
   assertCompileBinaryExists
 }
 
-testDetectGBBasicApp() {
+testDetectGBBasic() {
   detect "gb-basic"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGBBasicApp() {
+testCompileGBBasic() {
   compile "gb-basic"
   assertCaptured "Installing go"
   assertCaptured "GB support is in beta"
@@ -113,12 +113,12 @@ testCompileGodepLDSymbolGo14Value() {
   assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
 }
 
-testDetectGodepBasicApp() {
+testDetectGodepBasic() {
   detect "godep-basic"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGodepBasicApp() {
+testCompileGodepBasic() {
   compile "godep-basic"
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
@@ -129,12 +129,12 @@ testCompileGodepBasicApp() {
   assertCompileBinaryExists
 }
 
-testDetectGovendorBasicApp() {
+testDetectGovendorBasic() {
   detect "govendor-basic"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGovendorBasicApp() {
+testCompileGovendorBasic() {
   compile "govendor-basic"
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
@@ -145,12 +145,12 @@ testCompileGovendorBasicApp() {
   assertCompileBinaryExists
 }
 
-testDetectGodepOldWorkspaceApp() {
+testDetectGodepOldWorkspace() {
   detect "godep-old-workspace"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGodepOldWorkspaceApp() {
+testCompileGodepOldWorkspace() {
   compile "godep-old-workspace"
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
@@ -161,12 +161,12 @@ testCompileGodepOldWorkspaceApp() {
   assertCompileBinaryExists
 }
 
-testDetectGodepVendorApp() {
+testDetectGodepVendor() {
   detect "godep-vendor"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGodepVendorApp() {
+testCompileGodepVendor() {
   compile "godep-vendor"
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
@@ -177,12 +177,12 @@ testCompileGodepVendorApp() {
   assertCompileBinaryExists
 }
 
-testDetectGodepPackageSpecApp() {
+testDetectGodepPackageSpec() {
   detect "godep-package-spec"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGodepPackageSpecApp() {
+testCompileGodepPackageSpec() {
   compile "godep-package-spec"
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
