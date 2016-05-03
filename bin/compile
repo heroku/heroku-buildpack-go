@@ -209,8 +209,8 @@ then
       warn ""
     fi
 else
-    warn "Godep, GB or govendor are required. For instructions:"
-    warn "https://devcenter.heroku.com/articles/go-support"
+    err "Godep, GB or govendor are required. For instructions:"
+    err "https://devcenter.heroku.com/articles/go-support"
     exit 1
 fi
 
@@ -219,9 +219,9 @@ url=${GOURL:-$(urlfor $ver)}
 
 if test -e $build/bin && ! test -d $build/bin
 then
-    warn ""
+    err ""
     err "File bin exists and is not a directory."
-    warn ""
+    err ""
     exit 1
 fi
 
@@ -302,9 +302,9 @@ case $TOOL in
                 warn ""
                 if test ! -d "$build/vendor"
                 then
-                    warn ""
-                    warn "vendor/ directory does not exist."
-                    warn ""
+                    err ""
+                    err "vendor/ directory does not exist."
+                    err ""
                     exit 1
                 fi
                 VendorExperiment="true"
