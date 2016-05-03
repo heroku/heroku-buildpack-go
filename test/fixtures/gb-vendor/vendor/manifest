@@ -1,0 +1,11 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "github.com/heroku/slog",
+			"repository": "https://github.com/heroku/slog",
+			"revision": "7746152d93404575df4efa59a29adb8c168c464a",
+			"branch": "master"
+		}
+	]
+}

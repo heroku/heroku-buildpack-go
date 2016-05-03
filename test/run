@@ -1,6 +1,118 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+
+testDetectGodepBinFileApp() {
+  detect "godep-bin-file"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepBinFileApp() {
+  compile "godep-bin-file"
+  assertCapturedError 1 "File bin exists and is not a directory."
+}
+
+testDetectGovendorMissingRootPathApp() {
+  detect "govendor-missing-rootPath"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGovendorMissingRootPathApp() {
+  compile "govendor-missing-rootPath"
+  assertCapturedError 1 'The "rootPath" field not specified in "vendor/vendor.json".'
+}
+
+testDetectGovendorMalformedApp() {
+  detect "govendor-malformed"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGovendorMalformedApp() {
+  compile "govendor-malformed"
+  assertCapturedError 1 "Bad vendor/vendor.json file"
+}
+
+testDetectGodepMalformedApp() {
+  detect "godep-malformed"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepMalformedApp() {
+  compile "godep-malformed"
+  assertCapturedError 1 "Bad Godeps/Godeps.json file"
+
+}
+
+testDetectGBVendorApp() {
+  detect "gb-vendor"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGBVendorApp() {
+  compile "gb-vendor"
+  assertCaptured "Installing go"
+  assertCaptured "GB support is in beta"
+  assertCaptured "Installing GB"
+  assertCaptured "Running: gb build -tags heroku"
+  assertCaptured "cmd/fixture"
+  assertCaptured "Post Compile Cleanup"
+  assertCapturedSuccess
+  assertCompileBinaryExists
+}
+
+testDetectGBBasicApp() {
+  detect "gb-basic"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGBBasicApp() {
+  compile "gb-basic"
+  assertCaptured "Installing go"
+  assertCaptured "GB support is in beta"
+  assertCaptured "Installing GB"
+  assertCaptured "Running: gb build -tags heroku"
+  assertCaptured "cmd/fixture"
+  assertCaptured "Post Compile Cleanup"
+  assertCapturedSuccess
+  assertCompileBinaryExists
+}
+
+testDetectGodepLDSymbolValue() {
+  detect "godep-ld-symbol-value"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepLDSymbolValue() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "main.fixture" > "${env_dir}/GO_LINKER_SYMBOL"
+  echo "fixture" > "${env_dir}/GO_LINKER_VALUE"
+  compile "godep-ld-symbol-value" ${cache} ${env_dir}
+  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture ."
+  assertCapturedSuccess
+  assertCompileBinaryExists
+  assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
+}
+
+# Older versions of Go have a different format for specifying linked flags
+testDetectGodepLDSymbolGo14Value() {
+  detect "godep-ld-symbol-value-go14"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepLDSymbolGo14Value() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "main.fixture" > "${env_dir}/GO_LINKER_SYMBOL"
+  echo "fixture" > "${env_dir}/GO_LINKER_VALUE"
+  compile "godep-ld-symbol-value-go14" ${cache} ${env_dir}
+  assertCaptured "Running: godep go install -v -tags heroku -ldflags -X main.fixture fixture ."
+  assertCaptured "Deprecated or unsupported version of go"
+  assertCapturedSuccess
+  assertCompileBinaryExists
+  assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
+}
+
 testDetectGodepBasicApp() {
   detect "godep-basic"
   assertCaptured "Go"
@@ -14,6 +126,7 @@ testCompileGodepBasicApp() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
+  assertCompileBinaryExists
 }
 
 testDetectGovendorBasicApp() {
@@ -29,6 +142,7 @@ testCompileGovendorBasicApp() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
+  assertCompileBinaryExists
 }
 
 testDetectGodepOldWorkspaceApp() {
@@ -44,6 +158,7 @@ testCompileGodepOldWorkspaceApp() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
+  assertCompileBinaryExists
 }
 
 testDetectGodepVendorApp() {
@@ -59,8 +174,24 @@ testCompileGodepVendorApp() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
+  assertCompileBinaryExists
 }
 
+testDetectGodepPackageSpecApp() {
+  detect "godep-package-spec"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepPackageSpecApp() {
+  compile "godep-package-spec"
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ./cmd/..."
+  assertNotCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture/cmd/fixture"
+  assertCapturedSuccess
+  assertCompileBinaryExists
+}
 
 # Utils
 
@@ -118,6 +249,10 @@ release() {
 
 assertFile() {
   assertEquals "$1" "$(cat ${compile_dir}/$2)"
+}
+
+assertCompileBinaryExists() {
+  assertTrue "Compiled binary exists" "[ -x ${compile_dir}/bin/fixture ]"
 }
 
 source $(pwd)/test/shunit2
