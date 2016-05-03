@@ -187,9 +187,9 @@ then
     name=$(<$f jq -r .rootPath)
     if [ "$name" = "null" -o -z "$name" ]
     then
-        err 'The "rootPath" field not specified in "vendor/vendor.json".'
+        err "The 'rootPath' field is not specified in 'vendor/vendor.json'."
         err "'rootPath' must be set to the root package name used by your repository."
-        err "Recent versions of govendor add this field a1utomatically, please upgrade"
+        err "Recent versions of govendor add this field automatically, please upgrade"
         err "and re-run 'govendor init'."
         err ""
         err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
