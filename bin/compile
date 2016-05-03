@@ -150,7 +150,6 @@ if [ ! -z "$env_dir" ]
 then
     mkdir -p "$env_dir"
     env_dir=$(cd "$env_dir/" && pwd)
-    #
   for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION
     do
         if [ -f "$env_dir/$key" ]
