@@ -6,7 +6,6 @@ Re-did the tests to use the same docker based testing that the nodejs buildpack 
 in a few minor changes in bin/compile. These are:
     1. warn goes to stdout, not stderr
     1. a new function 'err' writes to stderr (in red)
-    1. a link to /app/code was failing in end_dir handling and I have no idea why it's there
     1. 'warn'ing that used to exit 1 after now 'err' instead
     1. UNSET VendorExperiment if a Godeps/_workspace/src directory exists
     1. installs now 2>&1
