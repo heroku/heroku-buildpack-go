@@ -10,6 +10,7 @@ in a few minor changes in bin/compile. These are:
     1. UNSET VendorExperiment if a Godeps/_workspace/src directory exists
     1. installs now 2>&1
 These are essentially all cleanups.
+Add LICENSE files for jq and godep, which this buildpack bundles.
 
 ## v34 (2016-04-25)
 
