@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v35 (2016-05-05)
+
 Re-did the tests to use the same docker based testing that the nodejs buildpack uses. Added tests for most bits of the buildpack. This resulted
 in a few minor changes in bin/compile. These are:
     1. warn goes to stdout, not stderr
