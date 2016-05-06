@@ -1,6 +1,62 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGodepMassageVendor() {
+  detect "godep-massage-vendor"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepMassageVendor() {
+  compile "godep-massage-vendor"
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku . github.com/heroku/fixture/vendor/github.com/mattes/migrate"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattn/go-isatty"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/shiena/ansicolor"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/fatih/color"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/migrate/direction"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/file"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/bash"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/gocql/gocql/lru"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/golang/snappy"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/hailocab/go-hostpool"
+  assertCaptured "github.com/heroku/fixture/vendor/gopkg.in/inf.v0"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/go-sql-driver/mysql"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/gocql/gocql"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/mysql"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/lib/pq/oid"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/lib/pq"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/cassandra"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/postgres"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattn/go-sqlite3"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/pipe"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/sqlite3"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/migrate"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryExists "migrate"
+}
+
+testDetectGodepWithPackageNames() {
+  detect "godep-with-package-names"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepWithPackageNames() {
+  compile "godep-with-package-names"
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertNotCaptured "Installing package '.' (default)"
+  assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/pkg"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/heroku/slog"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "pkg"
+}
+
 testDetectGodepCGOBasic() {
   detect "godep-cgo-basic"
   assertCaptured "Go"
@@ -13,7 +69,7 @@ testCompileGodepCGOB() {
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGodepDevelGo() {
@@ -30,7 +86,7 @@ testCompileGodepDevelGo() {
   assertCaptured "Installed Go for linux/amd64"
   assertCaptured "go version devel +15f7a66"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
   assertTrue "Binary has the right value" '[[ "$(${compile_dir}/bin/fixture)" == *"devel +15f7a66"* ]]'
 }
 
@@ -89,7 +145,7 @@ testCompileGBVendor() {
   assertCaptured "cmd/fixture"
   assertCaptured "Post Compile Cleanup"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGBBasic() {
@@ -106,7 +162,7 @@ testCompileGBBasic() {
   assertCaptured "cmd/fixture"
   assertCaptured "Post Compile Cleanup"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGodepLDSymbolValue() {
@@ -122,7 +178,7 @@ testCompileGodepLDSymbolValue() {
   compile "godep-ld-symbol-value" ${cache} ${env_dir}
   assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture ."
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
   assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
 }
 
@@ -141,7 +197,7 @@ testCompileGodepLDSymbolGo14Value() {
   assertCaptured "Running: godep go install -v -tags heroku -ldflags -X main.fixture fixture ."
   assertCaptured "Deprecated or unsupported version of go"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
   assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
 }
 
@@ -158,7 +214,7 @@ testCompileGodepBasic() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGovendorBasic() {
@@ -174,7 +230,7 @@ testCompileGovendorBasic() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGodepOldWorkspace() {
@@ -190,7 +246,7 @@ testCompileGodepOldWorkspace() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGodepVendor() {
@@ -206,7 +262,7 @@ testCompileGodepVendor() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 testDetectGodepPackageSpec() {
@@ -222,7 +278,7 @@ testCompileGodepPackageSpec() {
   assertNotCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture/cmd/fixture"
   assertCapturedSuccess
-  assertCompileBinaryExists
+  assertCompiledBinaryExists
 }
 
 # Utils
@@ -283,8 +339,10 @@ assertFile() {
   assertEquals "$1" "$(cat ${compile_dir}/$2)"
 }
 
-assertCompileBinaryExists() {
-  assertTrue "Compiled binary exists" "[ -x ${compile_dir}/bin/fixture ]"
+assertCompiledBinaryExists() {
+  local name=${1:-fixture}
+  local tgt="${compile_dir}/bin/${name}"
+  assertTrue "Compiled binary (${tgt}) exists" "[ -x ${tgt} ]"
 }
 
 source $(pwd)/test/shunit2

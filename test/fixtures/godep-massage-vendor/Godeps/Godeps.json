@@ -1,0 +1,121 @@
+{
+	"ImportPath": "github.com/heroku/fixture",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Packages": [
+		".",
+		"github.com/mattes/migrate"
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/fatih/color",
+			"Comment": "v0.1-10-g8640971",
+			"Rev": "8640971291e54b520f781270275b7ed8762ac909"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.2-171-g267b128",
+			"Rev": "267b128680c46286b9ca13475c3cca5de8f79bd7"
+		},
+		{
+			"ImportPath": "github.com/gocql/gocql",
+			"Comment": "1st_gen_framing-357-gcddf562",
+			"Rev": "cddf562e0697543762f743d7e73458346f4fcae4"
+		},
+		{
+			"ImportPath": "github.com/gocql/gocql/lru",
+			"Comment": "1st_gen_framing-357-gcddf562",
+			"Rev": "cddf562e0697543762f743d7e73458346f4fcae4"
+		},
+		{
+			"ImportPath": "github.com/golang/snappy",
+			"Rev": "774a97396f7bfa4165e9dcf4bfa0747ea3edcc02"
+		},
+		{
+			"ImportPath": "github.com/hailocab/go-hostpool",
+			"Rev": "be8d763da234fdc1ffbf8c3149c308db31fbf894"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Comment": "go1.0-cutoff-26-gf7ea31d",
+			"Rev": "f7ea31d05cd1cccff3ba98af46ccc261d4ff3fdd"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "go1.0-cutoff-26-gf7ea31d",
+			"Rev": "f7ea31d05cd1cccff3ba98af46ccc261d4ff3fdd"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/driver",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/driver/bash",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/driver/cassandra",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/driver/mysql",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/driver/postgres",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/driver/sqlite3",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/file",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/migrate",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/migrate/direction",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattes/migrate/pipe",
+			"Comment": "v1.2.0-46-ge351ab2",
+			"Rev": "e351ab27b9642dec8e72c966a35bac3dd1e0004d"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-isatty",
+			"Rev": "7fcbc72f853b92b5720db4a6b8482be612daef24"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Comment": "v1.1.0-62-g467f50b",
+			"Rev": "467f50b0c026317ad28fc2c0a08aab6f755cfc7a"
+		},
+		{
+			"ImportPath": "github.com/shiena/ansicolor",
+			"Rev": "d445752f6f66f9cd987722f109149f6799cdf1de"
+		},
+		{
+			"ImportPath": "gopkg.in/inf.v0",
+			"Rev": "3887ee99ecf07df5b447e9b00d9c0b2adaa9f3e4"
+		}
+	]
+}

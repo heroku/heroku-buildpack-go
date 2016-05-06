@@ -1,0 +1,14 @@
+{
+	"ImportPath": "github.com/heroku/fixture",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v62",
+	"Packages": [
+	  "github.com/heroku/fixture/pkg"
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/heroku/slog",
+			"Rev": "7746152d93404575df4efa59a29adb8c168c464a"
+		}
+	]
+}
