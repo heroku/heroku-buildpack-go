@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v36 (2016-05-06)
+
+Fix a bug in vendor path massaging
+
 ## v35 (2016-05-05)
 
 Re-did the tests to use the same docker based testing that the nodejs buildpack uses. Added tests for most bits of the buildpack. This resulted
