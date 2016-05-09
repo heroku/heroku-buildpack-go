@@ -139,7 +139,6 @@ testDetectGBVendor() {
 testCompileGBVendor() {
   compile "gb-vendor"
   assertCaptured "Installing go"
-  assertCaptured "GB support is in beta"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
   assertCaptured "cmd/fixture"
@@ -156,7 +155,6 @@ testDetectGBBasic() {
 testCompileGBBasic() {
   compile "gb-basic"
   assertCaptured "Installing go"
-  assertCaptured "GB support is in beta"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
   assertCaptured "cmd/fixture"
