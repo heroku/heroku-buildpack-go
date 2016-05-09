@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## v37 (2016-05-09)
+
+Bump GB to 0.4.1, remove beta warning
+
 ## v36 (2016-05-06)
 
 Fix a bug in vendor path massaging

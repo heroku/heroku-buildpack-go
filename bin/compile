@@ -353,13 +353,7 @@ case $TOOL in
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
     gb)
-        warn ""
-        warn "GB support is in beta"
-        warn "Please see https://devcenter.heroku.com/articles/go-dependencies-via-gb for more info"
-        warn "For support please file a support issue: https://help.heroku.com"
-        warn ""
-
-        gbver="0.4.0"
+        gbver="0.4.1"
         GOPATH="$cache/gb/$gbver" export GOPATH
         PATH=$GOPATH/bin:$GOROOT/bin:$PATH export PATH
         cp="$GOPATH/src/github.com/constabulary"
