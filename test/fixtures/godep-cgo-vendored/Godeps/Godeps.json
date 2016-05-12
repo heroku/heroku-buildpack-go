@@ -1,0 +1,11 @@
+{
+	"ImportPath": "github.com/heroku/fixture",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v66",
+	"Deps": [
+		{
+			"ImportPath": "github.com/hillu/go-yara",
+			"Rev": "6323e3e0cb0d27f7948df66e17b3aac66f2ff2ef"
+		}
+	]
+}
