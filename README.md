@@ -111,11 +111,13 @@ $ make test
 
 ## Using with cgo
 
-This buildpack supports building with C dependencies via [cgo][cgo]. You can set
-config vars to specify CGO flags to specify paths for vendored dependencies. For
-example, if you added C headers to and `includes` directory, add the config var
-`CGO_CFLAGS` with the value `-I/app/code/includes` and include the relevant
-header files in `includes/` in your app.
+The buildpack supports building with C dependencies via [cgo][cgo]. You can set
+config vars to specify CGO flags to specify paths for vendored dependencies. The
+literal text of `${build_dir}` will be replaced with the directory the build is
+happening in. For example, if you added C headers to an `includes/` directory,
+add the following config to your app: `heroku config:set CGO_CFLAGS='-I${
+build_dir}/includes'`. Note the used of `''` to ensure they are not converted to
+local environment variables
 
 ## Using a development version of Go
 

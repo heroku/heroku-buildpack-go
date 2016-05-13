@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGodepCGOVendored(){
+  detect "godep-cgo-vendored"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+
+testCompileCGOVendored() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo '-I${build_dir}/vendor/include' > "${env_dir}/CGO_CFLAGS"
+  echo '-L${build_dir}/vendor/lib -lyara' > "${env_dir}/CGO_LDFLAGS"
+  compile "godep-cgo-vendored" ${cache} ${env_dir}
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/hillu/go-yara"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testDetectGodepMassageVendor() {
   detect "godep-massage-vendor"
   assertCaptured "Go"
