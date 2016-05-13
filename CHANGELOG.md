@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+## v38 (2016-05-13)
+
+Add '${build_dir}' substitution to build time environment variables. This is mainly useful for CGO support of vendored libs/includes
+No longer set GOMAXPROCS defaults for go1.5+
+
 ## v37 (2016-05-09)
 
 Bump GB to 0.4.1, remove beta warning
