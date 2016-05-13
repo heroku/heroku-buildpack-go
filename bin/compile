@@ -59,7 +59,6 @@ urlfor() {
 }
 
 DEFAULT_GO_VERSION="go1.6"
-
 # Expand to supported versions of Go, (e.g. expand "go1.5" to latest release go1.5.2)
 # All specific or other versions, take as is.
 expand_ver() {
@@ -385,4 +384,19 @@ rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
-cp $buildpack/vendor/concurrency.sh $build/.profile.d/
+
+# For older version of Go we need to keep concurrency.sh
+need_concurrency() {
+  case $1 in
+    go1.6*|go1.5*)
+      return 1
+      ;;
+    *)
+      return 0
+      ;;
+  esac
+}
+if need_concurrency ${ver};
+  then
+  cp $buildpack/vendor/concurrency.sh $build/.profile.d/
+fi

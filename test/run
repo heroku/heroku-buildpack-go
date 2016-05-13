@@ -1,12 +1,23 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGodepBasicGo14() {
+  detect "godep-basic-go14"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepBasicGo14() {
+  compile "godep-basic-go14"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileExists ".profile.d/concurrency.sh"
+}
+
 testDetectGodepCGOVendored(){
   detect "godep-cgo-vendored"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-
 testCompileCGOVendored() {
   local cache=$(mktmpdir)
   local env_dir=$(mktmpdir)
@@ -233,6 +244,7 @@ testCompileGodepBasic() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+  assertFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
 testDetectGovendorBasic() {
@@ -355,6 +367,18 @@ release() {
 
 assertFile() {
   assertEquals "$1" "$(cat ${compile_dir}/$2)"
+}
+
+assertFileDoesNotExist() {
+  local name=${1}
+  local tgt="${compile_dir}/${name}"
+  assertTrue "File ${name} does not exist" "[ ! -f ${tgt} ]"
+}
+
+assertFileExists() {
+  local name=${1}
+  local tgt="${compile_dir}/${name}"
+  assertTrue "File ${name} exists" "[ -f ${tgt} ]"
 }
 
 assertCompiledBinaryExists() {
