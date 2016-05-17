@@ -334,13 +334,30 @@ case $TOOL in
         fi
     ;;
     govendor)
-        GOBIN=$build/bin export GOBIN
-        GOPATH=$build/.heroku/go export GOPATH
-        PATH=$GOROOT/bin:$PATH
+        govendorVer="1.0.2"
+        govendorPath="${cache}/govendor/${govendorVer}/bin"
+        govendorBin="${govendorPath}/govendor"
+        if test -d "${govendorBin}"
+        then
+          step "Using govendor v${govendorVer}"
+        else
+          rm -rf "${cache}/govendor"
+          mkdir -p "${govendorPath}"
+          start "Installing govendor v${govendorVer}"
+            $CURL "https://github.com/kardianos/govendor/releases/download/v${govendorVer}/govendor_linux_amd64" > "${govendorBin}"
+            chmod a+x "${govendorBin}"
+          finished
 
-        p=$GOPATH/src/$name
-        mkdir -p $p
-        cp -R $build/* $p
+        fi
+
+        PATH="${govendorPath}:$PATH"
+        GOBIN="${build}/bin" export GOBIN
+        GOPATH="${build}/.heroku/go" export GOPATH
+        PATH="$GOROOT/bin:$PATH"
+
+        p="$GOPATH/src/${name}"
+        mkdir -p ${p}
+        cp -R ${build}/* ${p}
 
         pkgs=$(<$build/vendor/vendor.json jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')
         handleDefaultPkgSpec
@@ -348,6 +365,9 @@ case $TOOL in
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd $p
         massagePkgSpecForVendor
+
+        step "Fetching any unsaved dependencies (govendor sync)"
+        govendor sync
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;

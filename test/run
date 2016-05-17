@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGovendorExcluded() {
+  detect "govendor-excluded"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompuleGovendorExcluded() {
+  compile "govendor-excluded"
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Installing govendor"
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "Fetching any unsaved dependencies (govendor sync)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/heroku/slog"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testDetectGodepBasicGo14() {
   detect "godep-basic-go14"
   assertCaptured "Go"

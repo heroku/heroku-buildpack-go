@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "bAVB51/NhNafH6aI/zDDRD5e9NM=",
+			"path": "github.com/heroku/slog",
+			"revision": "7746152d93404575df4efa59a29adb8c168c464a",
+			"revisionTime": "2015-01-10T00:16:55Z"
+		}
+	],
+	"rootPath": "github.com/heroku/fixture"
+}

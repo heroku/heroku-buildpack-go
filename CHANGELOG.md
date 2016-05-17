@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Support govendor sync.
+
 ## v38 (2016-05-13)
 
 Add '${build_dir}' substitution to build time environment variables. This is mainly useful for CGO support of vendored libs/includes
