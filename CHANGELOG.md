@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v39 (2016-05-17)
+
 Support govendor sync.
 
 ## v38 (2016-05-13)
