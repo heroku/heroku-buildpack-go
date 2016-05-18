@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v40 (2016-05-18)
+
 Bump govendor to 1.0.3
 
 ## v39 (2016-05-17)
