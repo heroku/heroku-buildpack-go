@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Bump govendor to 1.0.3
+
 ## v39 (2016-05-17)
 
 Support govendor sync.
