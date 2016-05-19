@@ -9,6 +9,18 @@ RED='\033[1;31m'
 NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
+# For older version of Go we need to keep concurrency.sh
+needConcurrency() {
+  case $1 in
+    go1.6*|go1.5*)
+      return 1
+      ;;
+    *)
+      return 0
+      ;;
+  esac
+}
+
 handleDefaultPkgSpec() {
     if [ "$pkgs" = "default" ];
     then
@@ -40,7 +52,7 @@ massagePkgSpecForVendor() {
 # starting with Go version 1.2.2. Return the old
 # location for known old versions and the new
 # location otherwise.
-urlfor() {
+urlFor() {
     local ver=$1
     case $ver in
     go1.0*|go1.1beta*|go1.1rc*|go1.1|go1.1.*|go1.2beta*|go1.2rc*|go1.2|go1.2.1)
@@ -61,7 +73,7 @@ urlfor() {
 DEFAULT_GO_VERSION="go1.6"
 # Expand to supported versions of Go, (e.g. expand "go1.5" to latest release go1.5.2)
 # All specific or other versions, take as is.
-expand_ver() {
+expandVer() {
   case $1 in
     go1.6)
       echo "go1.6.2"
@@ -79,8 +91,8 @@ expand_ver() {
 }
 
 # Report deprecated versions to user
-# Use after expand_ver
-report_ver() {
+# Use after expandVer
+reportVer() {
   case $1 in
     go1.6.2|go1.5.4)
       # Noop
@@ -212,8 +224,8 @@ else
     exit 1
 fi
 
-ver=$(expand_ver $ver)
-url=${GOURL:-$(urlfor $ver)}
+ver=$(expandVer $ver)
+url=${GOURL:-$(urlFor $ver)}
 
 if test -e $build/bin && ! test -d $build/bin
 then
@@ -223,7 +235,7 @@ then
     exit 1
 fi
 
-report_ver $ver
+reportVer $ver
 
 if test -d $cache/$ver/go
 then
@@ -238,8 +250,8 @@ else
     finished
     case $ver in  # Rename 'go-<full sha>' (we have the short sha) to 'go'
       devel*)
-        bver=$(expand_ver $DEFAULT_GO_VERSION)
-        burl=$(urlfor $bver)
+        bver=$(expandVer $DEFAULT_GO_VERSION)
+        burl=$(urlFor $bver)
         start "Installing bootstrap Go version $bver"
             $CURL $burl | tar zxf -
         finished
@@ -405,18 +417,7 @@ rm -rf $build/.heroku
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
 
-# For older version of Go we need to keep concurrency.sh
-need_concurrency() {
-  case $1 in
-    go1.6*|go1.5*)
-      return 1
-      ;;
-    *)
-      return 0
-      ;;
-  esac
-}
-if need_concurrency ${ver};
+if needConcurrency ${ver};
   then
   cp $buildpack/vendor/concurrency.sh $build/.profile.d/
 fi
