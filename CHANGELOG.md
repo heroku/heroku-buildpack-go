@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+GB: .go files only in src/ aren't valid and we shouldn't detect them as such. So -mindepth 2 added to GB detection
+Make detection and compile ordering the same
+
 ## v40 (2016-05-18)
 
 Bump govendor to 1.0.3

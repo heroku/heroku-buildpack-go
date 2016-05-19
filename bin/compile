@@ -169,10 +169,6 @@ then
     fi
     name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
     ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
-elif (test -d "$build/src" && test -n "$(find "$build/src" -type f -name '*.go' | sed 1q)")
-then
-    TOOL="gb"
-    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
 elif test -f "$build/vendor/vendor.json"
 then
     f="$build/vendor/vendor.json"
@@ -206,6 +202,10 @@ then
       warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
       warn ""
     fi
+elif (test -d "$build/src" && test -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)")
+then
+    TOOL="gb"
+    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
 else
     err "Godep, GB or govendor are required. For instructions:"
     err "https://devcenter.heroku.com/articles/go-support"
