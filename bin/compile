@@ -21,7 +21,7 @@ RED='\033[1;31m'
 NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
-DEFAULT_GO_VERSION="go1.6"
+DefaultGoVersion="go1.6"
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
@@ -167,28 +167,30 @@ then
     done
 fi
 
-if test -f "$build/Godeps/Godeps.json"
+godepsJSON="${build}/Godeps/Godeps.json"
+vendorJSON="${build}/vendor/vendor.json"
+
+if test -f "${godepsJSON}"
 then
     TOOL="godep"
     step "Checking Godeps/Godeps.json file."
-    if ! jq -r . < "$build/Godeps/Godeps.json" > /dev/null
+    if ! jq -r . < "${godepsJSON}" > /dev/null
     then
         err "Bad Godeps/Godeps.json file"
         exit 1
     fi
-    name=$(<$build/Godeps/Godeps.json jq -r .ImportPath)
-    ver=$(<$build/Godeps/Godeps.json jq -r .GoVersion)
-elif test -f "$build/vendor/vendor.json"
+    name=$(<${godepsJSON} jq -r .ImportPath)
+    ver=$(<${godepsJSON} jq -r .GoVersion)
+elif test -f "${vendorJSON}"
 then
-    f="$build/vendor/vendor.json"
     TOOL="govendor"
     step "Checking vendor/vendor.json file."
-    if ! jq -r . < "$f" > /dev/null
+    if ! jq -r . < "${vendorJSON}" > /dev/null
     then
         err "Bad vendor/vendor.json file"
         exit 1
     fi
-    name=$(<$f jq -r .rootPath)
+    name=$(<${vendorJSON} jq -r .rootPath)
     if [ "$name" = "null" -o -z "$name" ]
     then
         err "The 'rootPath' field is not specified in 'vendor/vendor.json'."
@@ -200,13 +202,13 @@ then
         exit 1
 
     fi
-    ver=$(<$f jq -r .heroku.goVersion)
-    if [ "$ver" =  "null" -o -z "$ver" ]
+    ver=$(<${vendorJSON} jq -r .heroku.goVersion)
+    if [ "${ver}" =  "null" -o -z "${ver}" ]
     then
-      ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+      ver=${GOVERSION:-$DefaultGoVersion}
       warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
       warn ""
-      warn "Defaulting to $ver"
+      warn "Defaulting to ${ver}"
       warn ""
       warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
       warn ""
@@ -214,7 +216,7 @@ then
 elif (test -d "$build/src" && test -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)")
 then
     TOOL="gb"
-    ver=${GOVERSION:-$DEFAULT_GO_VERSION}
+    ver=${GOVERSION:-$DefaultGoVersion}
 else
     err "Godep, GB or govendor are required. For instructions:"
     err "https://devcenter.heroku.com/articles/go-support"
@@ -247,7 +249,7 @@ else
     finished
     case $ver in  # Rename 'go-<full sha>' (we have the short sha) to 'go'
       devel*)
-        bver=$(expandVer $DEFAULT_GO_VERSION)
+        bver=$(expandVer $DefaultGoVersion)
         burl=$(urlFor $bver)
         start "Installing bootstrap Go version $bver"
             $CURL $burl | tar zxf -
