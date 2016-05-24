@@ -22,6 +22,7 @@ NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 DefaultGoVersion="go1.6"
+GlideVersion="0.10.2"
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
@@ -160,6 +161,39 @@ reportVer() {
   esac
 }
 
+ensureGlide() {
+    local gv=${1}
+    local gvPath="${cache}/glide/${gv}/bin"
+    local gvBin="${gvPath}/glide"
+
+    if test -d "${gvPath}"
+    then
+        step "Using glide v${gv}"
+    else
+      rm -rf "${cache}/govendor"
+      mkdir -p "${gvPath}"
+      start "Installing glide v${gv}"
+        $CURL "https://github.com/Masterminds/glide/releases/download/${gv}/glide-${gv}-linux-amd64.tar.gz" | tar -zxf - --strip-components=1 -C ${gvPath}
+        chmod a+x ${gvBin}
+      finished
+    fi
+
+    PATH="${gvPath}:${PATH}"
+}
+
+setGoVersionFromEnvironment() {
+  if test -z "${GOVERSION}"
+  then
+    warn ""
+    warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
+    warn ""
+    warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
+    warn "for future builds"
+    warn ""
+  fi
+  ver=${GOVERSION:-$DefaultGoVersion}
+}
+
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
@@ -178,6 +212,7 @@ fi
 
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
+glideYAML="${build}/glide.yaml"
 
 if test -f "${godepsJSON}"
 then
@@ -222,10 +257,14 @@ then
       warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
       warn ""
     fi
+elif test -f "${glideYAML}"
+then
+    TOOL="glide"
+    setGoVersionFromEnvironment
 elif (test -d "$build/src" && test -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)")
 then
     TOOL="gb"
-    ver=${GOVERSION:-$DefaultGoVersion}
+    setGoVersionFromEnvironment
 else
     err "Godep, GB or govendor are required. For instructions:"
     err "https://devcenter.heroku.com/articles/go-support"
@@ -279,7 +318,7 @@ else
 fi
 
 mkdir -p $build/bin
-GOROOT=$cache/$ver/go export GOROOT
+export GOROOT="${cache}/${ver}/go"
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 FLAGS=(-tags heroku)
@@ -297,7 +336,7 @@ then
 fi
 
 # GB installation
-case $TOOL in
+case ${TOOL} in
     godep)
         GOBIN=$build/bin export GOBIN
         GOPATH=$build/.heroku/go export GOPATH
@@ -400,6 +439,30 @@ case $TOOL in
 
         step "Fetching any unsaved dependencies (govendor sync)"
         govendor sync
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
+    glide)
+        ensureGlide ${GlideVersion}
+
+        export GOBIN="${build}/bin"
+        export GOPATH="${build}/.heroku/go"
+        PATH="${GOROOT}/bin:${PATH}"
+
+        cd "${build}"
+        name=$(glide name 2>/dev/null)
+        p="${GOPATH}/src/${name}"
+        mkdir -p "${p}"
+        cp -R "${build}/"* "${p}"
+
+        pkgs="."
+        handleDefaultPkgSpec
+        unset GIT_DIR
+        cd $p
+        massagePkgSpecForVendor
+
+        step "Fetching any unsaved dependencies (glide install)"
+        glide install 2>&1
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;

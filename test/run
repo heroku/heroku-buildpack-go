@@ -1,6 +1,54 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGlideWithOutDeps() {
+  detect "glide-wo-deps"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGlideWithOutDeps() {
+  compile "glide-wo-deps"
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testDetectGlideWithDeps() {
+  detect "glide-with-deps"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGlideWithDeps() {
+  compile "glide-with-deps"
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testDetectGlideSimple() {
+  detect "glide-simple"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGlideSimple() {
+  compile "glide-simple"
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testDetectGodepVendorGo17() {
   detect "godep-vendor-go17"
   assertCaptured "Go"
