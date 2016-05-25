@@ -1,0 +1,15 @@
+package: github.com/heroku/fixture
+import:
+- package: github.com/heroku/slog
+- package: github.com/mattes/migrate
+- package: github.com/fatih/color
+- package: github.com/go-sql-driver/mysql
+- package: github.com/gocql/gocql
+- package: github.com/lib/pq
+- package: github.com/mattn/go-sqlite3
+- package: github.com/golang/snappy
+- package: github.com/hailocab/go-hostpool
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: gopkg.in/inf.v0

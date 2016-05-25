@@ -1,6 +1,49 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGlideMassageVendor() {
+  detect "glide-massage-vendor"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGlideMassageVendor() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo '. github.com/mattes/migrate' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
+  compile "glide-massage-vendor" ${cache} ${env_dir}
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "Running: go install -v -tags heroku . github.com/heroku/fixture/vendor/github.com/mattes/migrate"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/fatih/color/vendor/github.com/mattn/go-colorable"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/fatih/color/vendor/github.com/mattn/go-isatty"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/fatih/color"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/migrate/direction"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/file"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/bash"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/gocql/gocql/internal/lru"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/golang/snappy"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/hailocab/go-hostpool"
+  assertCaptured "github.com/heroku/fixture/vendor/gopkg.in/inf.v0"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/go-sql-driver/mysql"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/gocql/gocql"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/mysql"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/lib/pq/oid"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/lib/pq"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/cassandra"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/postgres"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattn/go-sqlite3"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/pipe"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver/sqlite3"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/driver"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate/migrate"
+  assertCaptured "github.com/heroku/fixture/vendor/github.com/mattes/migrate"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryExists "migrate"
+}
+
 testDetectGlideWithOutDeps() {
   detect "glide-wo-deps"
   assertCaptured "Go"

@@ -60,18 +60,27 @@ needConcurrency() {
 }
 
 handleDefaultPkgSpec() {
-    if [ "$pkgs" = "default" ];
-    then
-        warn "Installing package '.' (default)"
-        if [ "$TOOL" = "govendor" ]
-        then
-          warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
-          warn ""
-          warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
-          warn ""
-        fi
-        pkgs="."
-    fi
+  if [ "${pkgs}" = "default" ];
+  then
+    warn "Installing package '.' (default)"
+    warn ""
+    case "${TOOL}" in
+      govendor)
+        warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
+        warn ""
+        warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+      ;;
+      glide)
+        warn "To install a different package spec for the next build run:"
+        warn ""
+        warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
+        warn ""
+        warn "For more details see: https://devcenter.heroku.com/articles/FIXME"
+      ;;
+    esac
+    warn ""
+    pkgs="."
+  fi
 }
 
 massagePkgSpecForVendor() {
@@ -197,15 +206,15 @@ setGoVersionFromEnvironment() {
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
-if [ ! -z "$env_dir" ]
+if [ ! -z "${env_dir}" ]
 then
-    mkdir -p "$env_dir"
-    env_dir=$(cd "$env_dir/" && pwd)
-  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION
+    mkdir -p "${env_dir}"
+    env_dir=$(cd "${env_dir}/" && pwd)
+  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_INSTALL_PACKAGE_SPEC
     do
-        if [ -f "$env_dir/$key" ]
+        if [ -f "${env_dir}/${key}" ]
         then
-            export "$key=$(cat "$env_dir/$key" | sed -e "s:\${build_dir}:${build}:")"
+            export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
         fi
     done
 fi
@@ -322,17 +331,17 @@ export GOROOT="${cache}/${ver}/go"
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 FLAGS=(-tags heroku)
-if [ -n "$GO_LINKER_SYMBOL" -a -n "$GO_LINKER_VALUE" ]
+if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]
 then
     case $ver in
     go1.5*|go1.6*|go1.7*)
-        xval="$GO_LINKER_SYMBOL=$GO_LINKER_VALUE"
+        xval="${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}"
         ;;
     *)
-        xval="$GO_LINKER_SYMBOL $GO_LINKER_VALUE"
+        xval="${GO_LINKER_SYMBOL} ${GO_LINKER_VALUE}"
         ;;
     esac
-    FLAGS=(${FLAGS[@]} -ldflags "-X $xval")
+    FLAGS=(${FLAGS[@]} -ldflags "-X ${xval}")
 fi
 
 # GB installation
@@ -435,10 +444,11 @@ case ${TOOL} in
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd $p
-        massagePkgSpecForVendor
 
         step "Fetching any unsaved dependencies (govendor sync)"
         govendor sync
+        massagePkgSpecForVendor
+
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
@@ -455,28 +465,31 @@ case ${TOOL} in
         mkdir -p "${p}"
         cp -R "${build}/"* "${p}"
 
-        pkgs="."
+        pkgs=${GO_INSTALL_PACKAGE_SPEC-"default"}
         handleDefaultPkgSpec
+
         unset GIT_DIR
         cd $p
-        massagePkgSpecForVendor
 
         step "Fetching any unsaved dependencies (glide install)"
         glide install 2>&1
+
+        massagePkgSpecForVendor
+
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
     gb)
         gbver="0.4.1"
-        GOPATH="$cache/gb/$gbver" export GOPATH
-        PATH=$GOPATH/bin:$GOROOT/bin:$PATH export PATH
-        cp="$GOPATH/src/github.com/constabulary"
-        if test -d "$GOPATH"
+        export GOPATH="${cache}/gb/${gbver}"
+        PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+        cp="${GOPATH}/src/github.com/constabulary"
+        if test -d "${GOPATH}"
         then
-            step "Using GB $gbver"
+            step "Using GB ${gbver}"
         else
-            rm -rf "$cache/gb/*" # cruft bad
-            mkdir -p "$cp"
+            rm -rf "${cache}/gb/*" # cruft bad
+            mkdir -p "${cp}"
             cd $cp
             start "Installing GB v$gbver"
             $CURL "https://codeload.github.com/constabulary/gb/tar.gz/v$gbver" | tar zxf -

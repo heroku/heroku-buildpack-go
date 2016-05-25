@@ -1,0 +1,28 @@
+hash: 305ab5db23b208747f5f7659ee159beae12ce993018914897acd61ccf5fcac47
+updated: 2016-05-25T11:42:16.044602286-07:00
+imports:
+- name: github.com/fatih/color
+  version: 533cd7fd8a85905f67a1753afb4deddc85ea174f
+- name: github.com/go-sql-driver/mysql
+  version: 7ebe0a500653eeb1859664bed5e48dec1e164e73
+- name: github.com/gocql/gocql
+  version: 7218e81e87ca6f3d2285c56e0aae80bc0d8fb655
+- name: github.com/golang/snappy
+  version: d6668316e43571d7dde95be6fd077f96de002f8b
+- name: github.com/hailocab/go-hostpool
+  version: e80d13ce29ede4452c43dea11e79b9bc8a15b478
+- name: github.com/heroku/slog
+  version: 7746152d93404575df4efa59a29adb8c168c464a
+- name: github.com/lib/pq
+  version: ee1442bda7bd1b6a84e913bdb421cb1874ec629d
+- name: github.com/mattes/migrate
+  version: ce1b59bb819416ca67422929b1cb48bb342720b6
+- name: github.com/mattn/go-sqlite3
+  version: 38ee283dabf11c9cbdb968eebd79b1fa7acbabe6
+- name: golang.org/x/net
+  version: 0c607074acd38c5f23d1344dfe74c977464d1257
+  subpackages:
+  - context
+- name: gopkg.in/inf.v0
+  version: 3887ee99ecf07df5b447e9b00d9c0b2adaa9f3e4
+devImports: []
