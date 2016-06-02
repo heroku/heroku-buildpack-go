@@ -5,6 +5,7 @@
 GB: .go files only in src/ aren't valid and we shouldn't detect them as such. So -mindepth 2 added to GB detection
 Make detection and compile ordering the same
 Normalize names and location of functions
+Support go1.7beta1
 
 ## v40 (2016-05-18)
 

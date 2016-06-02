@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGodepBasicGo17() {
+  detect "godep-basic-go17"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepBasicGo17() {
+  compile "godep-basic-go17"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertCompiledBinaryOutputs "fixture" "go1.7beta1"
+}
+testCompileGodepBasicGo17WithGO15VENDOREXPERIMENT() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo '1' > "${env_dir}/GO15VENDOREXPERIMENT"
+  compile "godep-basic-go17" ${cache} ${env_dir}
+  assertCapturedError 1 "GO15VENDOREXPERIMENT is set, but is not supported by go1.7"
+}
+
 testDetectGovendorExcluded() {
   detect "govendor-excluded"
   assertCaptured "Go"
@@ -404,6 +424,12 @@ assertCompiledBinaryExists() {
   local name=${1:-fixture}
   local tgt="${compile_dir}/bin/${name}"
   assertTrue "Compiled binary (${tgt}) exists" "[ -x ${tgt} ]"
+}
+
+assertCompiledBinaryOutputs() {
+  local name=${1}
+  local output=${2}
+  capture ${compile_dir}/bin/${name}
 }
 
 source $(pwd)/test/shunit2
