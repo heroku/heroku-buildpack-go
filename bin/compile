@@ -49,7 +49,7 @@ finished() {
 # For older version of Go we need to keep concurrency.sh
 needConcurrency() {
   case $1 in
-    go1.6*|go1.5*)
+    go1.7*|go1.6*|go1.5*)
       return 1
       ;;
     *)
@@ -111,6 +111,9 @@ urlFor() {
 # All specific or other versions, take as is.
 expandVer() {
   case $1 in
+    go1.7)
+      echo "go1.7beta1"
+      ;;
     go1.6)
       echo "go1.6.2"
       ;;
@@ -130,6 +133,12 @@ expandVer() {
 # Use after expandVer
 reportVer() {
   case $1 in
+    go1.7beta*)
+      warn ""
+      warn "You are using a beta version of go."
+      warn "See https://devcenter.heroku.com/articles/go-support#go-versions for supported version information."
+      warn ""
+    ;;
     go1.6.2|go1.5.4)
       # Noop
     ;;
@@ -277,7 +286,7 @@ FLAGS=(-tags heroku)
 if [ -n "$GO_LINKER_SYMBOL" -a -n "$GO_LINKER_VALUE" ]
 then
     case $ver in
-    go1.5*|go1.6*)
+    go1.5*|go1.6*|go1.7*)
         xval="$GO_LINKER_SYMBOL=$GO_LINKER_VALUE"
         ;;
     *)
@@ -326,6 +335,17 @@ case $TOOL in
             else
                 VendorExperiment="true"
             fi
+        ;;
+        go1.7*)
+          if test -n "$GO15VENDOREXPERIMENT"
+          then
+            err ""
+            err "GO15VENDOREXPERIMENT is set, but is not supported by go1.7"
+            err "run `heroku config:unset GO15VENDOREXPERIMENT`"
+            err "before pushing again."
+            err ""
+            exit 1
+          fi
         ;;
         *)
             VendorExperiment="false"
