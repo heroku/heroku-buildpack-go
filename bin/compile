@@ -346,6 +346,7 @@ case $TOOL in
             err ""
             exit 1
           fi
+          VendorExperiment="true"
         ;;
         *)
             VendorExperiment="false"

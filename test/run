@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGodepVendorGo17() {
+  detect "godep-vendor-go17"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGodepVendorGo17() {
+  compile "godep-vendor-go17"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testDetectGodepBasicGo17() {
   detect "godep-basic-go17"
   assertCaptured "Go"
