@@ -1,3 +1,5 @@
+![travis ci](https://travis-ci.org/heroku/heroku-buildpack-go.svg?branch=master)
+
 # Heroku Buildpack: Go
 
 This is the [Heroku buildpack][buildpack] for [Go][go].
