@@ -75,7 +75,7 @@ handleDefaultPkgSpec() {
         warn ""
         warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
         warn ""
-        warn "For more details see: https://devcenter.heroku.com/articles/FIXME"
+        warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
       ;;
     esac
     warn ""
