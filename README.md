@@ -2,6 +2,8 @@
 
 # Heroku Buildpack: Go
 
+![go_buildpack](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
+
 This is the [Heroku buildpack][buildpack] for [Go][go].
 
 ## Getting Started
