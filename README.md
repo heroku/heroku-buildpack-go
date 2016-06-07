@@ -130,7 +130,7 @@ $ git push heroku master
 
 To change this buildpack, fork it on GitHub & push changes to your fork. Ensure
 that tests have been added to the `test/run` script and any corresponding fixtures to
-`test/fixutres/<fixutre name>`.
+`test/fixtures/<fixture name>`.
 
 ### Tests
 
