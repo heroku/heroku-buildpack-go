@@ -1,13 +1,12 @@
 ![travis ci](https://travis-ci.org/heroku/heroku-buildpack-go.svg?branch=master)
 
-# Heroku Buildpack: Go
+# Heroku Buildpack for Go
 
-![go_buildpack](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
+![Heroku Buildpack for Go](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
 
-This is the [Heroku buildpack][buildpack] for [Go][go].
+This is the official [Heroku buildpack][buildpack] for [Go][go].
 
 ## Getting Started
-
 
 Follow the guide at
 <https://devcenter.heroku.com/articles/getting-started-with-go>
@@ -44,8 +43,9 @@ $ git push heroku master
 
 This buildpack will detect your repository as Go if you are using either:
 
-- [Godep][godep]
 - [GB][gb]
+- [glide][glide]
+- [Godep][godep]
 - [govendor][govendor]
 
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
@@ -97,13 +97,40 @@ spec of `./...` to install.
 A tool like jq or a text editor can be used to inject these variables into
 `vendor/vendor.json`.
 
+## glide specifics
+
+The `glide.yaml` and `glide.lock` files do not allow for arbitrary metadata, so
+the buildpack relies solely on the glide command and environment variables to
+control the build process.
+
+The base package name is determined by running `glide name`.
+
+The Go version used to compile code defaults to the latest released version of Go.
+This can be overridden by the `$GOVERSION` environment variable. Setting
+`$GOVERSION` to a major version will result in the buildpack using the
+latest released minor version in that series. Setting `$GOVERSION` to a specific
+minor Go version will pin Go to that version. Examples:
+
+```console
+$ heroku config:set GOVERSION=go1.6   # Will use go1.6.X, Where X is that latest minor release in the 1.6 series
+$ heroku config:set GOVERSION=go1.5.3 # Pins to go1.5.3
+```
+
+Installation defaults to `.`. This can be overridden by setting the
+`$GO_INSTALL_PACKAGE_SPEC` environment variable to the package spec you want the
+go tool chain to install. Example:
+
+```console
+$ heroku config:set GO_INSTALL_PACKAGE_SPEC=./...
+$ git push heroku master
+```
+
+
 ## Hacking on this Buildpack
 
-To change this buildpack, fork it on GitHub. Push changes to your fork, then
-create a test app with `--buildpack YOUR_GITHUB_GIT_URL` and push to it. If you
-already have an existing app you may use `heroku config:add
-BUILDPACK_URL=YOUR_GITHUB_GIT_URL` instead of `--buildpack`.
-
+To change this buildpack, fork it on GitHub & push changes to your fork. Ensure
+that tests have been added to the `test/run` script and any corresponding fixtures to
+`test/fixutres/<fixutre name>`.
 
 ### Tests
 
@@ -163,4 +190,4 @@ into the compiled executable.
 [cgo]: http://golang.org/cmd/cgo/
 [vendor.json]: https://github.com/kardianos/vendor-spec
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
-[grp]: https://github.com/kardianos/govendor/commit/81ca4f23cab56f287e1d5be5ab920746fd6fb834
+[glide]: https://github.com/Masterminds/glide
