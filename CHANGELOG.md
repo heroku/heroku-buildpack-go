@@ -3,6 +3,7 @@
 ## Unreleased
 
 Official README image
+glide support
 
 ## v41 (2016-06-01)
 

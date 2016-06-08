@@ -1,0 +1,6 @@
+hash: b7c9f21f171e3eaff3119a98290cd79e2d52522421567662efaa78e4fd3f6f60
+updated: 2016-05-24T13:32:57.515912483-07:00
+imports:
+- name: github.com/heroku/slog
+  version: 7746152d93404575df4efa59a29adb8c168c464a
+devImports: []
