@@ -1,0 +1,3 @@
+[submodule "test/fixtures/glide-with-deps/vendor/github.com/heroku/slog"]
+	path = test/fixtures/glide-with-deps/vendor/github.com/heroku/slog
+	url = https://github.com/heroku/slog.git
