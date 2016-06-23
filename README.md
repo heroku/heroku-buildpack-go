@@ -177,6 +177,17 @@ pushing code. If `GO_LINKER_SYMBOL` is set, but `GO_LINKER_VALUE` isn't set then
 This can be used to embed the commit sha, or other build specific data directly
 into the compiled executable.
 
+## Deploying
+
+```console
+$ heroku buildkits:publish heroku/go
+$ # This tells you the new version number
+$ # Update the Changelog with it
+$ git commit -am "vXXX"
+$ git push && git push --tags
+$ # Add a changelog item
+```
+
 [go]: http://golang.org/
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [go-linker]: https://golang.org/cmd/ld/

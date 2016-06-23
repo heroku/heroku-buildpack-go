@@ -5,6 +5,7 @@
 Official README image
 glide support
 go1.7beta2 is the default for go1.7
+Release notes for internal people
 
 ## v41 (2016-06-01)
 
