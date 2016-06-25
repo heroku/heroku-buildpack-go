@@ -508,6 +508,11 @@ case ${TOOL} in
     ;;
 esac
 
+if ! test -e $build/Procfile && test -n "${name}"
+then
+  echo -e "web: $(basename $name)" >> $build/Procfile
+fi
+
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
