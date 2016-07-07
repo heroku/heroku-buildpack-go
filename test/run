@@ -388,6 +388,14 @@ testCompileGodepBasic() {
   assertFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
+testCompileGodepCreateProcfile() {
+  compile "godep-basic"
+  assertCaptured "Installing go"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFile "web: fixture" "Procfile"
+}
+
 testDetectGovendorBasic() {
   detect "govendor-basic"
   assertCaptured "Go"
@@ -402,6 +410,14 @@ testCompileGovendorBasic() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+}
+
+testCompileGovendorCreateProcfile() {
+  compile "govendor-basic"
+  assertCaptured "Installing go"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFile "web: fixture" "Procfile"
 }
 
 testDetectGodepOldWorkspace() {
