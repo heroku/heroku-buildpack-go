@@ -2,10 +2,13 @@
 
 ## Unreleased
 
+## v42 (2016-07-07)
+
 Official README image
 glide support
 go1.7beta2 is the default for go1.7
 Release notes for internal people
+Remove the need for Procfiles in simple situations
 
 ## v41 (2016-06-01)
 
