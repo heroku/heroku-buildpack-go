@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+go1.7rc1 is the default for go1.7
+
 ## v42 (2016-07-07)
 
 Official README image
