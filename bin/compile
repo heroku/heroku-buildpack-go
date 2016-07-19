@@ -149,7 +149,7 @@ reportVer() {
       warn "See https://devcenter.heroku.com/articles/go-support#go-versions for supported version information."
       warn ""
     ;;
-    go1.6.2|go1.5.4)
+    go1.6.3|go1.5.4)
       # Noop
     ;;
     devel*)
