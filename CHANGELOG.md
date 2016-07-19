@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+#v43 (2016-07-19)
+
 go1.7rc1 is the default for go1.7
 Use go1.7rc2 and go1.6.3
 
