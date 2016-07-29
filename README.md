@@ -184,8 +184,9 @@ $ heroku buildkits:publish heroku/go
 $ # This tells you the new version number
 $ # Update the Changelog with it
 $ git commit -am "vXXX"
+$ git tag vXXX
 $ git push && git push --tags
-$ # Add a changelog item
+$ # Add a heroku changelog item (if notable)
 ```
 
 [go]: http://golang.org/
