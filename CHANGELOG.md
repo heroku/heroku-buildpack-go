@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+go1.7rc5 is the default for go1.7
+
+#v44
+
 go1.7rc3 is the default for go1.7
 
 #v43 (2016-07-19)
