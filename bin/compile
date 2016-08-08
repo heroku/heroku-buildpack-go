@@ -122,7 +122,7 @@ urlFor() {
 expandVer() {
   case $1 in
     go1.7)
-      echo "go1.7rc3"
+      echo "go1.7rc5"
       ;;
     go1.6)
       echo "go1.6.3"
