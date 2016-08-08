@@ -122,7 +122,7 @@ urlFor() {
 expandVer() {
   case $1 in
     go1.7)
-      echo "go1.7rc5"
+      echo "go1.7rc6"
       ;;
     go1.6)
       echo "go1.6.3"
@@ -143,9 +143,9 @@ expandVer() {
 # Use after expandVer
 reportVer() {
   case $1 in
-    go1.7beta*)
+    go1.7*)
       warn ""
-      warn "You are using a beta version of go."
+      warn "You are using a beta/rc version of go."
       warn "See https://devcenter.heroku.com/articles/go-support#go-versions for supported version information."
       warn ""
     ;;
