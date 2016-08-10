@@ -208,6 +208,10 @@ warnGoVersionOverride() {
   then
     warn "Using \$GOVERSION override."
     warn "     \$GOVERSION = ${GOVERSION}"
+    warn ""
+    warn "If this isn't what you want please run:'"
+    warn "  heroku config:unset GOVERSION -a <app>"
+    warn ""
   fi
 }
 
