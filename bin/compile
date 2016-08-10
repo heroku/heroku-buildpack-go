@@ -203,6 +203,14 @@ setGoVersionFromEnvironment() {
   ver=${GOVERSION:-$DefaultGoVersion}
 }
 
+warnGoVersionOverride() {
+  if test ! -z "${GOVERSION}"
+  then
+    warn "Using \$GOVERSION override."
+    warn "     \$GOVERSION = ${GOVERSION}"
+  fi
+}
+
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
@@ -233,7 +241,8 @@ then
         exit 1
     fi
     name=$(<${godepsJSON} jq -r .ImportPath)
-    ver=$(<${godepsJSON} jq -r .GoVersion)
+    ver=${GOVERSION!-$(<${godepsJSON} jq -r .GoVersion)}
+    warnGoVersionOverride
 elif test -f "${vendorJSON}"
 then
     TOOL="govendor"
@@ -255,10 +264,11 @@ then
         exit 1
 
     fi
-    ver=$(<${vendorJSON} jq -r .heroku.goVersion)
+    ver=${GOVERSION:-$(<${vendorJSON} jq -r .heroku.goVersion)}
+    warnGoVersionOverride
     if [ "${ver}" =  "null" -o -z "${ver}" ]
     then
-      ver=${GOVERSION:-$DefaultGoVersion}
+      ver=${DefaultGoVersion}
       warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
       warn ""
       warn "Defaulting to ${ver}"
