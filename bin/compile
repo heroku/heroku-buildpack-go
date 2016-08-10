@@ -355,7 +355,7 @@ case ${TOOL} in
         mkdir -p $p
         cp -R $build/* $p
 
-        pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "default" end')
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "default" end')}
         handleDefaultPkgSpec
 
         case $ver in
@@ -439,7 +439,7 @@ case ${TOOL} in
         mkdir -p ${p}
         cp -R ${build}/* ${p}
 
-        pkgs=$(<$build/vendor/vendor.json jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<$build/vendor/vendor.json jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
         handleDefaultPkgSpec
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
@@ -465,7 +465,7 @@ case ${TOOL} in
         mkdir -p "${p}"
         cp -R "${build}/"* "${p}"
 
-        pkgs=${GO_INSTALL_PACKAGE_SPEC-"default"}
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
         handleDefaultPkgSpec
 
         unset GIT_DIR
