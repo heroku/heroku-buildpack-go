@@ -1,6 +1,42 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testCompileGovendorCmds() {
+  compile "govendor-cmd"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertCompiledBinaryExists "other"
+  assertCompiledBinaryOutputs "other" "other"
+}
+testCompileGovendorCmdsOverride() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
+  compile "govendor-cmd" ${cache} ${env_dir}
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertFileDoesNotExist "bin/other"
+}
+
+testCompileGodepCmds() {
+  compile "godep-cmd"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertCompiledBinaryExists "other"
+  assertCompiledBinaryOutputs "other" "other"
+}
+testCompileGodepCmdsOverride() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
+  compile "godep-cmd" ${cache} ${env_dir}
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertFileDoesNotExist "bin/other"
+}
+
 testCompileGodepBasicGo14WithGOVERSIONOverride() {
   local cache=$(mktmpdir)
   local env_dir=$(mktmpdir)
