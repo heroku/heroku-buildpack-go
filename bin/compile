@@ -245,7 +245,7 @@ then
         exit 1
     fi
     name=$(<${godepsJSON} jq -r .ImportPath)
-    ver=${GOVERSION!-$(<${godepsJSON} jq -r .GoVersion)}
+    ver=${GOVERSION:-$(<${godepsJSON} jq -r .GoVersion)}
     warnGoVersionOverride
 elif test -f "${vendorJSON}"
 then
