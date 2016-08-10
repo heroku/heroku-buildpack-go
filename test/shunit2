@@ -978,7 +978,6 @@ _shunit_extractTestFunctions()
 #------------------------------------------------------------------------------
 # main
 #
-
 # determine the operating mode
 if [ $# -eq 0 ]; then
   __shunit_script=${__SHUNIT_PARENT}
