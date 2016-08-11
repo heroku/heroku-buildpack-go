@@ -1,0 +1,9 @@
+{
+	"heroku": {
+		"goVersion": "go1.5"
+	},
+	"rootPath": "github.com/heroku/fixture",
+	"comment": "",
+	"ignore": "test",
+	"package": []
+}

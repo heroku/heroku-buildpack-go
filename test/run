@@ -1,6 +1,67 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testCompileGovendorCmds() {
+  compile "govendor-cmd"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertCompiledBinaryExists "other"
+  assertCompiledBinaryOutputs "other" "other"
+}
+testCompileGovendorCmdsOverride() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
+  compile "govendor-cmd" ${cache} ${env_dir}
+  assertCapturedSuccess
+  assertCaptured "Using \$GO_INSTALL_PACKAGE_SPEC override."
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertFileDoesNotExist "bin/other"
+}
+
+testCompileGodepCmds() {
+  compile "godep-cmd"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertCompiledBinaryExists "other"
+  assertCompiledBinaryOutputs "other" "other"
+}
+testCompileGodepCmdsOverride() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
+  compile "godep-cmd" ${cache} ${env_dir}
+  assertCompiledBinaryExists "fixture"
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  assertFileDoesNotExist "bin/other"
+}
+
+testCompileGodepBasicGo14WithGOVERSIONOverride() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo 'go1.6' > "${env_dir}/GOVERSION"
+  compile "godep-basic-go14" ${cache} ${env_dir}
+  assertCaptured "Installing go1.6"
+  assertCaptured "Using \$GOVERSION override."
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileDoesNotExist ".profile.d/concurrency.sh"
+}
+
+testCompileGovendorGo14WithGOVERSIONOverride() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo 'go1.6' > "${env_dir}/GOVERSION"
+  compile "govendor-go15" ${cache} ${env_dir}
+  assertCaptured "Installing go1.6"
+  assertCaptured "Using \$GOVERSION override."
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testDetectGlideMassageVendor() {
   detect "glide-massage-vendor"
   assertCaptured "Go"

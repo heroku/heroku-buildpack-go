@@ -203,6 +203,31 @@ setGoVersionFromEnvironment() {
   ver=${GOVERSION:-$DefaultGoVersion}
 }
 
+warnGoVersionOverride() {
+  if test ! -z "${GOVERSION}"
+  then
+    warn "Using \$GOVERSION override."
+    warn "     \$GOVERSION = ${GOVERSION}"
+    warn ""
+    warn "If this isn't what you want please run:'"
+    warn "  heroku config:unset GOVERSION -a <app>"
+    warn ""
+  fi
+}
+
+warnPackageSpecOverride() {
+  if test ! -z "${GO_INSTALL_PACKAGE_SPEC}"
+  then
+    warn "Using \$GO_INSTALL_PACKAGE_SPEC override."
+    warn "     \$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}"
+    warn ""
+    warn "If this isn't what you want please run:'"
+    warn "  heroku config:unset GO_INSTALL_PACKAGE_SPEC -a <app>"
+    warn ""
+  fi
+}
+
+
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
@@ -233,7 +258,8 @@ then
         exit 1
     fi
     name=$(<${godepsJSON} jq -r .ImportPath)
-    ver=$(<${godepsJSON} jq -r .GoVersion)
+    ver=${GOVERSION:-$(<${godepsJSON} jq -r .GoVersion)}
+    warnGoVersionOverride
 elif test -f "${vendorJSON}"
 then
     TOOL="govendor"
@@ -255,10 +281,11 @@ then
         exit 1
 
     fi
-    ver=$(<${vendorJSON} jq -r .heroku.goVersion)
+    ver=${GOVERSION:-$(<${vendorJSON} jq -r .heroku.goVersion)}
+    warnGoVersionOverride
     if [ "${ver}" =  "null" -o -z "${ver}" ]
     then
-      ver=${GOVERSION:-$DefaultGoVersion}
+      ver=${DefaultGoVersion}
       warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
       warn ""
       warn "Defaulting to ${ver}"
@@ -355,7 +382,8 @@ case ${TOOL} in
         mkdir -p $p
         cp -R $build/* $p
 
-        pkgs=$(<$build/Godeps/Godeps.json jq -r 'if .Packages then .Packages | join(" ") else "default" end')
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${godepsJSON} jq -r 'if .Packages then .Packages | join(" ") else "default" end')}
+        warnPackageSpecOverride
         handleDefaultPkgSpec
 
         case $ver in
@@ -439,7 +467,8 @@ case ${TOOL} in
         mkdir -p ${p}
         cp -R ${build}/* ${p}
 
-        pkgs=$(<$build/vendor/vendor.json jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
+        warnPackageSpecOverride
         handleDefaultPkgSpec
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
@@ -465,7 +494,7 @@ case ${TOOL} in
         mkdir -p "${p}"
         cp -R "${build}/"* "${p}"
 
-        pkgs=${GO_INSTALL_PACKAGE_SPEC-"default"}
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
         handleDefaultPkgSpec
 
         unset GIT_DIR
