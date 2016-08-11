@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+#v45
+
 go1.7rc5 is the default for go1.7
 GOVERSION & GO_INSTALL_PACKAGE_SPEC take priority over config files for godep/govendor. This is to help people deploying the same repo to multiple apps, allowing them to compile only specific packages and choose different go versions.
 
