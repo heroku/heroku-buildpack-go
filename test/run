@@ -14,6 +14,8 @@ testCompileGovendorCmdsOverride() {
   local env_dir=$(mktmpdir)
   echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
   compile "govendor-cmd" ${cache} ${env_dir}
+  assertCapturedSuccess
+  assertCaptured "Using \$GO_INSTALL_PACKAGE_SPEC override."
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
   assertFileDoesNotExist "bin/other"
@@ -43,6 +45,7 @@ testCompileGodepBasicGo14WithGOVERSIONOverride() {
   echo 'go1.6' > "${env_dir}/GOVERSION"
   compile "godep-basic-go14" ${cache} ${env_dir}
   assertCaptured "Installing go1.6"
+  assertCaptured "Using \$GOVERSION override."
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"
@@ -54,6 +57,7 @@ testCompileGovendorGo14WithGOVERSIONOverride() {
   echo 'go1.6' > "${env_dir}/GOVERSION"
   compile "govendor-go15" ${cache} ${env_dir}
   assertCaptured "Installing go1.6"
+  assertCaptured "Using \$GOVERSION override."
   assertCapturedSuccess
   assertCompiledBinaryExists
 }

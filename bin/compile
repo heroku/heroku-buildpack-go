@@ -215,6 +215,19 @@ warnGoVersionOverride() {
   fi
 }
 
+warnPackageSpecOverride() {
+  if test ! -z "${GO_INSTALL_PACKAGE_SPEC}"
+  then
+    warn "Using \$GO_INSTALL_PACKAGE_SPEC override."
+    warn "     \$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}"
+    warn ""
+    warn "If this isn't what you want please run:'"
+    warn "  heroku config:unset GO_INSTALL_PACKAGE_SPEC -a <app>"
+    warn ""
+  fi
+}
+
+
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
@@ -370,6 +383,7 @@ case ${TOOL} in
         cp -R $build/* $p
 
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${godepsJSON} jq -r 'if .Packages then .Packages | join(" ") else "default" end')}
+        warnPackageSpecOverride
         handleDefaultPkgSpec
 
         case $ver in
@@ -454,6 +468,7 @@ case ${TOOL} in
         cp -R ${build}/* ${p}
 
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
+        warnPackageSpecOverride
         handleDefaultPkgSpec
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
