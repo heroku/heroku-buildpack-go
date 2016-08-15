@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+go1.7 released, drop support for go1.5.X
+
 #v45
 
 go1.7rc5 is the default for go1.7

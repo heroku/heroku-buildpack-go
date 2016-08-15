@@ -31,7 +31,7 @@ $ git push heroku master
 ...
 -----> Fetching custom git buildpack... done
 -----> Go app detected
------> Installing go1.4.1... done
+-----> Installing go1.7... done
 -----> Running: godep go install -tags heroku ./...
 -----> Discovering process types
        Procfile declares types -> web
@@ -78,7 +78,7 @@ top level json keys:
    includes any packages in your `vendor` directory.
 
 
-Example with everything, for a project using `go1.6`, located at
+Example with everything, for a project using `go1.7`, located at
 `$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single package
 spec of `./...` to install.
 
@@ -88,7 +88,7 @@ spec of `./...` to install.
     "rootPath": "github.com/heroku/go-getting-started",
     "heroku": {
         "install" : [ "./..." ],
-        "goVersion": "go1.6"
+        "goVersion": "go1.7"
          },
     ...
 }
@@ -112,8 +112,8 @@ latest released minor version in that series. Setting `$GOVERSION` to a specific
 minor Go version will pin Go to that version. Examples:
 
 ```console
-$ heroku config:set GOVERSION=go1.6   # Will use go1.6.X, Where X is that latest minor release in the 1.6 series
-$ heroku config:set GOVERSION=go1.5.3 # Pins to go1.5.3
+$ heroku config:set GOVERSION=go1.7   # Will use go1.7.X, Where X is that latest minor release in the 1.7 series
+$ heroku config:set GOVERSION=go1.6.3 # Pins to go1.6.3
 ```
 
 Installation defaults to `.`. This can be overridden by setting the
