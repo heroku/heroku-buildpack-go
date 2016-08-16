@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+#v46
+
 go1.7 released, drop support for go1.5.X
 
 #v45
