@@ -1,6 +1,6 @@
-hash: b7c9f21f171e3eaff3119a98290cd79e2d52522421567662efaa78e4fd3f6f60
-updated: 2016-05-24T13:32:57.515912483-07:00
+hash: 25e42040b96d0cc64fde7402a8408952209d0c88d4650ac0599aef6d0ab26abc
+updated: 2016-08-26T11:26:13.178663978-07:00
 imports:
-- name: github.com/heroku/slog
-  version: 7746152d93404575df4efa59a29adb8c168c464a
-devImports: []
+- name: bitbucket.org/pkg/inflect
+  version: 8961c3750a47b8c0b3e118d52513b97adf85a7e8
+testImports: []

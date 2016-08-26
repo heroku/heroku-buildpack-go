@@ -1,10 +1,9 @@
 package main
 
 import "fmt"
-import "github.com/heroku/slog"
+import "bitbucket.org/pkg/inflect"
 
 func main() {
-	ctx := slog.Context{}
-	ctx.Add("fixture", true)
-	fmt.Println(ctx)
+	i := inflect.Rule{}
+	fmt.Println(i)
 }
