@@ -22,7 +22,7 @@ NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 DefaultGoVersion="go1.7"
-GlideVersion="0.10.2"
+GlideVersion="0.12.0"
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
