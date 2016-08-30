@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+#v47
+
+when using glide, install hg
+
 #v46
 
 go1.7 released, drop support for go1.5.X
