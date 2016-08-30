@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectGlideWithHgDep() {
+  detect "glide-with-hg-dep"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGlideWithHgDep() {
+  compile "glide-with-hg-dep"
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "github.com/heroku/fixture/vendor/bitbucket.org/pkg/inflect"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testCompileGovendorCmds() {
   compile "govendor-cmd"
   assertCapturedSuccess
