@@ -483,7 +483,7 @@ case ${TOOL} in
         fi
     ;;
     govendor)
-        govendorVer="1.0.3"
+        govendorVer="1.0.6"
         govendorPath="${cache}/govendor/${govendorVer}/bin"
         govendorBin="${govendorPath}/govendor"
         if test -d "${govendorBin}"

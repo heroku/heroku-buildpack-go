@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Bump govendor to v1.0.6
+
 #v47
 
 when using glide, install hg
