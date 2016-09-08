@@ -3,6 +3,7 @@
 ## Unreleased
 
 Bump govendor to v1.0.6
+Bump to go1.7.1
 
 #v47
 
