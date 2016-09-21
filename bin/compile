@@ -515,7 +515,7 @@ case ${TOOL} in
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd $p
 
-        if test `<${vendorJSON} jq -r '.heroku.sync'` != false
+        if test "$(<${vendorJSON} jq -r '.heroku.sync')" != "false"
         then
             step "Fetching any unsaved dependencies (govendor sync)"
             govendor sync
