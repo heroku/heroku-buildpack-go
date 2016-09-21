@@ -181,6 +181,7 @@ testCompileGlideBasicWithTools() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+  assertFileExists ".go/bin/go"
 }
 
 testDetectGodepVendorGo17() {
@@ -439,6 +440,7 @@ testCompileGBBasicWithTools() {
   assertCaptured "Copying gb binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
+  assertFileExists ".go/bin/go"
 }
 
 testDetectGodepLDSymbolValue() {
@@ -508,6 +510,7 @@ testCompileGodepBasicWithTools() {
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertFileExists ".go/bin/go"
 }
 
 testCompileGodepCreateProcfile() {
@@ -547,6 +550,7 @@ testCompileGovendorBasicWithTools() {
   assertCaptured "Copying govendor binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
+  assertFileExists ".go/bin/go"
 }
 
 testCompileGovendorCreateProcfile() {
