@@ -1,0 +1,7 @@
+{
+	"rootPath": "github.com/heroku/fixture",
+	"comment": "",
+	"ignore": "test",
+	"package": [
+    ]
+}

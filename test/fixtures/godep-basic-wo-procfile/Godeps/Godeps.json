@@ -1,0 +1,5 @@
+{
+    "GoVersion": "go1.6",
+    "ImportPath": "github.com/heroku/fixture",
+    "Deps": []
+}

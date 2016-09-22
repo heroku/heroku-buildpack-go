@@ -170,7 +170,7 @@ testCompileGlideBasic() {
   assertCompiledBinaryExists
 }
 testCompileGlideBasicWithTools() {
- local cache=$(mktmpdir)
+  local cache=$(mktmpdir)
   local env_dir=$(mktmpdir)
   echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
   compile "glide-basic" ${cache} ${env_dir}
@@ -182,6 +182,21 @@ testCompileGlideBasicWithTools() {
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileExists ".go/bin/go"
+}
+testCompileGlideBasicInGOPATH() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
+  compile "glide-basic" ${cache} ${env_dir}
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileExists "src/github.com/heroku/fixture/main.go"
+  assertFileDoesNotExist "main.go"
 }
 
 testDetectGodepVendorGo17() {
@@ -512,9 +527,25 @@ testCompileGodepBasicWithTools() {
   assertFileDoesNotExist ".profile.d/concurrency.sh"
   assertFileExists ".go/bin/go"
 }
+testCompileGodepBasicInGOPATH() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
+  compile "godep-basic" ${cache} ${env_dir}
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertFileExists "src/github.com/heroku/fixture/main.go"
+  assertFileDoesNotExist "main.go"
+}
 
 testCompileGodepCreateProcfile() {
-  compile "godep-basic"
+  compile "godep-basic-wo-procfile"
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
@@ -552,9 +583,24 @@ testCompileGovendorBasicWithTools() {
   assertCompiledBinaryExists
   assertFileExists ".go/bin/go"
 }
+testCompileGovendorBasicInGOPATH() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
+  compile "govendor-basic" ${cache} ${env_dir}
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileExists "src/github.com/heroku/fixture/main.go"
+  assertFileDoesNotExist "main.go"
+}
 
 testCompileGovendorCreateProcfile() {
-  compile "govendor-basic"
+  compile "govendor-basic-wo-procfile"
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
