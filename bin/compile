@@ -281,7 +281,7 @@ setupGOPATH() {
     else
         cp -R ${build}/* ${t}
         GOPATH="${t}/.go"
-        echo GOBIN="${build}/bin"
+        echo export GOBIN="${build}/bin"
     fi
 
     local src="${GOPATH}/src/${name}"
