@@ -514,7 +514,7 @@ testCompileGodepBasicWithTools() {
 }
 
 testCompileGodepCreateProcfile() {
-  compile "godep-basic"
+  compile "godep-basic-wo-procfile"
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
@@ -554,7 +554,7 @@ testCompileGovendorBasicWithTools() {
 }
 
 testCompileGovendorCreateProcfile() {
-  compile "govendor-basic"
+  compile "govendor-basic-wo-procfile"
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
