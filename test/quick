@@ -9,16 +9,15 @@ mktmpdir() {
 
 compile() {
   local fixture=$1
+  shift
   local bp_dir=$(mktmpdir)
   local build_dir=$(mktmpdir)
   local cache_dir=$(mktmpdir)
   local env_dir=$(mktmpdir)
-  declare -a env
-  declare -a val
-  shift
   while (( "$#" )); do
-    env+=("$(echo ${1} | cut -d = -f 1)")
-    val+=("$(echo ${1} | cut -d = -f 2)")
+    env=("$(echo ${1} | cut -d = -f 1)")
+    val=("$(echo ${1} | cut -d = -f 2)")
+    echo "${val}" > "${env_dir}/${env}"
     shift
   done
   echo "env ${env_dir}: ${env[@]}"
@@ -27,13 +26,7 @@ compile() {
   echo "(caching in $cache_dir)"
   cp -a $(pwd)/* ${bp_dir}
   cp -a ${bp_dir}/test/fixtures/$fixture/. ${build_dir}
-  for i in "${!env[*]}"; do
-    echo "${val[${i}]}" > "${env_dir}/${env[${i}]}"
-  done
   "${bp_dir}/bin/compile" "${build_dir}" "${cache_dir}" "${env_dir}"
-  for i in "${env[@]}"; do
-    unset ${i}
-  done
 }
 
 fixture=${1:-'govendor-basic'}
