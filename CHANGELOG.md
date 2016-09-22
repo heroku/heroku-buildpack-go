@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+govendor: set `.heroku.sync = false` to prevent a `govendor sync` from being run before go install.
+When `GO_INSTALL_TOOLS_IN_IMAGE=true` the go tool chain (and dep tool) will be installed in `$HOME/.heroku/go` (`$GOROOT=$HOME/.heroku/go`). $GOROOT/bin is added to the `$PATH`.
+When `GO_SETUP_GOPATH_IN_IMAGE=true` (except for GB) the provided code is setup in a proper $GOPATH (`$GOPATH=$HOME`) and user's code is placed in `$GOPATH/src/$PROJECT NAME`.
+
 #v48
 
 Bump govendor to v1.0.6
