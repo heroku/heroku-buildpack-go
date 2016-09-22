@@ -276,7 +276,7 @@ if [ ! -z "${env_dir}" ]
 then
     mkdir -p "${env_dir}"
     env_dir=$(cd "${env_dir}/" && pwd)
-  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_INSTALL_PACKAGE_SPEC
+  for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_INSTALL_PACKAGE_SPEC GO_INSTALL_TOOLS_IN_IMAGE
     do
         if [ -f "${env_dir}/${key}" ]
         then
@@ -361,35 +361,35 @@ fi
 
 reportVer $ver
 
-if test -d $cache/$ver/go
+if test -d "${cache}/${ver}/go"
 then
-    step "Using $ver"
+    step "Using ${ver}"
 else
-    rm -rf $cache/* # be sure not to build up cruft
-    mkdir -p $cache/$ver
-    odir=$(pwd)
-    cd $cache/$ver
-    start "Installing $ver"
-        $CURL $url | tar zxf -
+    rm -rf ${cache}/* # be sure not to build up cruft
+    mkdir -p "${cache}/${ver}"
+    odir="$(pwd)"
+    cd "${cache}/${ver}"
+    start "Installing ${ver}"
+        ${CURL} ${url} | tar zxf -
     finished
-    case $ver in  # Rename 'go-<full sha>' (we have the short sha) to 'go'
-      devel*)
-        bver=$(expandVer $DefaultGoVersion)
-        burl=$(urlFor $bver)
-        start "Installing bootstrap Go version $bver"
-            $CURL $burl | tar zxf -
+    case ${ver} in  # Rename 'go-<full sha>' (we have the short sha) to 'go'
+    devel*)
+        bver=$(expandVer ${DefaultGoVersion})
+        burl=$(urlFor ${bver})
+        start "Installing bootstrap Go version ${bver}"
+            ${CURL} ${burl} | tar zxf -
         finished
         mv go bgo
-        mv go-$(echo $ver | cut -d - -f 2)* go
+        mv go-$(echo ${ver} | cut -d - -f 2)* go
         step "Compiling development Go version $ver..."
             cd go/src
-            echo "devel +$(echo $ver | cut -d - -f 2) $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
-            GOROOT_BOOTSTRAP=$(pushd $cache/$ver/bgo > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
+            echo "devel +$(echo ${ver} | cut -d - -f 2) $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
+            GOROOT_BOOTSTRAP=$(pushd ${cache}/${ver}/bgo > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
             cd - >/dev/null
             go/bin/go version
         finished
         rm -rf bgo
-      ;;
+    ;;
     esac
     cd $odir
 fi
@@ -588,12 +588,25 @@ then
   echo -e "web: $(basename $name)" >> $build/Procfile
 fi
 
+cd $build
 rm -rf $build/.heroku
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
 
+if test "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true"
+then
+    start "Copying go tool chain to \$GOROOT=\$HOME/.go"
+        mkdir -p "${build}/.go"
+        cp -a "${GOROOT}/"* "${build}/.go"
+        echo 'GOROOT=$HOME/.go' > ${build}/.profile.d/goroot.sh
+        echo 'PATH=$PATH:$GOROOT/bin' >> ${build}/.profile.d/goroot.sh
+    finished
+    step "Copying ${TOOL} binary"
+    cp $(which ${TOOL}) ${build}/bin
+fi
+
 if needConcurrency ${ver};
-  then
+then
   cp $buildpack/vendor/concurrency.sh $build/.profile.d/
 fi

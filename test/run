@@ -154,13 +154,13 @@ testCompileGlideWithDeps() {
   assertCompiledBinaryExists
 }
 
-testDetectGlideSimple() {
-  detect "glide-simple"
+testDetectGlideBasic() {
+  detect "glide-basic"
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompileGlideSimple() {
-  compile "glide-simple"
+testCompileGlideBasic() {
+  compile "glide-basic"
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -168,6 +168,20 @@ testCompileGlideSimple() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+}
+testCompileGlideBasicWithTools() {
+ local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
+  compile "glide-basic" ${cache} ${env_dir}
+  assertCaptured "Installing go"
+  assertCaptured "Installing glide"
+  assertCaptured "Fetching any unsaved dependencies (glide install)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileExists ".go/bin/go"
 }
 
 testDetectGodepVendorGo17() {
@@ -412,6 +426,22 @@ testCompileGBBasic() {
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
+testCompileGBBasicWithTools() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
+  compile "gb-basic" ${cache} ${env_dir}
+  assertCaptured "Installing go"
+  assertCaptured "Installing GB"
+  assertCaptured "Running: gb build -tags heroku"
+  assertCaptured "cmd/fixture"
+  assertCaptured "Post Compile Cleanup"
+  assertCaptured "Copying go tool chain to"
+  assertCaptured "Copying gb binary"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileExists ".go/bin/go"
+}
 
 testDetectGodepLDSymbolValue() {
   detect "godep-ld-symbol-value"
@@ -465,6 +495,23 @@ testCompileGodepBasic() {
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"
 }
+testCompileGodepBasicWithTools() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
+  compile "godep-basic" ${cache} ${env_dir}
+  assertCaptured "Checking Godeps/Godeps.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "Copying go tool chain to"
+  assertCaptured "Copying godep binary"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertFileExists ".go/bin/go"
+}
 
 testCompileGodepCreateProcfile() {
   compile "godep-basic"
@@ -488,6 +535,22 @@ testCompileGovendorBasic() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+}
+testCompileGovendorBasicWithTools() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
+  compile "govendor-basic" ${cache} ${env_dir}
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "Copying go tool chain to"
+  assertCaptured "Copying govendor binary"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertFileExists ".go/bin/go"
 }
 
 testCompileGovendorCreateProcfile() {

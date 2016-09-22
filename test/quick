@@ -13,13 +13,29 @@ compile() {
   local build_dir=$(mktmpdir)
   local cache_dir=$(mktmpdir)
   local env_dir=$(mktmpdir)
+  declare -a env
+  declare -a val
+  shift
+  while (( "$#" )); do
+    env+=("$(echo ${1} | cut -d = -f 1)")
+    val+=("$(echo ${1} | cut -d = -f 2)")
+    shift
+  done
+  echo "env ${env_dir}: ${env[@]}"
   echo "Compiling $fixture"
   echo "in $build_dir"
   echo "(caching in $cache_dir)"
   cp -a $(pwd)/* ${bp_dir}
   cp -a ${bp_dir}/test/fixtures/$fixture/. ${build_dir}
-  "$bp_dir/bin/compile" "$build_dir" "$cache_dir"
+  for i in "${!env[*]}"; do
+    echo "${val[${i}]}" > "${env_dir}/${env[${i}]}"
+  done
+  "${bp_dir}/bin/compile" "${build_dir}" "${cache_dir}" "${env_dir}"
+  for i in "${env[@]}"; do
+    unset ${i}
+  done
 }
 
-fixture=${1:-'godep-basic'}
-compile "$fixture"
+fixture=${1:-'govendor-basic'}
+r=("$@")
+compile "$fixture" "${r[@]:1}"
