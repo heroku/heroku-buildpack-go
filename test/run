@@ -181,7 +181,7 @@ testCompileGlideBasicWithTools() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".go/bin/go"
+  assertFileExists ".heroku/go/bin/go"
 }
 testCompileGlideBasicInGOPATH() {
   local cache=$(mktmpdir)
@@ -455,7 +455,7 @@ testCompileGBBasicWithTools() {
   assertCaptured "Copying gb binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".go/bin/go"
+  assertFileExists ".heroku/go/bin/go"
 }
 
 testDetectGodepLDSymbolValue() {
@@ -525,7 +525,7 @@ testCompileGodepBasicWithTools() {
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"
-  assertFileExists ".go/bin/go"
+  assertFileExists ".heroku/go/bin/go"
 }
 testCompileGodepBasicInGOPATH() {
   local cache=$(mktmpdir)
@@ -581,7 +581,7 @@ testCompileGovendorBasicWithTools() {
   assertCaptured "Copying govendor binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".go/bin/go"
+  assertFileExists ".heroku/go/bin/go"
 }
 testCompileGovendorBasicInGOPATH() {
   local cache=$(mktmpdir)

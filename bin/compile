@@ -612,10 +612,10 @@ echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
 
 if test "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true"
 then
-    start "Copying go tool chain to \$GOROOT=\$HOME/.go"
-        mkdir -p "${build}/.go"
-        cp -a "${GOROOT}/"* "${build}/.go"
-        echo 'export GOROOT=$HOME/.go' > "${build}/.profile.d/goroot.sh"
+    start "Copying go tool chain to \$GOROOT=\$HOME/.heroku/go"
+        mkdir -p "${build}/.heroku/go"
+        cp -a "${GOROOT}/"* "${build}/.heroku/go"
+        echo 'export GOROOT=$HOME/.heroku/go' > "${build}/.profile.d/goroot.sh"
         echo 'PATH=$PATH:$GOROOT/bin' >> "${build}/.profile.d/goroot.sh"
     finished
     step "Copying ${TOOL} binary"
