@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Add support for testpack (bin/test-compile & bin/test)
+
 #v49
 
 govendor: set `.heroku.sync = false` to prevent a `govendor sync` from being run before go install.

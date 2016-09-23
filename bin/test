@@ -1,0 +1,66 @@
+#!/bin/bash
+# usage: bin/test <build-dir> <env-dir> <artifact-dir>
+
+set -eo pipefail
+
+mkdir -p "${1}" "${2}" # "${3}"
+build="$(cd ${1}/ && pwd)"
+env_dir="$(cd ${2}/ && pwd)"
+#artifact_dir="$(cd ${3} && pwd)"
+testpack=$(cd "$(dirname $0)/.." && pwd)
+
+source "${testpack}/lib/common.sh"
+# loadEnvDir "${env_dir}"
+# For now, load all of env_dir
+if [ ! -z "${env_dir}" ]
+then
+    for key in $(cd ${env_dir}; ls)
+    do
+        if [ -f "${env_dir}/${key}" ]
+        then
+            export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
+        fi
+    done
+fi
+
+if test -e "${build}/.heroku/go/.meta"
+then
+  source "${build}/.heroku/go/.meta"
+fi
+
+export GOPATH="${build}"
+export GOROOT="${build}/.heroku/go"
+PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+
+case "${TOOL}" in
+    govendor)
+        cd "${GOPATH}/src/${NAME}"
+        step "Running: govendor test -race -v +local"
+        govendor test -race -v +local 2>&1
+        step
+        step
+        step "Running: govendor test -bench=. -benchmem -v +local"
+        govendor test -bench=. -benchmem -v +local 2>&1
+        step
+    ;;
+    glide|godep)
+        cd "${GOPATH}/src/${NAME}"
+        step 'Running: go test -race -v $(go list ./... | grep -v /vendor/)'
+        go test -race -v $(go list ./... | grep -v /vendor/) 2>&1
+        step
+        step
+        step 'Running: go test -bench=. -benchmem -v $(go list ./... | grep -v /vendor/)'
+        go test -bench=. -benchmem -v $(go list ./... | grep -v /vendor/) 2>&1
+        step
+    ;;
+    gb)
+        cd "${build}"
+        step "Running: gb test -bench=. -benchmem -v"
+        gb test -bench=. -benchmem -v
+        step
+        step
+    ;;
+    *)
+        warn "Testing is not supported for ${TOOL}"
+    ;;
+esac
