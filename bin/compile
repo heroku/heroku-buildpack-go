@@ -22,7 +22,10 @@ NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
 DefaultGoVersion="go1.7.1"
-GlideVersion="v0.12.0"
+GlideVersion="v0.12.2"
+GovendorVersion="1.0.8"
+GBVersion="0.4.3"
+PkgErrorsVersion="0.7.1"
 MercurialVersion="3.9"
 # BazaarVersion="2.7.0"
 TOOL=""
@@ -505,17 +508,16 @@ case ${TOOL} in
         fi
     ;;
     govendor)
-        govendorVer="1.0.6"
-        govendorPath="${cache}/govendor/${govendorVer}/bin"
+        govendorPath="${cache}/govendor/${GovendorVersion}/bin"
         govendorBin="${govendorPath}/govendor"
         if test -d "${govendorBin}"
         then
-          step "Using govendor v${govendorVer}"
+          step "Using govendor v${GovendorVersion}"
         else
           rm -rf "${cache}/govendor"
           mkdir -p "${govendorPath}"
-          start "Installing govendor v${govendorVer}"
-            $CURL "https://github.com/kardianos/govendor/releases/download/v${govendorVer}/govendor_linux_amd64" > "${govendorBin}"
+          start "Installing govendor v${GovendorVersion}"
+            $CURL "https://github.com/kardianos/govendor/releases/download/v${GovendorVersion}/govendor_linux_amd64" > "${govendorBin}"
             chmod a+x "${govendorBin}"
           finished
 
@@ -568,20 +570,24 @@ case ${TOOL} in
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
     gb)
-        gbver="0.4.1"
-        GOPATH="${cache}/gb/${gbver}"
+        GOPATH="${cache}/gb/${GBVersion}"
         PATH="${GOPATH}/bin:${PATH}"
         cp="${GOPATH}/src/github.com/constabulary"
+        pp="${GOPATH}/src/github.com/pkg"
         if test -d "${GOPATH}"
         then
-            step "Using GB ${gbver}"
+            step "Using GB ${GBVersion}"
         else
             rm -rf "${cache}/gb/*" # cruft bad
+            mkdir -p "${pp}"
+            cd "${pp}"
+            $CURL "https://codeload.github.com/pkg/errors/tar.gz/v${PkgErrorsVersion}" | tar zxf -
+            mv "errors-${PkgErrorsVersion}" errors
             mkdir -p "${cp}"
-            cd $cp
-            start "Installing GB v$gbver"
-            $CURL "https://codeload.github.com/constabulary/gb/tar.gz/v$gbver" | tar zxf -
-            mv gb-$gbver gb
+            cd "${cp}"
+            start "Installing GB v${GBVersion}"
+            $CURL "https://codeload.github.com/constabulary/gb/tar.gz/v${GBVersion}" | tar zxf -
+            mv "gb-${GBVersion}" gb
             go install ./...
             finished
         fi
