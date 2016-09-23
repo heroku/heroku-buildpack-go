@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+#v50
+
+Bump versions of GB (0.4.3), Glide (0.12.2) & govendor (1.0.8)
+
 #v49
 
 govendor: set `.heroku.sync = false` to prevent a `govendor sync` from being run before go install.
