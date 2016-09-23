@@ -7,13 +7,9 @@ mktmpdir() {
   echo $dir
 }
 
-compile() {
+compileSetup() {
   local fixture=$1
   shift
-  local bp_dir=$(mktmpdir)
-  local build_dir=$(mktmpdir)
-  local cache_dir=$(mktmpdir)
-  local env_dir=$(mktmpdir)
   while (( "$#" )); do
     env=("$(echo ${1} | cut -d = -f 1)")
     val=("$(echo ${1} | cut -d = -f 2)")
@@ -26,9 +22,44 @@ compile() {
   echo "(caching in $cache_dir)"
   cp -a $(pwd)/* ${bp_dir}
   cp -a ${bp_dir}/test/fixtures/$fixture/. ${build_dir}
+}
+
+compile() {
+  local bp_dir=$(mktmpdir)
+  local build_dir=$(mktmpdir)
+  local cache_dir=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  compileSetup "${@}"
   "${bp_dir}/bin/compile" "${build_dir}" "${cache_dir}" "${env_dir}"
 }
 
-fixture=${1:-'govendor-basic'}
+test-compile() {
+  local bp_dir=$(mktmpdir)
+  local build_dir=$(mktmpdir)
+  local cache_dir=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  compileSetup "${@}"
+  "${bp_dir}/bin/test-compile" "${build_dir}" "${cache_dir}" "${env_dir}"
+}
+
+test() {
+  local bp_dir=$(mktmpdir)
+  local build_dir=$(mktmpdir)
+  local cache_dir=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  local artifact_dir=$(mktmpdir)
+  compileSetup "${@}"
+  "${bp_dir}/bin/test-compile" "${build_dir}" "${cache_dir}" "${env_dir}"
+  echo
+  echo "----------------------------------------------------------------------------------------------"
+  echo
+  "${bp_dir}/bin/test" "${build_dir}" "${env_dir}" "${artifact_dir}"
+}
+
+cmd="${1:-compile}"
+shift
+fixture="${1:-govendor-basic}"
+shift
 r=("$@")
-compile "$fixture" "${r[@]:1}"
+echo "${r[@]}"
+$cmd "$fixture" "${r[@]}"
