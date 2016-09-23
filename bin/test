@@ -11,7 +11,7 @@ testpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${testpack}/lib/common.sh"
 # loadEnvDir "${env_dir}"
-
+# For now, load all of env_dir
 if [ ! -z "${env_dir}" ]
 then
     for key in $(cd ${env_dir}; ls)
@@ -35,7 +35,12 @@ PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
 case "${TOOL}" in
     govendor)
         cd "${GOPATH}/src/${NAME}"
-        step "Running: govendor test +local -v"
-        govendor test +local -v 2>&1
+        step "Running: govendor test +local -race -v"
+        govendor test +local -race -v 2>&1
+        step
+        step
+        step "Running: govendor test +local -bench=. -benchmem -v"
+        govendor test +local -bench=. -benchmem -v 2>&1
+        step
     ;;
 esac
