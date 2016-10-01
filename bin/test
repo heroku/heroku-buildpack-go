@@ -32,35 +32,44 @@ export GOPATH="${build}"
 export GOROOT="${build}/.heroku/go"
 PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
 
+# Install our vendored copy of github.com/apg/patter
+GOPATH="${GOPATH}:${testpack}/lib" GOBIN="${build}/bin" go install github.com/apg/patter
+
+output=$(mktemp)
+
 case "${TOOL}" in
     govendor)
         cd "${GOPATH}/src/${NAME}"
-        step "Running: govendor test -race -v +local"
-        govendor test -race -v +local 2>&1
+        step "Running Tests With: govendor test -race -v +local | patter"
+        govendor test -race -v +local 2>&1 | tee -a ${output} | patter
         step
-        step
-        step "Running: govendor test -bench=. -benchmem -v +local"
-        govendor test -bench=. -benchmem -v +local 2>&1
-        step
+        step "Running Benchmarks With: govendor test -run=_ -bench=. -benchmem -v +local"
+        govendor test -run=_ -bench=. -benchmem -v +local 2>&1
     ;;
     glide|godep)
         cd "${GOPATH}/src/${NAME}"
-        step 'Running: go test -race -v $(go list ./... | grep -v /vendor/)'
-        go test -race -v $(go list ./... | grep -v /vendor/) 2>&1
+        step 'Running Test With: go test -race -v $(go list ./... | grep -v /vendor/) | patter'
+        go test -race -v $(go list ./... | grep -v /vendor/) 2>&1 | tee -a ${output} | patter
         step
-        step
-        step 'Running: go test -bench=. -benchmem -v $(go list ./... | grep -v /vendor/)'
-        go test -bench=. -benchmem -v $(go list ./... | grep -v /vendor/) 2>&1
-        step
+        step 'Running Benchmarks With: go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/)'
+        go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/) 2>&1
     ;;
     gb)
         cd "${build}"
-        step "Running: gb test -bench=. -benchmem -v"
-        gb test -bench=. -benchmem -v
+        step "Running Test With: gb test -v | patter"
+        gb test -v 2>&1 | tee -a ${output} | patter
         step
-        step
+        step "Running Benchmarks With: gb test -run=_ -bench=. -benchmem -v ${trailer}"
+        gb test -run=_ -bench=. -benchmem -v 2>&1
     ;;
     *)
         warn "Testing is not supported for ${TOOL}"
     ;;
 esac
+
+step
+step "Standard (Non TAP) test output"
+cat "${output}"
+step
+step "Finished"
+step

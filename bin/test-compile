@@ -4,4 +4,5 @@
 testpack=$(cd "$(dirname $0)/.." && pwd)
 echo "true" > "${3}/GO_INSTALL_TOOLS_IN_IMAGE"
 echo "true" > "${3}/GO_SETUP_GOPATH_IN_IMAGE"
+echo "true" > "${3}/GO_CONVERT_TO_TAP"
 ${testpack}/bin/compile "${1}" "${2}" "${3}"
