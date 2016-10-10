@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Add support for testpack (bin/test-compile & bin/test)
+
 #v50
 
 Bump versions of GB (0.4.3), Glide (0.12.2) & govendor (1.0.8)
