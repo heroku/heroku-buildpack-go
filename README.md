@@ -53,7 +53,7 @@ article][app-engine-build-constraints] for more.
 
 ## govendor specifics
 
-The [vendor.json][vendor.json] spec that govendor follows for it's metadata
+The [vendor.json][vendor.json] spec that govendor follows for its metadata
 file allows for arbitrary, tool specific fields. This buildpack uses this
 feature to track build specific bits. These bits are encoded in the following
 top level json keys:
