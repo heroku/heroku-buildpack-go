@@ -19,7 +19,7 @@ There's also a hello world sample app at
 ```
 $ ls -A1
 .git
-Godeps
+vendor
 Procfile
 web.go
 
@@ -29,10 +29,9 @@ Creating polar-waters-4785...
 
 $ git push heroku master
 ...
------> Fetching custom git buildpack... done
 -----> Go app detected
 -----> Installing go1.7... done
------> Running: godep go install -tags heroku ./...
+-----> Running: go install -tags heroku ./...
 -----> Discovering process types
        Procfile declares types -> web
 
@@ -43,10 +42,10 @@ $ git push heroku master
 
 This buildpack will detect your repository as Go if you are using either:
 
-- [GB][gb]
-- [glide][glide]
-- [Godep][godep]
 - [govendor][govendor]
+- [glide][glide]
+- [GB][gb]
+- [Godep][godep]
 
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
@@ -176,6 +175,11 @@ pushing code. If `GO_LINKER_SYMBOL` is set, but `GO_LINKER_VALUE` isn't set then
 
 This can be used to embed the commit sha, or other build specific data directly
 into the compiled executable.
+
+## Testpack
+
+This buildpack also supports the testpack API.
+
 
 ## Deploying
 
