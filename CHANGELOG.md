@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+#v52
+
 Default to go1.7.3 for go1.7
 
 #v51
