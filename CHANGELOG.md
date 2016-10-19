@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Default to go1.7.3 for go1.7
+
 #v51
 
 Add support for testpack (bin/test-compile & bin/test)
