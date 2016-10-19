@@ -21,7 +21,7 @@ RED='\033[1;31m'
 NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
 
-DefaultGoVersion="go1.7.1"
+DefaultGoVersion="go1.7.3"
 GlideVersion="v0.12.2"
 GovendorVersion="1.0.8"
 GBVersion="0.4.3"
@@ -107,7 +107,7 @@ urlFor() {
 expandVer() {
   case $1 in
     go1.7)
-      echo "go1.7.1"
+      echo "go1.7.3"
       ;;
     go1.6)
       echo "go1.6.3"
@@ -128,7 +128,7 @@ expandVer() {
 # Use after expandVer
 reportVer() {
   case $1 in
-    go1.7.1|go1.6.3)
+    go1.7.3|go1.6.3)
       # Noop
     ;;
     devel*)
