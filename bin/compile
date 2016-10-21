@@ -348,7 +348,8 @@ export GOPATH
 
 if ! [ -z ${GITHUB_ACCESS_TOKEN+x} ]
 then
-	git config url."https://${GITHUB_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
+	step "Set GitHub URLs to access token format"
+	git config --global url."https://${GITHUB_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
 fi
 
 # GB installation
