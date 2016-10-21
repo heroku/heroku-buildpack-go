@@ -346,6 +346,12 @@ fi
 
 export GOPATH
 
+if ! [ -z ${GITHUB_ACCESS_TOKEN+x} ]
+then
+	step "Set GitHub URLs to access token format"
+	git config --global url."https://${GITHUB_ACCESS_TOKEN}@github.com/".insteadOf "https://github.com/"
+fi
+
 # GB installation
 case ${TOOL} in
     godep)
