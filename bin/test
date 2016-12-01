@@ -8,8 +8,8 @@ build="$(cd ${1}/ && pwd)"
 env_dir="$(cd ${2}/ && pwd)"
 #artifact_dir="$(cd ${3} && pwd)"
 testpack=$(cd "$(dirname $0)/.." && pwd)
-
 source "${testpack}/lib/common.sh"
+
 # loadEnvDir "${env_dir}"
 # For now, load all of env_dir
 if [ ! -z "${env_dir}" ]

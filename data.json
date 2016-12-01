@@ -1,0 +1,44 @@
+{
+  "Go": {
+    "Supported": ["go1.6.4", "go1.7.4"],
+    "DefaultVersion": "go1.7.4",
+    "VersionExpansion": {
+      "go1.8": "go1.8beta1",
+      "go1.7": "go1.7.4",
+      "go1.6": "go1.6.4",
+      "go1.5": "go1.5.4",
+      "go1.4": "go1.4.3",
+      "go1.3": "go1.3.3",
+      "go1.2": "go1.2.2",
+      "go1.1": "go1.1.2",
+      "go1": "go1.0.3"
+    },
+    "NeedsConcurrency": [
+      "go1", "go1.0.1", "go1.0.2", "go1.0.3",
+      "go1.1", "go1.1.1", "go1.1.2",
+      "go1.2", "go1.2.1", "go1.2.2",
+      "go1.3", "go1.3.1", "go1.3.2", "go1.3.3",
+      "go1.4", "go1.4.1", "go1.4.2", "go1.4.3",
+      "go1.5", "go1.5.1", "go1.5.2", "go1.5.3", "go1.5.4"
+      ],
+    "SupportsVendorExperiment": [
+      "go1.5", "go1.5.1", "go1.5.2", "go1.5.3", "go1.5.4",
+      "go1.6", "go1.6.1", "go1.6.2", "go1.6.3", "go1.6.4"
+    ]
+  },
+  "Glide": {
+    "DefaultVersion": "v0.12.3"
+  },
+  "Govendor": {
+    "DefaultVersion": "1.0.8"
+  },
+  "GB": {
+    "DefaultVersion": "0.4.3"
+  },
+  "PkgErrors": {
+    "DefaultVersion": "0.8.0"
+  },
+  "HG": {
+    "DefaultVersion": "3.9"
+  }
+}
