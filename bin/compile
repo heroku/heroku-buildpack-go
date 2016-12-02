@@ -128,7 +128,7 @@ expandVer() {
 # Use after expandVer
 reportVer() {
   case $1 in
-    go1.7.3|go1.6.3)
+    go1.7.4|go1.6.4)
       # Noop
     ;;
     devel*)

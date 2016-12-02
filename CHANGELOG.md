@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+#v54
+
+Fix erroneous warning about go1.7.4 / go1.6.4 being deprecated
+
 #v53
 
 Default to go1.7.4 for go1.7
