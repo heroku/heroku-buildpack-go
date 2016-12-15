@@ -201,22 +201,25 @@ ensureGo() {
 
         case "${goVersion}" in
             devel*)
-                pushd "${cache}/${bGoVersion}" &> /dev/null
-                    mv go bgo
-                    local sha=$(echo ${goVersion} | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
-                    local url="https://github.com/golang/go/archive/$sha.tar.gz"
-                    start "Downloading development Go version ${bGoVersion}"
-                        ${CURL} ${url} | tar zxf -
-                        mv go-${sha}* go
-                    finished
-                    step "Compiling development Go version ${goVersion}"
-                    pushd go/src &> /dev/null
-                        echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
-                        GOROOT_BOOTSTRAP=$(pushd ${cache}/${goVersion}/bgo > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
+                pushd "${cache}" &> /dev/null
+                    mkdir -p "${goVersion}"
+                    pushd "${goVersion}" &> /dev/null
+                        local sha=$(echo ${goVersion} | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
+                        local url="https://github.com/golang/go/archive/$sha.tar.gz"
+                        start "Downloading development Go version ${goVersion}"
+                            ${CURL} ${url} | tar zxf -
+                            mv go-${sha}* go
+                        finished
+                        step "Compiling development Go version ${goVersion}"
+                        pushd go/src &> /dev/null
+                            echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
+                            GOROOT_BOOTSTRAP=$(pushd ${cache}/${bGoVersion}/go > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
+                        popd &> /dev/null
+                        go/bin/go version
+                        rm -rf "${goPath}"
                     popd &> /dev/null
-                    go/bin/go version
-                    rm -rf bgo
                 popd &> /dev/null
+                goPath="${cache}/${goVersion}/go"
             ;;
             *)
             ;;
@@ -296,11 +299,11 @@ if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
     exit 1
 fi
 
-reportVer $ver
+reportVer "${ver}"
 
 ensureGo "${ver}"
 
-mkdir -p $build/bin
+mkdir -p "${build}/bin"
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 FLAGS=(-tags heroku)

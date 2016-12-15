@@ -273,11 +273,11 @@ testDetectGovendorExcluded() {
   assertCaptured "Go"
   assertCapturedSuccess
 }
-testCompuleGovendorExcluded() {
+testCompileGovendorExcluded() {
   compile "govendor-excluded"
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
-  assertCaptured "Installing govendor"
+  assertCaptured "Fetching govendor"
   assertCaptured "Installing package '.' (default)"
   assertCaptured "Fetching any unsaved dependencies (govendor sync)"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -397,8 +397,8 @@ testDetectGodepDevelGo() {
 testCompileGodepDevelGo() {
   compile "godep-devel-go"
   assertCaptured "You are using a development build of Go."
-  assertCaptured "Installing devel-15f7a66"
-  assertCaptured "Installing bootstrap Go version go"
+  assertCaptured "Installing bootstrap go"
+  assertCaptured "Downloading development Go version devel-15f7a66"
   assertCaptured "Compiling development Go version devel-15f7a66"
   assertCaptured "Installed Go for linux/amd64"
   assertCaptured "go version devel +15f7a66"
