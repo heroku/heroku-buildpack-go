@@ -321,6 +321,7 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     godep)
+        ensureInPath "godep_linux_amd64" "${cache}/godep/bin"
         eval "$(setupGOPATH ${name})"
         godepsJSON="${src}/Godeps/Godeps.json"
 
