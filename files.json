@@ -1,4 +1,8 @@
 {
+    "go1.8beta2.linux-amd64.tar.gz": {
+        "URL": "https://storage.googleapis.com/golang/go1.8beta2.linux-amd64.tar.gz",
+        "SHA": "4cb9bfb0e82d665871b84070929d6eeb4d51af6bedbc8fdd3df5766e937ef84c"
+    },
     "go1.8beta1.linux-amd64.tar.gz": {
         "URL": "https://storage.googleapis.com/golang/go1.8beta1.linux-amd64.tar.gz",
         "SHA": "768d8d73ccea69c9a0941f9ef2333b1ff8c82120abfcdedd4e91af039c674a8d"
