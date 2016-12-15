@@ -88,7 +88,7 @@ SHAValid() {
     local fileName="${1}"
     local targetFile="${2}"
     local sh=""
-    local sw="$(<"${FilesJSON}" jq -r '"'${fileName}'".SHA' &> /dev/null)"
+    local sw="$(<"${FilesJSON}" jq -r '."'${fileName}'".SHA')"
     if [ ${#sw} -eq 40 ]; then
         sh="$(shasum "${targetFile}" | cut -d \  -f 1)"
     else
