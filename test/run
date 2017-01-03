@@ -525,7 +525,7 @@ testCompileGodepLDSymbolGo14Value() {
   echo "main.fixture" > "${env_dir}/GO_LINKER_SYMBOL"
   echo "fixture" > "${env_dir}/GO_LINKER_VALUE"
   compile "godep-ld-symbol-value-go14" ${cache} ${env_dir}
-  assertCaptured "Running: godep go install -v -tags heroku -ldflags -X main.fixture fixture ."
+  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture fixture ." #Nothing vendored
   assertCaptured "Deprecated or unsupported version of go"
   assertCapturedSuccess
   assertCompiledBinaryExists

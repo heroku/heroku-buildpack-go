@@ -333,28 +333,13 @@ case "${TOOL}" in
         handleDefaultPkgSpec
 
         UseGodepCommand="false" # Default to not wrapping go install with godep (vendor)
-
-        if <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | indices(["'${ver}'"]) | length | if . == 0 then false else true end' &> /dev/null; then
-            case "${ver}" in
-                go1.5*) #go1.5* defaults to disable vendor
-                    if [ -z "${GO15VENDOREXPERIMENT}" -o "${GO15VENDOREXPERIMENT}" = "0" ]; then
-                        UseGodepCommand="true"
-                    fi
-                ;;
-                go1.6*) #go1.6* defaults to enable vendor
-                    if [ "${GO15VENDOREXPERIMENT}" = "0" ]; then
-                        UseGodepCommand="true"
-                    fi
-                ;;
-            esac
-        else
-            if [ -n "${GO15VENDOREXPERIMENT}" ]; then
-                err ""
-                err "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
-                err "run `heroku config:unset GO15VENDOREXPERIMENT`"
-                err "before pushing again."
-                err ""
-                exit 1
+        if [ -d "${src}/Godeps/_workspace/src" ]; then
+            UseGodepCommand="true"
+            if [ -d "${src}/vendor" ]; then
+                warn ""
+                warn "Godeps/_workspace/src and vendor/ exist"
+                warn "code may not compile. Please convert all deps to vendor/"
+                warn ""
             fi
         fi
 
