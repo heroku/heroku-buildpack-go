@@ -265,7 +265,10 @@ testCompileGodepBasicGo17WithGO15VENDOREXPERIMENT() {
   local env_dir=$(mktmpdir)
   echo '1' > "${env_dir}/GO15VENDOREXPERIMENT"
   compile "godep-basic-go17" ${cache} ${env_dir}
-  assertCapturedError 1 "GO15VENDOREXPERIMENT is set, but is not supported by go1.7"
+  assertCaptured "GO15VENDOREXPERIMENT is set, but is not supported by go"
+  assertCaptured "run \`heroku config:unset GO15VENDOREXPERIMENT\` to unset."
+  assertCapturedSuccess
+  assertCompiledBinaryExists
 }
 
 testDetectGovendorExcluded() {

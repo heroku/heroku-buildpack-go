@@ -34,6 +34,7 @@ handleDefaultPkgSpec() {
                 warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
                 warn ""
                 warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+                warn ""
             ;;
             glide)
                 warn "To install a different package spec for the next build run:"
@@ -41,9 +42,9 @@ handleDefaultPkgSpec() {
                 warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
                 warn ""
                 warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
+                warn ""
             ;;
         esac
-        warn ""
         pkgs="."
     fi
 }
@@ -322,7 +323,6 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     godep)
-        ensureInPath "godep_linux_amd64" "${cache}/godep/bin"
         eval "$(setupGOPATH ${name})"
         godepsJSON="${src}/Godeps/Godeps.json"
 
@@ -340,10 +340,21 @@ case "${TOOL}" in
                 warn ""
             fi
         fi
+        # Warn that GO15VENDOREXPIERMENT is set, but the go version does not support it.
+        if <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | indices(["'${ver}'"]) | length | if . == 0 then true else false end' &> /dev/null; then
+            if [ -n "${GO15VENDOREXPERIMENT}" ]; then
+                warn ""
+                warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
+                warn "run \`heroku config:unset GO15VENDOREXPERIMENT\` to unset."
+                warn ""
+            fi
+        fi
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd "${src}"
         if [ "${UseGodepCommand}" = "true" ]; then
+            ensureInPath "godep_linux_amd64" "${cache}/godep/bin"
+
             step "Running: godep go install -v ${FLAGS[@]} ${pkgs}"
             godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         else
