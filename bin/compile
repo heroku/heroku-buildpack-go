@@ -115,12 +115,11 @@ ensureHG() {
     else
         rm -rf "${cache}/hg"
         mkdir -p "${hgPath}"
-        start "Installing hg ${hgVersion}"
-            ensureFile "mercurial-${hgVersion}.tar.gz" "${tmp}" "tar -C ${tmp} --strip-components=1 -zxf"
-            pushd "${tmp}" &> /dev/null
-                python setup.py install --force --home="${hgPath}" &> /dev/null
-            popd &> /dev/null
-        finished
+        step "Installing hg ${hgVersion}"
+        ensureFile "mercurial-${hgVersion}.tar.gz" "${tmp}" "tar -C ${tmp} --strip-components=1 -zxf"
+        pushd "${tmp}" &> /dev/null
+            python setup.py install --force --home="${hgPath}" &> /dev/null
+        popd &> /dev/null
     fi
 
     addToPATH "${hgPath}/bin"
@@ -137,11 +136,10 @@ ensureGlide() {
         step "Using glide ${glideVersion}"
     else
         rm -rf "${cache}/glide"
-        start "Installing glide ${glideVersion}"
-            ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
-            chmod a+x "${gBin}"
-            rm -f "${targetFile}"
-        finished
+        step "Installing glide ${glideVersion}"
+        ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
+        chmod a+x "${gBin}"
+        rm -f "${targetFile}"
     fi
 }
 
