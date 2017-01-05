@@ -562,7 +562,7 @@ testCompileGodepBasicWithTools() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCaptured "Copying go tool chain to"
-  assertCaptured "Copying godep binary"
+  assertNotCaptured "Copying godep binary" #We don't copy the binary when a workspace isn't present
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"

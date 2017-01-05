@@ -443,8 +443,10 @@ if [ "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true" ]; then
         echo 'export GOROOT=$HOME/.heroku/go' > "${build}/.profile.d/goroot.sh"
         echo 'PATH=$PATH:$GOROOT/bin' >> "${build}/.profile.d/goroot.sh"
     finished
-    step "Copying ${TOOL} binary"
-    cp $(which ${TOOL}) "${build}/bin"
+    if which ${TOOL} &> /dev/null; then
+      step "Copying ${TOOL} binary"
+      cp $(which ${TOOL}) "${build}/bin"
+    fi
 fi
 
 if [ "${GO_SETUP_GOPATH_IN_IMAGE}" = "true" ]; then
