@@ -4,6 +4,12 @@
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
 
+if [ -z "${buildpack}" ]; then
+    buildpack=$(cd "$(dirname $0)/.." && pwd)
+fi
+
+DataJSON="${buildpack}/data.json"
+FilesJSON="${buildpack}/files.json"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
@@ -13,6 +19,13 @@ YELLOW='\033[1;33m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
 CURL="curl -s -L --retry 15 --retry-delay 2" # retry for up to 30 seconds
+
+BucketURL="https://heroku-golang-prod.s3.amazonaws.com"
+
+TOOL=""
+# Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
+GO_LINKER_VALUE=${SOURCE_VERSION}
+
 
 warn() {
     echo -e "${YELLOW} !!    $@${NC}"
@@ -34,16 +47,97 @@ finished() {
     echo "done"
 }
 
+determinLocalFileName() {
+    local fileName="${1}"
+    local localName="jq"
+    if [ "${fileName}" != "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq'
+        localName="$(<"${FilesJSON}" jq -r '."'${fileName}'".LocalName | if . == null then "'${fileName}'" else . end')"
+    fi
+    echo "${localName}"
+}
+
+downloadFile() {
+    local fileName="${1}"
+    local targetDir="${2}"
+    local xCmd="${3}"
+    local localName="$(determinLocalFileName "${fileName}")"
+    local targetFile="${targetDir}/${localName}"
+
+    mkdir -p "${targetDir}"
+    pushd "${targetDir}" &> /dev/null
+        start "Fetching ${localName}"
+            ${CURL} -O "${BucketURL}/${fileName}"
+            if [ "${fileName}" != "${localName}" ]; then
+                mv "${fileName}" "${localName}"
+            fi
+            if [ -n "${xCmd}" ]; then
+                ${xCmd} ${targetFile}
+            fi
+            if ! SHAValid "${fileName}" "${targetFile}"; then
+                err ""
+                err "Downloaded file (${fileName}) sha does not match recorded SHA"
+                err "Unable to continue."
+                err ""
+                exit 1
+            fi
+        finished
+    popd &> /dev/null
+}
+
+SHAValid() {
+    local fileName="${1}"
+    local targetFile="${2}"
+    local sh=""
+    local sw="$(<"${FilesJSON}" jq -r '."'${fileName}'".SHA')"
+    if [ ${#sw} -eq 40 ]; then
+        sh="$(shasum "${targetFile}" | cut -d \  -f 1)"
+    else
+        sh="$(shasum -a256 "${targetFile}" | cut -d \  -f 1)"
+    fi
+    [ "${sh}" = "${sw}" ]
+}
+
+ensureFile() {
+    local fileName="${1}"
+    local targetDir="${2}"
+    local xCmd="${3}"
+    local localName="$(determinLocalFileName "${fileName}")"
+    local targetFile="${targetDir}/${localName}"
+    local download="false"
+    if [ ! -f "${targetFile}" ]; then
+        download="true"
+    elif ! SHAValid "${fileName}" "${targetFile}"; then
+        download="true"
+    fi
+    if [ "${download}" = "true" ]; then
+        downloadFile "${fileName}" "${targetDir}" "${xCmd}"
+    fi
+}
+
+addToPATH() {
+    local targetDir="${1}"
+    if echo "${PATH}" | grep -v "${targetDir}" &> /dev/null; then
+        PATH="${targetDir}:${PATH}"
+    fi
+}
+
+ensureInPath() {
+    local fileName="${1}"
+    local targetDir="${2}"
+    local xCmd="${3:-chmod a+x}"
+    local localName="$(determinLocalFileName "${fileName}")"
+    local targetFile="${targetDir}/${localName}"
+    addToPATH "${targetDir}"
+    ensureFile "${fileName}" "${targetDir}" "${xCmd}"
+}
+
 loadEnvDir() {
     local env_dir="${1}"
-    if [ ! -z "${env_dir}" ]
-    then
+    if [ ! -z "${env_dir}" ]; then
         mkdir -p "${env_dir}"
         env_dir=$(cd "${env_dir}/" && pwd)
-        for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_INSTALL_PACKAGE_SPEC GO_INSTALL_TOOLS_IN_IMAGE GO_SETUP_GOPATH_IN_IMAGE
-        do
-            if [ -f "${env_dir}/${key}" ]
-            then
+        for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_INSTALL_PACKAGE_SPEC GO_INSTALL_TOOLS_IN_IMAGE GO_SETUP_GOPATH_IN_IMAGE; do
+            if [ -f "${env_dir}/${key}" ]; then
                 export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
             fi
         done
@@ -51,43 +145,37 @@ loadEnvDir() {
 }
 
 setGoVersionFromEnvironment() {
-  if test -z "${GOVERSION}"
-  then
-    warn ""
-    warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
-    warn ""
-    warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
-    warn "for future builds"
-    warn ""
-  fi
-  ver=${GOVERSION:-$DefaultGoVersion}
+    if [ -z "${GOVERSION}" ]; then
+        warn ""
+        warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
+        warn ""
+        warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
+        warn "for future builds"
+        warn ""
+    fi
+    ver=${GOVERSION:-$DefaultGoVersion}
 }
 
 determineTool() {
-    if test -f "${godepsJSON}"
-    then
+    if [ -f "${godepsJSON}" ]; then
         TOOL="godep"
         step "Checking Godeps/Godeps.json file."
-        if ! jq -r . < "${godepsJSON}" > /dev/null
-        then
+        if ! jq -r . < "${godepsJSON}" > /dev/null; then
             err "Bad Godeps/Godeps.json file"
-            exit 1
+        exit 1
         fi
         name=$(<${godepsJSON} jq -r .ImportPath)
         ver=${GOVERSION:-$(<${godepsJSON} jq -r .GoVersion)}
         warnGoVersionOverride
-    elif test -f "${vendorJSON}"
-    then
+    elif [ -f "${vendorJSON}" ]; then
         TOOL="govendor"
         step "Checking vendor/vendor.json file."
-        if ! jq -r . < "${vendorJSON}" > /dev/null
-        then
+        if ! jq -r . < "${vendorJSON}" > /dev/null; then
             err "Bad vendor/vendor.json file"
             exit 1
         fi
         name=$(<${vendorJSON} jq -r .rootPath)
-        if [ "$name" = "null" -o -z "$name" ]
-        then
+        if [ "$name" = "null" -o -z "$name" ]; then
             err "The 'rootPath' field is not specified in 'vendor/vendor.json'."
             err "'rootPath' must be set to the root package name used by your repository."
             err "Recent versions of govendor add this field automatically, please upgrade"
@@ -95,26 +183,22 @@ determineTool() {
             err ""
             err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
             exit 1
-
         fi
         ver=${GOVERSION:-$(<${vendorJSON} jq -r .heroku.goVersion)}
         warnGoVersionOverride
-        if [ "${ver}" =  "null" -o -z "${ver}" ]
-        then
-        ver=${DefaultGoVersion}
-        warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
-        warn ""
-        warn "Defaulting to ${ver}"
-        warn ""
-        warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
-        warn ""
+        if [ "${ver}" =  "null" -o -z "${ver}" ]; then
+            ver=${DefaultGoVersion}
+            warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
+            warn ""
+            warn "Defaulting to ${ver}"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
+            warn ""
         fi
-    elif test -f "${glideYAML}"
-    then
+    elif [ -f "${glideYAML}" ]; then
         TOOL="glide"
         setGoVersionFromEnvironment
-    elif (test -d "$build/src" && test -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)")
-    then
+    elif [ -d "$build/src" -a -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]; then
         TOOL="gb"
         setGoVersionFromEnvironment
     else
