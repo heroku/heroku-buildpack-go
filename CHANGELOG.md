@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+#v56
+
 go1.8 support (beta / rc atm).
 Start using our own s3 bucket instead of various internet locations.
 Verify SHAs of filesdownloaded.
