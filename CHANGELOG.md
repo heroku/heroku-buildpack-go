@@ -8,7 +8,7 @@ go1.8 support (beta / rc atm).
 Start using our own s3 bucket instead of various internet locations.
 Verify SHAs of filesdownloaded.
 
-#v54
+#v54/v55
 
 Fix erroneous warning about go1.7.4 / go1.6.4 being deprecated
 
