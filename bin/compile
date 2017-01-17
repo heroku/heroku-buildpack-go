@@ -135,6 +135,7 @@ ensureGlide() {
 
     if [ -x "${gBin}" ]; then
         step "Using glide ${glideVersion}"
+        addToPATH "${gPath}"
     else
         rm -rf "${cache}/glide"
         step "Installing glide ${glideVersion}"
