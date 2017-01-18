@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Ensure glide is in the PATH, even when using from the cache.
+
 #v56
 
 go1.8 support (beta / rc atm).
