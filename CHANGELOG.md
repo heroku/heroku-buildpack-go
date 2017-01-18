@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+#v57
+
 Ensure glide is in the PATH, even when using from the cache.
 
 #v56
