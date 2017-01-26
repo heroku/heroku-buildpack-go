@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+bump go1.8 to go1.8rc3
+Default go1.7 to go1.7.5
+
 #v58
 
 bump go1.8 to go1.8rc2
