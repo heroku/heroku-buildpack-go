@@ -15,3 +15,6 @@ quick:
 	@echo "Opening cedar-14 shell..."
 	@docker run -v $(shell pwd):/buildpack:ro --rm -it heroku/cedar:14 bash -c 'mkdir -p /buildpack_test; tar --exclude=file-cache --exclude=.git -cf - -C /buildpack . | tar -x -C /buildpack_test; cd /buildpack_test/; test/quick; bash'
 	@echo ""
+
+publish:
+	bin/publish
