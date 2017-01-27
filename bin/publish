@@ -1,11 +1,15 @@
 #!/usr/bin/env bash
 
-#if ! git diff-index --quiet HEAD --; then
-#  echo "git repository isn't clean"
-#  exit 1
-#fi
+BUILDPACK="${1}"
+if [ -z "${BUILDPACK}" ]; then
+  echo "usage: $0 <build-pack>"
+  exit 1
+fi
 
-BUILDPACK="heroku/go"
+if ! git diff-index --quiet HEAD --; then
+  echo "git repository isn't clean"
+  exit 1
+fi
 
 function errExit {
     echo "${1}"
@@ -25,6 +29,11 @@ mv file-cache ${tmp}
 
 CVER=$(heroku buildkits:revisions ${BUILDPACK} | head -n 2 | tail -n 1 | cut -d \  -f 1 | cut -d v -f 2)
 echo -e "\nCurrent Version: $CVER"
+
+if [ -z "${CVER}" ]; then
+  errExit "Unable to determine the current published version. A buildpack must be manually published once before using this script."
+fi
+
 NVER=$(( ${CVER} + 1 ))
 echo "Next Version: $NVER"
 DATE=$(date "+%Y-%m-%d")
@@ -60,16 +69,17 @@ if [ "${key}" != "y" ]; then
   errExit "aborting"
 fi
 
-t=$(heroku buildkits:publish ${BUILDPACK})
+echo "Publishing ${BUILDPACK}"
+t=$(heroku buildkits:publish ${BUILDPACK} 2>&1)
 PVER=$(echo ${t} | sed 's/[^0-9]*//g')
 
 if [ "${PVER}" != "${NVER}" ]; then
   errExit "Published version (${PVER}) and calculated version (${NVER}) do not match."
 fi
 
-git add -A CHANGELOG.md
-git commit -a -m "Bump to v${NVER}" -m "${CHANGES}"
-git tag -m "v${NVER}" -m "${CHANGES}" "${NVER}"
+git add CHANGELOG.md
+git commit -m "Bump to v${NVER}" -m "${CHANGES}"
+git tag -m "v${NVER}" -m "${CHANGES}" "v${NVER}"
 git push origin master
 git push --tags
 

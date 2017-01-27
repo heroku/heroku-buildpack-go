@@ -17,4 +17,4 @@ quick:
 	@echo ""
 
 publish:
-	bin/publish
+	bin/publish heroku/go
