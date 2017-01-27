@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-if ! git diff-index --quiet HEAD --; then
-  echo "git repository isn't clean"
-  exit 1
-fi
+#if ! git diff-index --quiet HEAD --; then
+#  echo "git repository isn't clean"
+#  exit 1
+#fi
 
 BUILDPACK="heroku/go"
 
@@ -32,7 +32,7 @@ echo "Release Date: ${DATE}"
 
 CHANGES=$(
 sed -n "
-/## Unreleased/,/## ${CVER}/ {
+/## Unreleased/,/## v${CVER}/ {
   /^$/,/^$/ {
     /^$/ d
     p

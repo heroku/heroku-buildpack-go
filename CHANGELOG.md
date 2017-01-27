@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v60 (2017-01-27)
+
 Default go1.7 to go1.7.5 (was actually missing from last release :-()
 
 ## v59 (2017-01-26)
