@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Default go1.7 to go1.7.5 (was actually missing from last release :-()
+
 ## v59 (2017-01-26)
 
 bump go1.8 to go1.8rc3
