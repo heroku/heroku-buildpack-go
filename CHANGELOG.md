@@ -7,70 +7,70 @@
 bump go1.8 to go1.8rc3
 Default go1.7 to go1.7.5
 
-#v58
+## v58
 
 bump go1.8 to go1.8rc2
 
-#v57
+## v57
 
 Ensure glide is in the PATH, even when using from the cache.
 
-#v56
+## v56
 
 go1.8 support (beta / rc atm).
 Start using our own s3 bucket instead of various internet locations.
 Verify SHAs of filesdownloaded.
 
-#v54/v55
+## v54/v55
 
 Fix erroneous warning about go1.7.4 / go1.6.4 being deprecated
 
-#v53
+## v53
 
 Default to go1.7.4 for go1.7
 Default to go1.6.4 for go1.6
 
-#v52
+## v52
 
 Default to go1.7.3 for go1.7
 
-#v51
+## v51
 
 Add support for testpack (bin/test-compile & bin/test)
 
-#v50
+## v50
 
 Bump versions of GB (0.4.3), Glide (0.12.2) & govendor (1.0.8)
 
-#v49
+## v49
 
 govendor: set `.heroku.sync = false` to prevent a `govendor sync` from being run before go install.
 When `GO_INSTALL_TOOLS_IN_IMAGE=true` the go tool chain (and dep tool) will be installed in `$HOME/.heroku/go` (`$GOROOT=$HOME/.heroku/go`). $GOROOT/bin is added to the `$PATH`.
 When `GO_SETUP_GOPATH_IN_IMAGE=true` (except for GB) the provided code is setup in a proper $GOPATH (`$GOPATH=$HOME`) and user's code is placed in `$GOPATH/src/$PROJECT NAME`.
 
-#v48
+## v48
 
 Bump govendor to v1.0.6
 Bump to go1.7.1
 
-#v47
+## v47
 
 when using glide, install hg
 
-#v46
+## v46
 
 go1.7 released, drop support for go1.5.X
 
-#v45
+## v45
 
 go1.7rc5 is the default for go1.7
 GOVERSION & GO_INSTALL_PACKAGE_SPEC take priority over config files for godep/govendor. This is to help people deploying the same repo to multiple apps, allowing them to compile only specific packages and choose different go versions.
 
-#v44
+## v44
 
 go1.7rc3 is the default for go1.7
 
-#v43 (2016-07-19)
+## v43 (2016-07-19)
 
 go1.7rc1 is the default for go1.7
 Use go1.7rc2 and go1.6.3
