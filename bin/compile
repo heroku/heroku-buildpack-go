@@ -281,6 +281,7 @@ setupGOPATH() {
 
     local src="${GOPATH}/src/${name}"
     mkdir -p "${src}"
+    mkdir -p "${build}/bin"
     mv -t "${src}" "${t}"/*
 
     echo "GOPATH=${GOPATH}"
