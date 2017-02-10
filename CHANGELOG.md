@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v61 (2017-02-10)
+
 Ensure there is a ${build}/bin after moving things around to setup $GOPATH
 
 ## v60 (2017-01-27)
