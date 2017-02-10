@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export BUILDPACK_SERVER_URL=https://buildkits.heroku.com
+
 BUILDPACK="${1}"
 if [ -z "${BUILDPACK}" ]; then
   echo "usage: $0 <build-pack>"
