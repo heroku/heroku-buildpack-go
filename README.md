@@ -1,4 +1,4 @@
-![travis ci](https://travis-ci.org/heroku/heroku-buildpack-go.svg?branch=master)
+[![travis ci](https://travis-ci.org/heroku/heroku-buildpack-go.svg?branch=master)](https://travis-ci.org/heroku/heroku-buildpack-go)
 
 # Heroku Buildpack for Go
 
