@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o pipefail
+
 export BUILDPACK_SERVER_URL=https://buildkits.heroku.com
 
 BUILDPACK="${1}"
