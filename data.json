@@ -33,7 +33,7 @@
     "DefaultVersion": "1.0.8"
   },
   "GB": {
-    "DefaultVersion": "0.4.3"
+    "DefaultVersion": "0.4.4-pre"
   },
   "PkgErrors": {
     "DefaultVersion": "0.8.0"
