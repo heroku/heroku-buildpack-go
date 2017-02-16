@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Go 1.8 final support
+
 ## v61 (2017-02-10)
 
 Ensure there is a ${build}/bin after moving things around to setup $GOPATH
