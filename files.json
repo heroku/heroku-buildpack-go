@@ -1,4 +1,8 @@
 {
+    "go1.8.linux-amd64.tar.gz": {
+        "URL": "https://storage.googleapis.com/golang/go1.8.linux-amd64.tar.gz",
+        "SHA": "53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca"
+    },
     "go1.8rc3.linux-amd64.tar.gz": {
         "URL": "https://storage.googleapis.com/golang/go1.8rc3.linux-amd64.tar.gz",
         "SHA": "0ff3faba02ac83920a65b453785771e75f128fbf9ba4ad1d5e72c044103f9c7a"
@@ -168,6 +172,10 @@
     "mercurial-3.9.tar.gz":{
         "URL": "https://www.mercurial-scm.org/release/mercurial-3.9.tar.gz",
         "SHA":"834f25dcff44994198fb8a7ba161a6e24204dbd63c8e6270577e06e6cedbdabc"
+    },
+    "gb-0.4.4-pre.tar.gz": {
+        "URL": "created manually from commit 137520c0f2217d8b7f934dc307865488ef31b551",
+        "SHA": "f8b3847558d45f8d3a9f8252ab353d5793f1622e78138ec974ea956d7ae4d9d0"
     },
     "gb-0.4.3.tar.gz": {
         "URL": "https://github.com/constabulary/gb/archive/v0.4.3.tar.gz",

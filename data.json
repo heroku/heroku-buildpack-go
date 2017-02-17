@@ -1,9 +1,9 @@
 {
   "Go": {
-    "Supported": ["go1.6.4", "go1.7.5"],
-    "DefaultVersion": "go1.7.5",
+    "Supported": ["go1.7.5", "go1.8"],
+    "DefaultVersion": "go1.8",
     "VersionExpansion": {
-      "go1.8": "go1.8rc3",
+      "go1.8": "go1.8",
       "go1.7": "go1.7.5",
       "go1.6": "go1.6.4",
       "go1.5": "go1.5.4",
@@ -33,7 +33,7 @@
     "DefaultVersion": "1.0.8"
   },
   "GB": {
-    "DefaultVersion": "0.4.3"
+    "DefaultVersion": "0.4.4-pre"
   },
   "PkgErrors": {
     "DefaultVersion": "0.8.0"
