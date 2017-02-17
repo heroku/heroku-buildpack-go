@@ -124,6 +124,22 @@ $ heroku config:set GO_INSTALL_PACKAGE_SPEC=./...
 $ git push heroku master
 ```
 
+## Usage with other vendoring systems
+
+If your vendor system of choice is not listed here, create `vendor/vendor.json`
+with the following contents, adjusted as needed for your project.
+
+```json
+{
+    "comment": "For other heroku options see: https://devcenter.heroku.com/articles/go-dependencies-via-govendor#build-configuration",
+    "rootPath": "github.com/heroku/go-getting-started",
+    "heroku": {
+        "sync": false,
+        "install": [ "./..." ],
+        "goVersion": "go1.8"
+    }
+}
+```
 
 ## Hacking on this Buildpack
 
