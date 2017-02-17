@@ -127,12 +127,12 @@ $ git push heroku master
 ## Usage with other vendoring systems
 
 If your vendor system of choice is not listed here, create `vendor/vendor.json`
-with the following contents, adjusted as needed for your project.
+with the following contents, adjusted as needed for your project's root path.
 
 ```json
 {
     "comment": "For other heroku options see: https://devcenter.heroku.com/articles/go-dependencies-via-govendor#build-configuration",
-    "rootPath": "github.com/heroku/go-getting-started",
+    "rootPath": "github.com/yourOrg/yourRepo",
     "heroku": {
         "sync": false,
         "install": [ "./..." ],
