@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v62 (2017-02-16)
+
 Go 1.8 final support
 Update gb to 0.4.4-pre (made up from master @ 137520c0f2217d8b7f934dc307865488ef31b551)
 
