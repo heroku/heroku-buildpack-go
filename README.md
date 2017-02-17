@@ -30,7 +30,7 @@ Creating polar-waters-4785...
 $ git push heroku master
 ...
 -----> Go app detected
------> Installing go1.7... done
+-----> Installing go1.8... done
 -----> Running: go install -tags heroku ./...
 -----> Discovering process types
        Procfile declares types -> web
@@ -77,7 +77,7 @@ top level json keys:
    includes any packages in your `vendor` directory.
 
 
-Example with everything, for a project using `go1.7`, located at
+Example with everything, for a project using `go1.8`, located at
 `$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single package
 spec of `./...` to install.
 
@@ -87,7 +87,7 @@ spec of `./...` to install.
     "rootPath": "github.com/heroku/go-getting-started",
     "heroku": {
         "install" : [ "./..." ],
-        "goVersion": "go1.7"
+        "goVersion": "go1.8"
          },
     ...
 }
@@ -111,8 +111,8 @@ latest released minor version in that series. Setting `$GOVERSION` to a specific
 minor Go version will pin Go to that version. Examples:
 
 ```console
-$ heroku config:set GOVERSION=go1.7   # Will use go1.7.X, Where X is that latest minor release in the 1.7 series
-$ heroku config:set GOVERSION=go1.6.3 # Pins to go1.6.3
+$ heroku config:set GOVERSION=go1.8   # Will use go1.8.X, Where X is that latest minor release in the 1.8 series
+$ heroku config:set GOVERSION=go1.7.5 # Pins to go1.7.5
 ```
 
 Installation defaults to `.`. This can be overridden by setting the
@@ -146,8 +146,8 @@ config vars to specify CGO flags to specify paths for vendored dependencies. The
 literal text of `${build_dir}` will be replaced with the directory the build is
 happening in. For example, if you added C headers to an `includes/` directory,
 add the following config to your app: `heroku config:set CGO_CFLAGS='-I${
-build_dir}/includes'`. Note the used of `''` to ensure they are not converted to
-local environment variables
+build_dir}/includes'`. Note the usage of `''` to ensure they are not converted to
+local environment variables.
 
 ## Using a development version of Go
 
