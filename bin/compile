@@ -479,6 +479,12 @@ case "${TOOL}" in
         fi
         massagePkgSpecForVendor
 
+        PreBuildHook="scripts/pre-build"
+        if [ -x $PreBuildHook ]; then
+            step "Running pre-build hook: ${PreBuildHook}"
+            $PreBuildHook
+        fi
+
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
