@@ -134,9 +134,7 @@ with the following contents, adjusted as needed for your project's root path.
     "comment": "For other heroku options see: https://devcenter.heroku.com/articles/go-dependencies-via-govendor#build-configuration",
     "rootPath": "github.com/yourOrg/yourRepo",
     "heroku": {
-        "sync": false,
-        "install": [ "./..." ],
-        "goVersion": "go1.8"
+        "sync": false
     }
 }
 ```
