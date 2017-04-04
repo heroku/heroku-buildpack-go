@@ -74,8 +74,8 @@ if [ "${key}" != "y" ]; then
 fi
 
 echo "Publishing ${BUILDPACK}"
-t=$(heroku buildkits:publish ${BUILDPACK} 2>&1)
-PVER=$(echo ${t} | sed 's/[^0-9]*//g')
+heroku buildkits:publish ${BUILDPACK}
+PVER=$(heroku buildkits:revisions ${BUILDPACK} | awk '/^v/ {print $1; exit}')
 
 if [ "${PVER}" != "${NVER}" ]; then
   errExit "Published version (${PVER}) and calculated version (${NVER}) do not match."
