@@ -132,11 +132,24 @@ ensureInPath() {
 }
 
 loadEnvDir() {
+    local envFlags=()
+    envFlags+=("CGO_CFLAGS")
+    envFlags+=("CGO_CPPFLAGS")
+    envFlags+=("CGO_CXXFLAGS")
+    envFlags+=("CGO_LDFLAGS")
+    envFlags+=("GO_LINKER_SYMBOL")
+    envFlags+=("GO_LINKER_VALUE")
+    envFlags+=("GO15VENDOREXPERIMENT")
+    envFlags+=("GOVERSION")
+    envFlags+=("GO_INSTALL_PACKAGE_SPEC")
+    envFlags+=("GO_INSTALL_TOOLS_IN_IMAGE")
+    envFlags+=("GO_SETUP_GOPATH_IN_IMAGE")
+    envFlags+=("GO_TEST_SKIP_BENCHMARK")
     local env_dir="${1}"
     if [ ! -z "${env_dir}" ]; then
         mkdir -p "${env_dir}"
         env_dir=$(cd "${env_dir}/" && pwd)
-        for key in CGO_CFLAGS CGO_CPPFLAGS CGO_CXXFLAGS CGO_LDFLAGS GO_LINKER_SYMBOL GO_LINKER_VALUE GO15VENDOREXPERIMENT GOVERSION GO_INSTALL_PACKAGE_SPEC GO_INSTALL_TOOLS_IN_IMAGE GO_SETUP_GOPATH_IN_IMAGE; do
+        for key in ${envFlags[@]}; do
             if [ -f "${env_dir}/${key}" ]; then
                 export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
             fi

@@ -53,7 +53,7 @@ test() {
   echo
   echo "----------------------------------------------------------------------------------------------"
   echo
-  "${bp_dir}/bin/test" "${build_dir}" "${env_dir}" "${artifact_dir}"
+  "${bp_dir}/bin/test" "${build_dir}" "${env_dir}" #"${artifact_dir}"
 }
 
 cmd="${1:-compile}"

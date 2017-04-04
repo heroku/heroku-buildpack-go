@@ -12,19 +12,16 @@ source "${testpack}/lib/common.sh"
 
 # loadEnvDir "${env_dir}"
 # For now, load all of env_dir
-if [ ! -z "${env_dir}" ]
-then
-    for key in $(cd ${env_dir}; ls)
-    do
-        if [ -f "${env_dir}/${key}" ]
-        then
-            export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
+if [ ! -z "${env_dir}" ]; then
+    for f in ${env_dir}/*; do
+        key=$(basename $f)
+        if [ -f "${f}" ]; then
+            export "${key}=$(cat "${f}" | sed -e "s:\${build_dir}:${build}:")"
         fi
     done
 fi
 
-if test -e "${build}/.heroku/go/.meta"
-then
+if [ -f "${build}/.heroku/go/.meta" ]; then
   source "${build}/.heroku/go/.meta"
 fi
 
@@ -43,24 +40,30 @@ case "${TOOL}" in
         step "Running Tests With: govendor test -race -v +local | patter"
         govendor test -race -v +local 2>&1 | tee -a ${output} | patter
         step
-        step "Running Benchmarks With: govendor test -run=_ -bench=. -benchmem -v +local"
-        govendor test -run=_ -bench=. -benchmem -v +local 2>&1
+        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
+            step "Running Benchmarks With: govendor test -run=_ -bench=. -benchmem -v +local"
+            govendor test -run=_ -bench=. -benchmem -v +local 2>&1
+        fi
     ;;
     glide|godep)
         cd "${GOPATH}/src/${NAME}"
         step 'Running Test With: go test -race -v $(go list ./... | grep -v /vendor/) | patter'
         go test -race -v $(go list ./... | grep -v /vendor/) 2>&1 | tee -a ${output} | patter
         step
-        step 'Running Benchmarks With: go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/)'
-        go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/) 2>&1
+        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
+            step 'Running Benchmarks With: go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/)'
+            go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/) 2>&1
+        fi
     ;;
     gb)
         cd "${build}"
         step "Running Test With: gb test -v | patter"
         gb test -v 2>&1 | tee -a ${output} | patter
         step
-        step "Running Benchmarks With: gb test -run=_ -bench=. -benchmem -v ${trailer}"
-        gb test -run=_ -bench=. -benchmem -v 2>&1
+        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
+            step "Running Benchmarks With: gb test -run=_ -bench=. -benchmem -v ${trailer}"
+            gb test -run=_ -bench=. -benchmem -v 2>&1
+        fi
     ;;
     *)
         warn "Testing is not supported for ${TOOL}"

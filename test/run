@@ -1,6 +1,55 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testTestGovendorWithTestsSkipBenchmark() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
+  dotest "govendor-with-tests" "${cache}" "${env_dir}"
+  assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertNotCaptured "BenchmarkHello"
+}
+testTestGlideWithTestsSkipBenchmark() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
+  dotest "glide-with-tests" "${cache}" "${env_dir}"
+  assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertNotCaptured "BenchmarkHello"
+}
+testTestGodepWithTestsSkipBenchmark() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
+  dotest "godep-with-tests" "${cache}" "${env_dir}"
+  assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertNotCaptured "BenchmarkHello"
+}
+testTestGBWithTestsSkipBenchmark() {
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
+  dotest "gb-with-tests" "${cache}" "${env_dir}"
+  assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertNotCaptured "BenchmarkHello"
+}
+
 testTestGovendorWithTests() {
   dotest "govendor-with-tests"
   assertCapturedSuccess
@@ -37,7 +86,6 @@ testTestGBWithTests() {
   assertCaptured "PASS: ExampleHello"
   assertCaptured "BenchmarkHello"
 }
-
 
 testDetectGlideWithHgDep() {
   detect "glide-with-hg-dep"
@@ -727,19 +775,22 @@ compile() {
   default_process_types_cleanup
   bp_dir=$(mktmpdir)
   compile_dir=$(mktmpdir)
+  cache_dir=${2:-$(mktmpdir)}
+  env_dir=${3}
   cp -a $(pwd)/* ${bp_dir}
-  cp -a ${bp_dir}/test/fixtures/$1/. ${compile_dir}
-  capture ${bp_dir}/bin/compile ${compile_dir} ${2:-$(mktmpdir)} $3
+  cp -a ${bp_dir}/test/fixtures/${1}/. ${compile_dir}
+  capture ${bp_dir}/bin/compile ${compile_dir} ${cache_dir} ${env_dir}
 }
 
 dotest(){
   default_process_types_cleanup
   bp_dir=$(mktmpdir)
   compile_dir=$(mktmpdir)
-  env_dir=$(mktmpdir)
+  cache_dir=${2:-$(mktmpdir)}
+  env_dir=${3:-$(mktmpdir)}
   cp -a $(pwd)/* ${bp_dir}
-  cp -a ${bp_dir}/test/fixtures/$1/. ${compile_dir}
-  capture "${bp_dir}/bin/test-compile" "${compile_dir}" "${2:-$(mktmpdir)}" "${env_dir}"
+  cp -a ${bp_dir}/test/fixtures/${1}/. ${compile_dir}
+  capture "${bp_dir}/bin/test-compile" "${compile_dir}" "${cache_dir}" "${env_dir}"
   capture "${bp_dir}/bin/test" "${compile_dir}" "${env_dir}"
 }
 
