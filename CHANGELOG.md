@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v63 (2017-04-04)
+
 Add $GO_TEST_SKIP_BENCHMARK, that when set to anything skips the benchmark during test execution. 
 
 ## v62 (2017-02-16)
