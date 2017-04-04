@@ -2,7 +2,7 @@
 
 set -o pipefail
 
-export BUILDPACK_SERVER_URL=https://buildkits.heroku.com
+#export BUILDPACK_SERVER_URL=https://buildkits.heroku.com
 
 BUILDPACK="${1}"
 if [ -z "${BUILDPACK}" ]; then
