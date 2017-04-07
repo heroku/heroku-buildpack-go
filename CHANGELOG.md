@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Support go 1.8.1. Default to go1.8.1.
+
 ## v63 (2017-04-04)
 
 Add $GO_TEST_SKIP_BENCHMARK, that when set to anything skips the benchmark during test execution. 
