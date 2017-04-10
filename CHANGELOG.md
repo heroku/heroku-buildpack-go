@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v64 (2017-04-10)
+
 Support go 1.8.1. Default to go1.8.1.
 
 ## v63 (2017-04-04)
