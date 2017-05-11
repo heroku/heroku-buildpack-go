@@ -49,13 +49,19 @@ handleDefaultPkgSpec() {
     fi
 }
 
+pkgMM=""
 massagePkgSpecForVendor() {
     local t=""
     for pkg in $(echo $pkgs); do
         if [ "${pkg:0:1}" = "." ] || [ ! -d "./vendor/$pkg" ]; then
             t+="${pkg} "
         else
-            t+="${name}/vendor/${pkg} "
+            fvn="${name}/vendor/${pkg}"
+            if [[ "${fvn}" =~ "/vendor/github.com/mattes/migrate/cli" ]]; then
+                pkgMM="${fvn}"
+            else
+                t+="${name}/vendor/${pkg} "
+            fi
         fi
     done
     pkgs="${t}"
@@ -386,6 +392,11 @@ case "${TOOL}" in
 
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+
+        if [[ -n "${pkgMM}" ]]; then
+            step 'Installing github.com/mattes/migrate/cli as ~/bin/migrate with "postgres" tag'
+            go build -v -tags 'postgres' -o "${build}/bin/migrate" "${pkgMM}" 2>&1
+        fi
     ;;
     glide)
         ensureGlide "${GlideVersion}"

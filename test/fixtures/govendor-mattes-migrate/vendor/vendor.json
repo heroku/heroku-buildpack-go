@@ -1,0 +1,100 @@
+{
+	"comment": "",
+	"ignore": "test appengine",
+	"heroku": {
+		"install":[".","github.com/mattes/migrate/cli"]
+	},
+	"package": [
+		{
+			"checksumSHA1": "lBHs7cGd/WB6Ng0pBT+9DXFunR4=",
+			"path": "github.com/go-sql-driver/mysql",
+			"revision": "336127359b09c9c8164e39c4c44f4d36ef081dc8",
+			"revisionTime": "2017-05-10T12:46:09Z"
+		},
+		{
+			"checksumSHA1": "e2u38mMKZ1mhoHL9pR/V+JPoYII=",
+			"path": "github.com/google/go-github/github",
+			"revision": "c03cf196876fc0b7cf8db2516848536778ea4e29",
+			"revisionTime": "2017-05-07T00:07:02Z"
+		},
+		{
+			"checksumSHA1": "p3IB18uJRs4dL2K5yx24MrLYE9A=",
+			"path": "github.com/google/go-querystring/query",
+			"revision": "53e6ce116135b80d037921a7fdd5138cf32d7a8a",
+			"revisionTime": "2017-01-11T10:11:55Z"
+		},
+		{
+			"checksumSHA1": "uTUsjF7bymOuKvXbW2BpkK/w4Vg=",
+			"path": "github.com/lib/pq",
+			"revision": "2704adc878c21e1329f46f6e56a1c387d788ff94",
+			"revisionTime": "2017-03-24T20:46:54Z"
+		},
+		{
+			"checksumSHA1": "Gk3jTNQ5uGDUE0WMJFWcYz9PMps=",
+			"path": "github.com/lib/pq/oid",
+			"revision": "2704adc878c21e1329f46f6e56a1c387d788ff94",
+			"revisionTime": "2017-03-24T20:46:54Z"
+		},
+		{
+			"checksumSHA1": "2uE2HXbrp0BDgpT+Pvm3vgHMgKg=",
+			"path": "github.com/mattes/migrate",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "c2cDvuHUd/oG+EfzilsXzqn4hnI=",
+			"path": "github.com/mattes/migrate/cli",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "+xa6thZtcl3kUUDJyigle/o151o=",
+			"path": "github.com/mattes/migrate/database",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "beAmXyzet4W23qs7tZLRLh8X/44=",
+			"path": "github.com/mattes/migrate/database/mysql",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "QSLooIeXnzHZElwTfIZoPH4FNH0=",
+			"path": "github.com/mattes/migrate/database/postgres",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "3S1FgkezPYznyABybGNMkqZtjDM=",
+			"path": "github.com/mattes/migrate/database/stub",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "Pe/0J9ptlSCGtfj8+Le8mQijHAA=",
+			"path": "github.com/mattes/migrate/source",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "8uIdYxIjjUB1z65ejfpumt7oAFY=",
+			"path": "github.com/mattes/migrate/source/file",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "wI9h9CuSyr8ed3ZAdkTzAgFDgMU=",
+			"path": "github.com/mattes/migrate/source/github",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		},
+		{
+			"checksumSHA1": "k/prxs5UJ3aiz0wEiHVIPfGGR9k=",
+			"path": "github.com/mattes/migrate/source/go-bindata",
+			"revision": "448a36c5cbdcc34f348f605a5080b23629c7fbbc",
+			"revisionTime": "2017-05-04T18:05:03Z"
+		}
+	],
+	"rootPath": "github.com/heroku/fixture"
+}
