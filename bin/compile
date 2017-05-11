@@ -18,6 +18,7 @@ GovendorVersion="$(<${DataJSON} jq -r '.Govendor.DefaultVersion')"
 GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
+MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
 # BazaarVersion="2.7.0"
 
 # For specified versions of Go we need to keep concurrency.sh
@@ -49,19 +50,13 @@ handleDefaultPkgSpec() {
     fi
 }
 
-pkgMM=""
 massagePkgSpecForVendor() {
     local t=""
     for pkg in $(echo $pkgs); do
         if [ "${pkg:0:1}" = "." ] || [ ! -d "./vendor/$pkg" ]; then
             t+="${pkg} "
         else
-            fvn="${name}/vendor/${pkg}"
-            if [[ "${fvn}" =~ "/vendor/github.com/mattes/migrate/cli" ]]; then
-                pkgMM="${fvn}"
-            else
-                t+="${name}/vendor/${pkg} "
-            fi
+            t+="${name}/vendor/${pkg} "
         fi
     done
     pkgs="${t}"
@@ -115,7 +110,7 @@ reportVer() {
 
 ensureHG() {
     local hgVersion="${1}"
-    local tmp=$(mktemp -d)
+    local tmp="$(mktemp -d)"
     local hgPath="${cache}/hg/${hgVersion}"
     if [ -x "${hgPath}/bin/hg" ]; then
         step "Using hg v${hgVersion}"
@@ -148,6 +143,38 @@ ensureGlide() {
         ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
         chmod a+x "${gBin}"
         rm -f "${targetFile}"
+    fi
+}
+
+ensureMattesMigrate() {
+    local mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
+    if [[ "${mmVersion}" = "DEFAULT" ]]; then
+        mmVersion="${MattesMigrateVersion}"
+    fi
+    local tmp="$(mktemp -d)"
+    local mmPath="${cache}/mattesMigrate/${mmVersion}"
+    local targetFile="${build}/bin/migrate"
+
+    if [ -x "targetFile" ]; then
+        warning '"migrate" binary already exists in ~/bin, not installing github.com/mattes/migrate'
+    else
+        rm -rf "$(dirname "${mmPath}")"
+        mkdir -p "${mmPath}"
+        step "Installing github.com/mattes/migrate ${mmVersion}"
+        ensureFile "migrate-${mmVersion}-linux-amd64.tar.gz" "${tmp}" "tar -C ${mmPath} -zxf"
+        mv "${mmPath}/migrate.linux-amd64" "${targetFile}"
+        chmod a+x "${targetFile}"
+    fi
+}
+
+wantMattesMigrate() {
+    <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+}
+
+installMattesMigrateIfWanted() {
+    local mmVersion="${1:-v3.0.0}"
+    if wantMattesMigrate; then
+        ensureMattesMigrate "${mmVersion}"
     fi
 }
 
@@ -393,10 +420,7 @@ case "${TOOL}" in
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
 
-        if [[ -n "${pkgMM}" ]]; then
-            step 'Installing github.com/mattes/migrate/cli as ~/bin/migrate with "postgres" tag'
-            go build -v -tags 'postgres' -o "${build}/bin/migrate" "${pkgMM}" 2>&1
-        fi
+        installMattesMigrateIfWanted
     ;;
     glide)
         ensureGlide "${GlideVersion}"

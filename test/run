@@ -14,7 +14,8 @@ testCompileGovendorMattesMigrateCLI() {
   assertCaptured "Fetching govendor"
   assertCaptured "Fetching any unsaved dependencies (govendor sync)"
   assertCaptured "Running: go install -v -tags heroku ."
-  assertCaptured 'Installing github.com/mattes/migrate/cli as ~/bin/migrate with "postgres" tag'
+  assertCaptured "Installing github.com/mattes/migrate"
+  assertCaptured "Fetching migrate"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "hello"

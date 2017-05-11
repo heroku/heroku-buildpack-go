@@ -33,8 +33,8 @@ td="${cwd}/file-cache"
 mkdir -p "${td}"
 cd "${td}"
 
-#echo "Syncing contents of ${BUCKET} to $(pwd)."
-#${S3CMD} sync --check-md5 ${BUCKET} ./
+echo "Syncing contents of ${BUCKET} to $(pwd)."
+${S3CMD} sync --check-md5 ${BUCKET} ./
 
 FILES=($(ls))
 
@@ -43,7 +43,7 @@ for f in $(< "${jf}" jq -r 'keys[]'); do
   if [ ! -e "${f}" ]; then
     u="$(< "${jf}" jq -r '."'${f}'".URL')"
     echo "Downloading: ${u}"
-    curl -J -O -L --retry 15 --retry-delay 2 $u
+    curl -J -o "${f}" -L --retry 15 --retry-delay 2 $u
   fi
 
   s="$(< "${jf}" jq -r '."'${f}'".SHA')"

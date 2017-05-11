@@ -193,5 +193,9 @@
         "URL": "https://github.com/tools/godep/releases/download/v75/godep_linux_amd64",
         "SHA": "4f0b1a01461f2a1892c8065989b8561a88a1c1f09e2a36f01042cd759ea1858c",
         "LocalName": "godep"
+    },
+    "migrate-v3.0.0-linux-amd64.tar.gz": {
+        "URL": "https://github.com/mattes/migrate/releases/download/v3.0.0/migrate.linux-amd64.tar.gz",
+        "SHA": "13fbabe2db0ee3f79611c8171b0596939a3f384025f62925ed136267681e4fbf"
     }
 }
