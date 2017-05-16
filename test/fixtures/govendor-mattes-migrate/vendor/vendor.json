@@ -1,0 +1,10 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"heroku": {
+		"install":["."],
+		"additionalTools":["github.com/mattes/migrate"]
+	},
+	"package": [],
+	"rootPath": "github.com/heroku/fixture"
+}

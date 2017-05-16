@@ -76,6 +76,12 @@ top level json keys:
    choice depends on the layout of your repository though. Please note that `./...`
    includes any packages in your `vendor` directory.
 
+* `heroku.additionalTools` (Array of Strings): a list of additional tools that
+  the buildpack is aware of that you want it to install. If the tool has
+  multiple versions an optional `@<version>` suffix can be specified to select
+  that specific version of the tool. Otherwise the buildpack's default version
+  is chosen. Currently the only supported tool is `github.com/mattes/migrate` at
+  `v3.0.0` (also the default version).
 
 Example with everything, for a project using `go1.8`, located at
 `$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single package

@@ -1,6 +1,27 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+
+testDetectGovendorMattesMigrateCLI() {
+  detect "govendor-mattes-migrate"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileGovendorMattesMigrateCLI() {
+  compile "govendor-mattes-migrate"
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Fetching govendor"
+  assertCaptured "Fetching any unsaved dependencies (govendor sync)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing github.com/mattes/migrate"
+  assertCaptured "Fetching migrate"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryOutputs "fixture" "hello"
+  assertCompiledBinaryExists "migrate"
+}
+
 testTestGovendorWithTestsSkipBenchmark() {
   local cache=$(mktmpdir)
   local env_dir=$(mktmpdir)

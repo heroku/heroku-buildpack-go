@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Support `heroku.additionalTools` for `github.com/mattes/migrate` for govendor.
+
 ## v64 (2017-04-10)
 
 Support go 1.8.1. Default to go1.8.1.

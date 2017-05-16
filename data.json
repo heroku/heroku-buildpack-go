@@ -40,5 +40,8 @@
   },
   "HG": {
     "DefaultVersion": "3.9"
+  },
+  "MattesMigrate": {
+    "DefaultVersion": "v3.0.0"
   }
 }
