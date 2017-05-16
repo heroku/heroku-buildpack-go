@@ -204,13 +204,7 @@ This buildpack also supports the testpack API.
 ## Deploying
 
 ```console
-$ heroku buildkits:publish heroku/go
-$ # This tells you the new version number
-$ # Update the Changelog with it
-$ git commit -am "vXXX"
-$ git tag vXXX
-$ git push && git push --tags
-$ # Add a heroku changelog item (if notable)
+$ make publish # && follow the prompts
 ```
 
 ### New Go version
