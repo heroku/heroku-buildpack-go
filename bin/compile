@@ -438,8 +438,10 @@ case "${TOOL}" in
         unset GIT_DIR
         cd "${src}"
 
-        step "Fetching any unsaved dependencies (glide install)"
-        glide install 2>&1
+        if [ ! -d "${src}/vendor" ]; then
+            step "No 'vendor' directory found. Fetching dependencies (glide install)"
+            glide install 2>&1
+        fi
 
         massagePkgSpecForVendor
 
