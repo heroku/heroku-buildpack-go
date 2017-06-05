@@ -121,6 +121,15 @@ $ heroku config:set GOVERSION=go1.8   # Will use go1.8.X, Where X is that latest
 $ heroku config:set GOVERSION=go1.7.5 # Pins to go1.7.5
 ```
 
+`glide install` will be run to ensure that all dependencies are properly
+installed. If you need the buildpack to skip the `glide install` you can set
+`$GLIDE_SKIP_INSTALL` to `true`. Example:
+
+``console
+$ heroku config:set GLIDE_SKIP_INSTALL=true
+$ git push heroku master
+```
+
 Installation defaults to `.`. This can be overridden by setting the
 `$GO_INSTALL_PACKAGE_SPEC` environment variable to the package spec you want the
 go tool chain to install. Example:

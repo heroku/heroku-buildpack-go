@@ -145,6 +145,7 @@ loadEnvDir() {
     envFlags+=("GO_INSTALL_TOOLS_IN_IMAGE")
     envFlags+=("GO_SETUP_GOPATH_IN_IMAGE")
     envFlags+=("GO_TEST_SKIP_BENCHMARK")
+    envFlags+=("GLIDE_SKIP_INSTALL")
     local env_dir="${1}"
     if [ ! -z "${env_dir}" ]; then
         mkdir -p "${env_dir}"
