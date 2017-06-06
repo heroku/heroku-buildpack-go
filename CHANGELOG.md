@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Add $GLIDE_SKIP_INSTALL for when glide users need to skip the `glide install` step.
+
 ## v67 (2017-05-25)
 
 Support go1.8.3 and default to it.
