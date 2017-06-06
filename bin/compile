@@ -446,6 +446,23 @@ case "${TOOL}" in
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
+    vendor)
+        cd "${build}"
+        name=$(head -n1 ./Procfile | awk '{print $2;}')
+
+        eval "$(setupGOPATH ${name})"
+
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
+        handleDefaultPkgSpec
+
+        unset GIT_DIR
+        cd "${src}"
+
+        massagePkgSpecForVendor
+
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
     gb)
         ensureGB "${GBVersion}"
 
