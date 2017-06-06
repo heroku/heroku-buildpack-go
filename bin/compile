@@ -45,6 +45,12 @@ handleDefaultPkgSpec() {
                 warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
                 warn ""
             ;;
+            vendor)
+                warn "To install a different package spec for the next build run:"
+                warn ""
+                warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
+                warn ""
+            ;;
         esac
         pkgs="."
     fi
@@ -448,8 +454,7 @@ case "${TOOL}" in
     ;;
     vendor)
         cd "${build}"
-        # name=$(head -n1 ./Procfile | awk '{print $2;}')
-        name="bitbucket.org/dadebotsdb/io"
+        name=$(head -n1 ./Procfile | awk '{print $2;}')
 
         eval "$(setupGOPATH ${name})"
 
@@ -459,7 +464,6 @@ case "${TOOL}" in
         unset GIT_DIR
         cd "${src}"
         echo "We are here ---->" $(pwd)
-        ls -la .
 
         massagePkgSpecForVendor
 
