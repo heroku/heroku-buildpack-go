@@ -125,7 +125,7 @@ $ heroku config:set GOVERSION=go1.7.5 # Pins to go1.7.5
 installed. If you need the buildpack to skip the `glide install` you can set
 `$GLIDE_SKIP_INSTALL` to `true`. Example:
 
-``console
+```console
 $ heroku config:set GLIDE_SKIP_INSTALL=true
 $ git push heroku master
 ```
