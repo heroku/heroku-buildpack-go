@@ -7,6 +7,7 @@ build=$(cd "$1/" && pwd)
 if test -f "${build}/Godeps/Godeps.json" || # godeps
    test -f "${build}/vendor/vendor.json" || # govendor
    test -f "${build}/glide.yaml" || # glide
+   (test -f "${build}/Makefile" && test -n "$(find "${build}" -mindepth 3 -type f -name '*.go' | sed 1q)") || # Makefile
    (test -d "${build}/src" && test -n "$(find "${build}/src" -mindepth 2 -type f -name '*.go' | sed 1q)") || # gb
    (test -d "${build}/vendor" && test -n "$(find "${build}/vendor" -mindepth 2 -type f -name '*.go' | sed 1q)") # null
 then
