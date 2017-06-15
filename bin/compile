@@ -45,6 +45,12 @@ handleDefaultPkgSpec() {
                 warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
                 warn ""
             ;;
+            vendor)
+                warn "To install a different package spec for the next build run:"
+                warn ""
+                warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
+                warn ""
+            ;;
         esac
         pkgs="."
     fi
@@ -300,6 +306,7 @@ warnPackageSpecOverride() {
 # Sets up GOPATH (and posibly other GO* env vars) and returns the location of
 # the source code as $src. The output of this function is meant to be eval'd'
 setupGOPATH() {
+    shopt -s dotglob
     local name="${1}"
     local t="$(mktemp -d)"
 
@@ -319,6 +326,7 @@ setupGOPATH() {
 
     echo "GOPATH=${GOPATH}"
     echo "src=${src}"
+    shopt -u dotglob
 }
 
 loadEnvDir "${env_dir}"
@@ -354,6 +362,8 @@ if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
 fi
 
 export GOPATH
+
+
 
 # GB installation
 case "${TOOL}" in
@@ -447,6 +457,38 @@ case "${TOOL}" in
 
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
+    vendor)
+        cd "${build}"
+        name=$(head -n1 ./Procfile | awk '{print $2;}')
+
+        eval "$(setupGOPATH ${name})"
+
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
+        handleDefaultPkgSpec
+
+        unset GIT_DIR
+        cd "${src}"
+        echo "We are here ---->" $(pwd)
+
+        massagePkgSpecForVendor
+
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
+    make)
+        cd "${build}"
+        name=$(head -n1 ./Procfile | awk '{print $2;}')
+
+        eval "$(setupGOPATH ${name})"
+
+        unset GIT_DIR
+
+        cd "${src}"
+        echo "We are here ---->" $(pwd)
+
+        step "Running: make heroku"
+        make heroku 2>&1
     ;;
     gb)
         ensureGB "${GBVersion}"

@@ -46,10 +46,39 @@ This buildpack will detect your repository as Go if you are using either:
 - [glide][glide]
 - [GB][gb]
 - [Godep][godep]
+- vendor folder which contains `*.go` files
+- Makefile
 
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
 article][app-engine-build-constraints] for more.
+
+## vendor folder specifics
+
+Just a plain `go install` workflow. Requires to have _Procfile_ and the first line
+which points to project location in the `$GOPATH`. For instance:
+
+```
+# github.com/toscale/<the project> - don't remove, required by the buildpack
+web: <the project>
+```
+
+Also, it's possible to define `GOVERSION` and `GO_INSTALL_PACKAGE_SPEC`, exactly
+like for `glide` tool. See below.
+
+## Makefile specifics
+
+Just a plain _Makefile_ workflow. Requires to have _Procfile_ and the first line
+which points to project location in the `$GOPATH`. For instance:
+
+```
+# github.com/toscale/<the project> - don't remove, required by the buildpack
+web: <the project>
+```
+
+You have to have `heroku` rule defined in your makefile.
+
+Also, it's possible to define `GOVERSION`, exactly like for `glide` tool. See below.
 
 ## govendor specifics
 

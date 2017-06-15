@@ -13,6 +13,7 @@ FilesJSON="${buildpack}/files.json"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
+makefile="${build}/Makefile"
 
 steptxt="----->"
 YELLOW='\033[1;33m'
@@ -171,7 +172,13 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${godepsJSON}" ]; then
+    if [ -f "${makefile}" -a -n "$(find "$build" -mindepth 3 -type f -name '*.go' | sed 1q)" ]; then
+        TOOL="make"
+        setGoVersionFromEnvironment
+    elif [ -d "$build/vendor" -a -n "$(find "$build/vendor" -mindepth 2 -type f -name '*.go' | sed 1q)" ]; then
+        TOOL="vendor"
+        setGoVersionFromEnvironment
+    elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
         step "Checking Godeps/Godeps.json file."
         if ! jq -r . < "${godepsJSON}" > /dev/null; then
@@ -216,7 +223,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Godep, GB or govendor are required. For instructions:"
+        err "Godep, GB, govendor, glide or vendor folder are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi
