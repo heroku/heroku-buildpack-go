@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Support "go1.9beta1" as a possible version.
+
 ## v68 (2017-06-06)
 
 Add $GLIDE_SKIP_INSTALL for when glide users need to skip the `glide install` step.
