@@ -306,6 +306,7 @@ warnPackageSpecOverride() {
 # Sets up GOPATH (and posibly other GO* env vars) and returns the location of
 # the source code as $src. The output of this function is meant to be eval'd'
 setupGOPATH() {
+    shopt -s dotglob
     local name="${1}"
     local t="$(mktemp -d)"
 
@@ -325,6 +326,7 @@ setupGOPATH() {
 
     echo "GOPATH=${GOPATH}"
     echo "src=${src}"
+    shopt -u dotglob
 }
 
 loadEnvDir "${env_dir}"
