@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v69 (2017-06-15)
+
 Support "go1.9" as a possible version, mapping to "go1.9beta1"
 Support "go1.9beta1" as a possible version.
 
