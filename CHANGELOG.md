@@ -2,9 +2,11 @@
 
 ## Unreleased
 
+Add go1.9beta2 and default go1.9 to it.
+
 ## v69 (2017-06-15)
 
-Support "go1.9" as a possible version, mapping to "go1.9beta1"
+Support "go1.9" as a possible version, mapping to "go1.9beta1".
 Support "go1.9beta1" as a possible version.
 
 ## v68 (2017-06-06)
