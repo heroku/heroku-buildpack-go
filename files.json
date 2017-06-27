@@ -197,6 +197,10 @@
         "URL": "created manually from commit 137520c0f2217d8b7f934dc307865488ef31b551",
         "SHA": "f8b3847558d45f8d3a9f8252ab353d5793f1622e78138ec974ea956d7ae4d9d0"
     },
+    "gb-0.4.4.tar.gz": {
+        "URL": "https://github.com/constabulary/gb/archive/v0.4.4.tar.gz",
+        "SHA": "c7993ae1994ad85cbe35b833d36a137772599fe7ed720edec2d76ebf3fc4313b"
+    },
     "gb-0.4.3.tar.gz": {
         "URL": "https://github.com/constabulary/gb/archive/v0.4.3.tar.gz",
         "SHA": "480ae2376d20b1c3768b6600d7f9f0c9395071a692c14ea27f9560cccfb3151e"
