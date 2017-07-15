@@ -364,9 +364,11 @@ case "${TOOL}" in
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${herokuJSON} jq -r 'if .install then .install | join(" ") else "default" end')}
 
         # TODO: Add support for calling `dep ensure`
-
         warnPackageSpecOverride
         handleDefaultPkgSpec
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd "${src}"
         massagePkgSpecForVendor
 
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
