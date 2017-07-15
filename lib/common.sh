@@ -13,6 +13,7 @@ FilesJSON="${buildpack}/files.json"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
+gopkgLOCK="${build}/Gopkg.lock"
 
 steptxt="----->"
 YELLOW='\033[1;33m'
@@ -171,7 +172,10 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${godepsJSON}" ]; then
+    if [ -f "${gopkgLOCK}" ]; then
+        TOOL="dep"
+        setGoVersionFromEnvironment
+    elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
         step "Checking Godeps/Godeps.json file."
         if ! jq -r . < "${godepsJSON}" > /dev/null; then
@@ -216,7 +220,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Godep, GB or govendor are required. For instructions:"
+        err "dep, Godep, GB, govendor, or glide are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi
