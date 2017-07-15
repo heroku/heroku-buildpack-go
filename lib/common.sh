@@ -12,6 +12,7 @@ DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
+herokuJSON="${build}/heroku.json"
 glideYAML="${build}/glide.yaml"
 gopkgLOCK="${build}/Gopkg.lock"
 
@@ -174,6 +175,12 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${gopkgLOCK}" ]; then
         TOOL="dep"
+        step "Checking heroku.json file."
+        if ! jq -r . < "${herokuJSON}" > /dev/null; then
+            err "Bad heroku.json file"
+            exit 1
+        fi
+        name=$(<${herokuJSON} jq -r .rootPath)
         setGoVersionFromEnvironment
     elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
