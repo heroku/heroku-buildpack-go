@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectDepNoDeps() {
+  detect "dep-no-deps"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileDepNoDeps() {
+  compile "glide-no-deps"
+  assertCaptured "Installing go"
+  assertCaptured "Installing dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
 
 testDetectGovendorMattesMigrateCLI() {
   detect "govendor-mattes-migrate"

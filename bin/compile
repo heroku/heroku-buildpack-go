@@ -357,6 +357,9 @@ export GOPATH
 
 # GB installation
 case "${TOOL}" in
+    dep)
+        eval "$(setupGOPATH ${name})"
+    ;;
     godep)
         eval "$(setupGOPATH ${name})"
         godepsJSON="${src}/Godeps/Godeps.json"

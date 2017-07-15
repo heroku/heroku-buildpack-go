@@ -10,6 +10,7 @@ fi
 
 DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
+depTOML="${build}/Gopkg.toml"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
@@ -171,7 +172,9 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${godepsJSON}" ]; then
+    if [ -f "${depTOML}" ]; then
+        TOOL="dep"
+    elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
         step "Checking Godeps/Godeps.json file."
         if ! jq -r . < "${godepsJSON}" > /dev/null; then
@@ -216,7 +219,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Godep, GB or govendor are required. For instructions:"
+        err "dep, Godep, GB or govendor are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi
