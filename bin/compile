@@ -358,10 +358,12 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     dep)
+        ensureInPath "tomlq" "${cache}/dep/bin"
+
         eval "$(setupGOPATH ${name})"
 
-        herokuJSON="${src}/heroku.json"
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${herokuJSON} jq -r 'if .install then .install | join(" ") else "default" end')}
+        gopkgTOML="${src}/Gopkg.toml"
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${gopkgTOML} tomlq "$.metadata['heroku-install']")}
 
         # TODO: Add support for calling `dep ensure`
         warnPackageSpecOverride
