@@ -358,7 +358,7 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     dep)
-        ensureInPath "tomlq" "${cache}/dep/bin"
+        ensureTOMLQ
 
         eval "$(setupGOPATH ${name})"
 

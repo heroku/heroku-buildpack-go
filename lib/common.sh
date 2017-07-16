@@ -133,6 +133,24 @@ ensureInPath() {
     ensureFile "${fileName}" "${targetDir}" "${xCmd}"
 }
 
+ensureTOMLQ() {
+    local gPath="${cache}/tomlq/bin"
+    local gBin="${gPath}/tomlq"
+    local gFile="tomlq-v1.0.0.tar.gz"
+    local targetFile="${gPath}/${gFile}"
+
+    if [ -x "${gBin}" ]; then
+        step "Using tomlq v1.0.0"
+        addToPATH "${gPath}"
+    else
+        rm -rf "${cache}/tomlq"
+        step "Installing tomlq v1.0.0"
+        ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
+        chmod a+x "${gBin}"
+        rm -f "${targetFile}"
+    fi
+}
+
 loadEnvDir() {
     local envFlags=()
     envFlags+=("CGO_CFLAGS")
@@ -175,6 +193,7 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${gopkgLOCK}" ]; then
         TOOL="dep"
+        ensureTOMLQ
         step "Checking Gopkg.toml file."
         if ! tomlq '$' < "${gopkgTOML}" > /dev/null; then
             err "Bad Gopkg.toml file"
