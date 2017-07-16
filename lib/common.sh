@@ -145,7 +145,8 @@ ensureTOMLQ() {
     else
         rm -rf "${cache}/tomlq"
         step "Installing tomlq v1.0.0"
-        ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
+        ensureInPath "${gFile}" "${gPath}"
+        # ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
         chmod a+x "${gBin}"
         rm -f "${targetFile}"
     fi
