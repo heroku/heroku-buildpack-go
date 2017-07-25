@@ -31,6 +31,12 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         warn ""
         case "${TOOL}" in
+            dep)
+                warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
+                warn ""
+            ;;
             govendor)
                 warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
                 warn ""
@@ -358,7 +364,37 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     dep)
+        ensureInPath "tq-v0.3-linux-amd64" "${cache}/tq/bin"
+        name=$(< ${depTOML} tq -key root-package '$.metadata.heroku')
+        if [ -z ${name} ]; then
+            err "The 'root-package' field is not specified in 'Gopkg.toml'."
+            err "'root-package' must be set to the root package name used by your repository."
+            err ""
+            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
+            exit 1
+        fi
         eval "$(setupGOPATH ${name})"
+
+        pkgs=$(< ${build}/Gopkg.toml tq -key pkg-spec '$.metadata.heroku')
+        if [ -z "${pkgs}" ]; then
+            pkgs="default"
+        fi
+        warnPackageSpecOverride
+        handleDefaultPkgSpec
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd "${src}"
+
+        if [ "(< ${depTOML} tq -key ensure '$.metadata.heroku')" != "false" ]; then
+          step "Fetchin any unsaved dependencies (dep ensure)"
+          dep ensure
+        fi
+        massagePkgSpecForVendor
+        
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+
+        installMattesMigrateIfWanted
     ;;
     godep)
         eval "$(setupGOPATH ${name})"
