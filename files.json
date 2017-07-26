@@ -3,6 +3,10 @@
         "URL": "https://storage.googleapis.com/golang/go1.9beta2.linux-amd64.tar.gz",
         "SHA": "023f778f063d2234e7c95f572a92298b307807693f7e045a88c90ecd7a08f29d"
     },
+    "go1.9rc1.linux-amd64.tar.gz": {
+        "URL": "https://storage.googleapis.com/golang/go1.9rc1.linux-amd64.tar.gz",
+        "SHA": "a8ea2ac09878b7a5ac04fe52f144cdc64ab637230638af6975c0f1facbba3ec2"
+    },
     "go1.9beta1.linux-amd64.tar.gz": {
         "URL": "https://storage.googleapis.com/golang/go1.9beta1.linux-amd64.tar.gz",
         "SHA": "85719a2c704ad1352052e185c760d7c65b9d8a18b491287a7e5f6775ccc27d3b"
