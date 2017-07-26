@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v71 (2017-07-25)
+
 Add go1.9rc1 and default go1.9 to it.
 
 ## v70 (2017-06-26)
