@@ -42,6 +42,7 @@ $ git push heroku master
 
 This buildpack will detect your repository as Go if you are using either:
 
+- [dep][dep]
 - [govendor][govendor]
 - [glide][glide]
 - [GB][gb]
@@ -50,6 +51,12 @@ This buildpack will detect your repository as Go if you are using either:
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
 article][app-engine-build-constraints] for more.
+
+## dep specifics
+
+The `Gopkg.toml` and `Gopkg.lock` files do not allow for arbitrary metadata, so
+the buildpack relies solely on the dep command and environment variables to
+control the build process.
 
 ## govendor specifics
 
@@ -241,3 +248,4 @@ $ make publish # && follow the prompts
 [vendor.json]: https://github.com/kardianos/vendor-spec
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [glide]: https://github.com/Masterminds/glide
+[dep]: https://github.com/golang/dep

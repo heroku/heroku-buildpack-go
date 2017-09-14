@@ -13,6 +13,8 @@ FilesJSON="${buildpack}/files.json"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
+gopkgTOML="${build}/Gopkg.toml"
+gopkgLOCK="${build}/Gopkg.lock"
 
 steptxt="----->"
 YELLOW='\033[1;33m'
@@ -131,6 +133,25 @@ ensureInPath() {
     ensureFile "${fileName}" "${targetDir}" "${xCmd}"
 }
 
+ensureTOMLQ() {
+    local gPath="${cache}/tomlq/bin"
+    local gBin="${gPath}/tomlq"
+    local gFile="tomlq-v1.0.0.tar.gz"
+    local targetFile="${gPath}/${gFile}"
+
+    if [ -x "${gBin}" ]; then
+        step "Using tomlq v1.0.0"
+        addToPATH "${gPath}"
+    else
+        rm -rf "${cache}/tomlq"
+        step "Installing tomlq v1.0.0"
+        ensureInPath "${gFile}" "${gPath}"
+        # ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
+        chmod a+x "${gBin}"
+        rm -f "${targetFile}"
+    fi
+}
+
 loadEnvDir() {
     local envFlags=()
     envFlags+=("CGO_CFLAGS")
@@ -171,7 +192,17 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${godepsJSON}" ]; then
+    if [ -f "${gopkgLOCK}" ]; then
+        TOOL="dep"
+        ensureTOMLQ
+        step "Checking Gopkg.toml file."
+        if ! tomlq '$' < "${gopkgTOML}" > /dev/null; then
+            err "Bad Gopkg.toml file"
+            exit 1
+        fi
+        name=$(<${gopkgTOML} tomlq "$.metadata['heroku-root']")
+        setGoVersionFromEnvironment
+    elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
         step "Checking Godeps/Godeps.json file."
         if ! jq -r . < "${godepsJSON}" > /dev/null; then
@@ -216,7 +247,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Godep, GB or govendor are required. For instructions:"
+        err "dep, Godep, GB, govendor, or glide are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi

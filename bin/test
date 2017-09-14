@@ -45,7 +45,7 @@ case "${TOOL}" in
             govendor test -run=_ -bench=. -benchmem -v +local 2>&1
         fi
     ;;
-    glide|godep)
+    dep|glide|godep)
         cd "${GOPATH}/src/${NAME}"
         step 'Running Test With: go test -race -v $(go list ./... | grep -v /vendor/) | patter'
         go test -race -v $(go list ./... | grep -v /vendor/) 2>&1 | tee -a ${output} | patter
