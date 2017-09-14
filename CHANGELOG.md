@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v74 (2017-09-14)
+
 * Promote go1.9 to supported.
 
 ## v73 (2017-08-25)
