@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add tq and dep to s3 to ease dep integration.
+
 ## v74 (2017-09-14)
 
 * Promote go1.9 to supported.

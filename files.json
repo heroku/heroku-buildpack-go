@@ -233,5 +233,15 @@
     "migrate-v3.0.0-linux-amd64.tar.gz": {
         "URL": "https://github.com/mattes/migrate/releases/download/v3.0.0/migrate.linux-amd64.tar.gz",
         "SHA": "13fbabe2db0ee3f79611c8171b0596939a3f384025f62925ed136267681e4fbf"
+    },
+    "tq-v0.4-linux-amd64": {
+        "URL": "https://github.com/heroku/tq/releases/download/v0.4/tq-v0.4-linux-amd64",
+        "SHA": "36d33a30e2cafe4b747b8de2449185a13239fb6da2887dde74f3d390fc639e3b",
+        "LocalName": "tq"
+    },
+    "dep-linux-amd64": {
+        "URL": "https://github.com/golang/dep/releases/download/v0.3.1/dep-linux-amd64",
+        "SHA": "408b970c0acacad309d350fc46d718e4a8885b588eca71f4d73e5d6c521ef944",
+        "LocalName": "dep"
     }
 }
