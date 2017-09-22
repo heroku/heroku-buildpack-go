@@ -44,5 +44,8 @@
   },
   "MattesMigrate": {
     "DefaultVersion": "v3.0.0"
+  },
+  "tq": {
+    "DefaultVersion": "v0.5"
   }
 }

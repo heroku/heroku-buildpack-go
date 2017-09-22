@@ -51,6 +51,31 @@ This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
 article][app-engine-build-constraints] for more.
 
+## dep specifics
+
+The `Gopkg.toml` file allows for arbitrary, tool specific fields. This buildpack
+utilizes this feature to track build specific configuration and are encoded in
+the following way:
+
+* `metadata.heroku['root-package']` (String): the root package name of the
+  packages you are pushing to Heroku.You can find this locally with `go list -e
+  .`. There is no default for this and it must be specified.
+
+* `metadata.heroku['goVersion']` (String): the major version of go you would
+  like Heroku to use when compiling your code: if not specified defaults to the
+  most recent supported version of Go.
+
+* `metadata.heroku['install']` (Array of Strings): a list of the packages you
+  want to install. If not specified, this defaults to `["."]`. Other common
+  choices are: `["./cmd/..."]` (all packages and sub packages in the `cmd`
+  directory) and `["./..."]` (all packages and sub packages of the current
+  directory). The exact choice depends on the layout of your repository though.
+  Please note that `./...`, for versions of go < 1.9, includes any packages in
+  your `vendor` directory.
+
+* `metadata.heroku['ensure']` (String): if this is set to `false` then `dep
+  ensure` is not run.
+
 ## govendor specifics
 
 The [vendor.json][vendor.json] spec that govendor follows for its metadata

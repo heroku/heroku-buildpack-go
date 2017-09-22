@@ -1,5 +1,5 @@
 [metadata]
-  [heroku]
+  [metadata.heroku]
     root-package = "github.com/heroku/fixture"
 
 # Gopkg.toml example

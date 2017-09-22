@@ -19,6 +19,7 @@ GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
 MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
+TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
 # BazaarVersion="2.7.0"
 
 # For specified versions of Go we need to keep concurrency.sh
@@ -364,18 +365,9 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     dep)
-        ensureInPath "tq-v0.3-linux-amd64" "${cache}/tq/bin"
-        name=$(< ${depTOML} tq -key root-package '$.metadata.heroku')
-        if [ -z ${name} ]; then
-            err "The 'root-package' field is not specified in 'Gopkg.toml'."
-            err "'root-package' must be set to the root package name used by your repository."
-            err ""
-            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
-            exit 1
-        fi
         eval "$(setupGOPATH ${name})"
 
-        pkgs=$(< ${build}/Gopkg.toml tq -key pkg-spec '$.metadata.heroku')
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${depTOML} tq '$.metadata.heroku["install"]')}
         if [ -z "${pkgs}" ]; then
             pkgs="default"
         fi
@@ -385,7 +377,7 @@ case "${TOOL}" in
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd "${src}"
 
-        if [ "(< ${depTOML} tq -key ensure '$.metadata.heroku')" != "false" ]; then
+        if [ "$(< ${depTOML} tq '$.metadata.heroku["ensure"]')" != "false" ]; then
           step "Fetchin any unsaved dependencies (dep ensure)"
           dep ensure
         fi
