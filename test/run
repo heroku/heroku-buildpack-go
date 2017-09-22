@@ -7,7 +7,7 @@ testDetectDepNoDeps() {
   assertCapturedSuccess
 }
 testCompileDepNoDeps() {
-  compile "glide-no-deps"
+  compile "dep-no-deps"
   assertCaptured "Installing go"
   assertCaptured "Installing dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
