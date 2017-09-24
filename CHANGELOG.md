@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Update tq to v0.5
 * Add tq and dep to s3 to ease dep integration.
 
 ## v74 (2017-09-14)

@@ -239,6 +239,11 @@
         "SHA": "36d33a30e2cafe4b747b8de2449185a13239fb6da2887dde74f3d390fc639e3b",
         "LocalName": "tq"
     },
+    "tq-v0.5-linux-amd64": {
+        "URL": "https://github.com/heroku/tq/releases/download/v0.5/tq-v0.5-linux-amd64",
+        "SHA": "f22ab0a1694fb329f96e564f1f0b44876b2a60023ef26b1b42a15fb94287378e",
+        "LocalName": "tq"
+    },
     "dep-linux-amd64": {
         "URL": "https://github.com/golang/dep/releases/download/v0.3.1/dep-linux-amd64",
         "SHA": "408b970c0acacad309d350fc46d718e4a8885b588eca71f4d73e5d6c521ef944",
