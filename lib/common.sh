@@ -174,7 +174,7 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${depTOML}" ]; then
         TOOL="dep"
-        ensureInPath "tq-${TQVersion}-linux-amd64"
+        ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
         name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
         if [ -z "${name}" ]; then
             err "The 'metadata.heroku[\"root-package\"]' field is not specified in 'Gopkg.toml'."
@@ -183,7 +183,7 @@ determineTool() {
             err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
             exit 1
         fi
-        ver=${GOVERSION:-$(${depTOML} tq '$.metadata.heroku["goVersion"]')}
+        ver=${GOVERSION:-$(<${depTOML} tq '$.metadata.heroku["goVersion"]')}
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
             ver=${DefaultGoVersion}

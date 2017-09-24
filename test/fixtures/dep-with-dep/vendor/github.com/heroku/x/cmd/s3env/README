@@ -1,0 +1,26 @@
+NAME
+        s3env - manage ENV vars in an S3 object
+
+PREREQUISITES
+
+        The following ENV vars are required to use s3env:
+
+	- S3ENV_KEY (defaults to env.json)
+	- S3ENV_BUCKET
+	- S3ENV_AWS_ACCESS_KEY_ID
+	- S3ENV_AWS_REGION
+	- S3ENV_AWS_SECRET_ACCESS_KEY
+
+EXAMPLES
+
+        s3env config                  # show all config vars
+        s3env config:set FOO=1 BAR=2  # set two vars
+        s3env config:get FOO          # display FOO
+        s3env config:unset FOO        # remove FOO
+        s3env run hello-world         # hello-world will get BAR=2 defined in its ENV
+
+CONTEXT
+
+        One of the limitations of heroku config vars presently is the total
+        size you can configure on any given app (32kb). If you're managing
+        lots of TLS certificates, that limit quickly runs out.

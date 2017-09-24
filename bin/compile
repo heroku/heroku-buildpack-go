@@ -175,13 +175,19 @@ ensureMattesMigrate() {
 }
 
 wantMattesMigrate() {
-    <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+    case "${TOOL}" in
+        govendor)
+            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+        ;;
+        *)
+            false
+        ;;
+    esac
 }
 
 installMattesMigrateIfWanted() {
-    local mmVersion="${1:-v3.0.0}"
     if wantMattesMigrate; then
-        ensureMattesMigrate "${mmVersion}"
+        ensureMattesMigrate
     fi
 }
 
@@ -378,15 +384,14 @@ case "${TOOL}" in
         cd "${src}"
 
         if [ "$(< ${depTOML} tq '$.metadata.heroku["ensure"]')" != "false" ]; then
-          step "Fetchin any unsaved dependencies (dep ensure)"
-          dep ensure
+            ensureInPath "dep-linux-amd64" "${cache}/dep/bin"
+            step "Fetching any unsaved dependencies (dep ensure)"
+            dep ensure
         fi
         massagePkgSpecForVendor
         
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
-
-        installMattesMigrateIfWanted
     ;;
     godep)
         eval "$(setupGOPATH ${name})"
@@ -450,8 +455,6 @@ case "${TOOL}" in
 
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
-
-        installMattesMigrateIfWanted
     ;;
     glide)
         ensureGlide "${GlideVersion}"
@@ -493,6 +496,8 @@ case "${TOOL}" in
         rm -rf pkg
     ;;
 esac
+
+installMattesMigrateIfWanted
 
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
     mv -t "${build}" "${src}/Procfile"
