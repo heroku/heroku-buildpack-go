@@ -154,7 +154,17 @@ ensureGlide() {
 }
 
 ensureMattesMigrate() {
-    local mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
+    local mmVersion="DEFAULT"
+    case "${TOOL}" in
+        govendor)
+            mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
+        ;;
+        dep)
+            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^github.com/mattes/migrate | sed s:github.com/mattes/migrate::)
+            f=${f:-"@DEFAULT"}
+            mmVersion="$(echo $f | cut -d @ -f 2)"
+        ;;
+    esac
     if [[ "${mmVersion}" = "DEFAULT" ]]; then
         mmVersion="${MattesMigrateVersion}"
     fi
@@ -178,6 +188,9 @@ wantMattesMigrate() {
     case "${TOOL}" in
         govendor)
             <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+        ;;
+        dep)
+          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^github.com/mattes/migrate$" &> /dev/null
         ;;
         *)
             false

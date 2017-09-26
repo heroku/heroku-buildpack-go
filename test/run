@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testDetectDepWithMattesMigrate() {
+  detect "dep-mattes-migrate"
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+testCompileDepMattesMigrate() {
+  compile "dep-mattes-migrate"
+  assertCaptured "Installing go"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "Installing github.com/mattes/migrate"
+  assertCaptured "Fetching migrate"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryExists "migrate"
+}
+
 testDetectDepWithDepPruned() {
   detect "dep-with-dep-pruned"
   assertCaptured "Go"

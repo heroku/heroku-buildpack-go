@@ -1,6 +1,6 @@
 [metadata.heroku]
   root-package = "github.com/heroku/fixture"
-  install = ["./a","./b"]
+  additional-tools = ["github.com/mattes/migrate"]
 
 # Gopkg.toml example
 #

@@ -1,7 +1,6 @@
-[metadata]
-  [metadata.heroku]
-    root-package = "github.com/heroku/fixture"
-    ensure = "false"
+[metadata.heroku]
+  root-package = "github.com/heroku/fixture"
+  ensure = "false"
 
 # Gopkg.toml example
 #

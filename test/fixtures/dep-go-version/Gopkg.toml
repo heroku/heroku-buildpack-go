@@ -1,7 +1,6 @@
-[metadata]
-  [metadata.heroku]
-    root-package = "github.com/heroku/fixture"
-    goVersion = "go1.8.3"
+[metadata.heroku]
+  root-package = "github.com/heroku/fixture"
+  go-version = "go1.8.3"
 
 # Gopkg.toml example
 #
