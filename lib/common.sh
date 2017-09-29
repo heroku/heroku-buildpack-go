@@ -10,6 +10,7 @@ fi
 
 DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
+depTOML="${build}/Gopkg.toml"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
@@ -171,7 +172,29 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${godepsJSON}" ]; then
+    if [ -f "${depTOML}" ]; then
+        TOOL="dep"
+        ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
+        name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
+        if [ -z "${name}" ]; then
+            err "The 'metadata.heroku[\"root-package\"]' field is not specified in 'Gopkg.toml'."
+            err "root-package must be set to the root pacakage name used by your repository."
+            err ""
+            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
+            exit 1
+        fi
+        ver=${GOVERSION:-$(<${depTOML} tq '$.metadata.heroku["go-version"]')}
+        warnGoVersionOverride
+        if [ -z "${ver}" ]; then
+            ver=${DefaultGoVersion}
+            warn "The 'metadata.heroku[\"go-version\"]' field is not specified in 'Gopkg.toml'."
+            warn ""
+            warn "Defaulting to ${ver}"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
+            warn ""
+        fi
+    elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
         step "Checking Godeps/Godeps.json file."
         if ! jq -r . < "${godepsJSON}" > /dev/null; then
@@ -216,7 +239,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Godep, GB or govendor are required. For instructions:"
+        err "dep, Godep, GB or govendor are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi

@@ -19,6 +19,7 @@ GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
 MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
+TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
 # BazaarVersion="2.7.0"
 
 # For specified versions of Go we need to keep concurrency.sh
@@ -31,6 +32,12 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         warn ""
         case "${TOOL}" in
+            dep)
+                warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
+                warn ""
+            ;;
             govendor)
                 warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
                 warn ""
@@ -147,7 +154,17 @@ ensureGlide() {
 }
 
 ensureMattesMigrate() {
-    local mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
+    local mmVersion="DEFAULT"
+    case "${TOOL}" in
+        govendor)
+            mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
+        ;;
+        dep)
+            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^github.com/mattes/migrate | sed s:github.com/mattes/migrate::)
+            f=${f:-"@DEFAULT"}
+            mmVersion="$(echo $f | cut -d @ -f 2)"
+        ;;
+    esac
     if [[ "${mmVersion}" = "DEFAULT" ]]; then
         mmVersion="${MattesMigrateVersion}"
     fi
@@ -168,13 +185,22 @@ ensureMattesMigrate() {
 }
 
 wantMattesMigrate() {
-    <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+    case "${TOOL}" in
+        govendor)
+            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+        ;;
+        dep)
+          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^github.com/mattes/migrate$" &> /dev/null
+        ;;
+        *)
+            false
+        ;;
+    esac
 }
 
 installMattesMigrateIfWanted() {
-    local mmVersion="${1:-v3.0.0}"
     if wantMattesMigrate; then
-        ensureMattesMigrate "${mmVersion}"
+        ensureMattesMigrate
     fi
 }
 
@@ -357,6 +383,29 @@ export GOPATH
 
 # GB installation
 case "${TOOL}" in
+    dep)
+        eval "$(setupGOPATH ${name})"
+
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${depTOML} tq '$.metadata.heroku["install"]')}
+        if [ -z "${pkgs}" ]; then
+            pkgs="default"
+        fi
+        warnPackageSpecOverride
+        handleDefaultPkgSpec
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd "${src}"
+
+        if [ "$(< ${depTOML} tq '$.metadata.heroku["ensure"]')" != "false" ]; then
+            ensureInPath "dep-linux-amd64" "${cache}/dep/bin"
+            step "Fetching any unsaved dependencies (dep ensure)"
+            dep ensure
+        fi
+        massagePkgSpecForVendor
+        
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
     godep)
         eval "$(setupGOPATH ${name})"
         godepsJSON="${src}/Godeps/Godeps.json"
@@ -419,8 +468,6 @@ case "${TOOL}" in
 
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
-
-        installMattesMigrateIfWanted
     ;;
     glide)
         ensureGlide "${GlideVersion}"
@@ -462,6 +509,8 @@ case "${TOOL}" in
         rm -rf pkg
     ;;
 esac
+
+installMattesMigrateIfWanted
 
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
     mv -t "${build}" "${src}/Procfile"
