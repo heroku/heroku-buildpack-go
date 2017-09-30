@@ -87,7 +87,7 @@ the following way:
 ```toml
 [metadata.heroku]
   root-package = "github.com/heroku/fixture"
-  go-version = "1.8.3"
+  go-version = "go1.8.3"
   install = [ "./cmd/...", "./foo" ]
   ensure = "false"
   additional-tools = ["github.com/mattes/migrate"]
