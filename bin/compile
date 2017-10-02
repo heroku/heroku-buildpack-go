@@ -385,6 +385,7 @@ export GOPATH
 case "${TOOL}" in
     dep)
         eval "$(setupGOPATH ${name})"
+        depTOML="${src}/Gopkg.toml"
 
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${depTOML} tq '$.metadata.heroku["install"]')}
         if [ -z "${pkgs}" ]; then
