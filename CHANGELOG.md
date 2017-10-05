@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v75 (2017-10-05)
+
 * Preliminary [dep](https://github.com/golang/dep) support.
 * Update tq to v0.5
 * Add tq and dep to s3 to ease dep integration.
