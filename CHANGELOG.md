@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Actually make go1.9.1 supported
+
 ## v75 (2017-10-05)
 
 * Preliminary [dep](https://github.com/golang/dep) support.
