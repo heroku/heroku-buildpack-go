@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v76 (2017-10-06)
+
 * Actually make go1.9.1 supported
 * Actually make go1.8.4 supported
 
