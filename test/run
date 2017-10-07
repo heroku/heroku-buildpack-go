@@ -1,6 +1,30 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testCompileGovendorWithPrivateDeps() {
+  if [ -z "${GITHUB_TOKEN}" ]; then
+    echo "!!!"
+    echo "!!! Skipping private Github repo test"
+    echo "!!!"
+    return 0
+  fi
+
+  local cache=$(mktmpdir)
+  local env_dir=$(mktmpdir)
+  echo "${GITHUB_TOKEN}" > "${env_dir}/GO_GIT_CRED__HTTPS__GITHUB__COM"
+  dotest "govendor-private" "${cache}" "${env_dir}"
+
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "github.com/go-test-user/go-private-repo-test"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryOutputs "This is in a string from a Private Repo"
+}
+
 testDetectDepWithMattesMigrate() {
   detect "dep-mattes-migrate"
   assertCaptured "Go"

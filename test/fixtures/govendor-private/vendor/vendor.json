@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "EcQsZxmFIZ7YJHG4Yn7wjp706xA=",
+			"path": "github.com/go-test-user/go-private-repo-test",
+			"revision": "0589ecaf5f9ec689ea8aaad4aca86e3c00cecd50",
+			"revisionTime": "2017-10-07T19:11:05Z"
+		}
+	],
+	"rootPath": "github.com/heroku/fixture"
+}

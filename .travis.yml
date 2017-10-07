@@ -1,6 +1,9 @@
 language: bash
 sudo: required
 services:
-  - docker
+- docker
 install: docker pull heroku/cedar:14
 script: make test
+env:
+  global:
+    - secure: eRuNKAX1KXhAevMeng2BliSZnD1drwWUAO73yUqhEPv+vaiwmiUfqTtsco5ud9/f5lL3kupSaC1c6GdDJbn4ISryr67hZ5SAltoS8sBKXglABRFR7Zio5QI5cEqmGCSetMdIHFe5BS3KxKPBVniQydKEf6vLm/gtdU17piNkimU=

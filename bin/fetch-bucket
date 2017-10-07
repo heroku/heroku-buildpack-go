@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+set -e
+
+# assumes we are in bin, find the directory above that
+cwd="$(cd $(dirname $0); cd ..; pwd)"
+jf="${cwd}/files.json"
+
+td="${cwd}/file-cache"
+mkdir -p "${td}"
+cd "${td}"
+
+for f in $(< "${jf}" jq -r 'keys[]'); do
+    echo $f
+    curl -O -s "https://heroku-golang-prod.s3.amazonaws.com/${f}"
+done
