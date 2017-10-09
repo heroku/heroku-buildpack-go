@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#
+# Fetch the filles listed in data.json/test/assets (where each filename
+# references a unique filename in files.json) to test/assets.
+#
+# This is so that `make test` can use a local bucket url (file:///test/assets).
+#
+set -e
+
+# assumes we are in bin, find the directory above that
+cwd="$(cd $(dirname $0); cd ..; pwd)"
+df="${cwd}/data.json"
+jf="${cwd}/files.json"
+fc="${cwd}/file-cache"
+
+td="${cwd}/test/assets"
+mkdir -p "${td}"
+cd "${td}"
+
+shaMatchesKnown() {
+    local df="${1}"
+    local fn="${2}"
+    local s="$(< "${df}" jq -r '."'${fn}'".SHA')"
+    local sf=""
+    if [ ${#s} -eq 40 ]; then
+        sf="$(shasum "${fn}" | cut -d \  -f 1)"
+    else
+        sf="$(shasum -a 256 "${fn}" | cut -d \  -f 1)"
+    fi
+    if [ "${sf}" != "${s}" ]; then
+        return 1
+    fi
+}
+
+for f in $(< "${df}" jq -r '.test.assets[]'); do
+    if [ ! -e "${f}" ]; then
+        if [ -e "${fc}/${f}" ]; then
+            echo "Copying ${f} from ${fc}"
+            cp -a "${fc}/${f}" .
+        else
+            url=$(< "${jf}" jq -r '."'${f}'".URL')
+            echo "Fetching ${url}"
+            curl -s -L --retry 15 --retry-delay 2 -o "${f}" "${url}"
+        fi
+    fi
+    if ! shaMatchesKnown "${jf}" "${f}"; then
+        echo "Invalid SHA for $f"
+        exit 1
+    fi
+done

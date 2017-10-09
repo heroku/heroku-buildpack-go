@@ -47,5 +47,24 @@
   },
   "tq": {
     "DefaultVersion": "v0.5"
+  },
+  "test": {
+    "assets": [
+      "jq-linux64",
+      "go1.9.1.linux-amd64.tar.gz",
+      "go1.8.3.linux-amd64.tar.gz",
+      "go1.7.6.linux-amd64.tar.gz",
+      "go1.6.4.linux-amd64.tar.gz",
+      "go1.4.3.linux-amd64.tar.gz",
+      "govendor_linux_amd64",
+      "glide-v0.12.3-linux-amd64.tar.gz",
+      "mercurial-3.9.tar.gz",
+      "gb-0.4.4.tar.gz",
+      "errors-0.8.0.tar.gz",
+      "godep_linux_amd64",
+      "migrate-v3.0.0-linux-amd64.tar.gz",
+      "tq-v0.5-linux-amd64",
+      "dep-linux-amd64"
+    ]
   }
 }

@@ -1,59 +1,29 @@
 #!/usr/bin/env bash
 
-mktmpdir() {
-  local dir=$(mktemp -t testXXXXX)
-  rm -rf $dir
-  mkdir $dir
-  echo $dir
+. $(pwd)/test/utils
+
+export SHUNIT_TMPDIR=/tmp
+oneTimeSetUp
+setUp
+
+capture() {
+  $@
 }
 
-compileSetup() {
-  local fixture=$1
+quickSetup() {
+  local fix=${1}
+  fixture "${fix}"
   shift
   while (( "$#" )); do
     env=("$(echo ${1} | cut -d = -f 1)")
     val=("$(echo ${1} | cut -d = -f 2)")
-    echo "${val}" > "${env_dir}/${env}"
+    echo "${val}" > "${ENV_DIR}/${env}"
     shift
   done
-  echo "env ${env_dir}: ${env[@]}"
-  echo "Compiling $fixture"
-  echo "in $build_dir"
-  echo "(caching in $cache_dir)"
-  cp -a $(pwd)/* ${bp_dir}
-  cp -a ${bp_dir}/test/fixtures/$fixture/. ${build_dir}
-}
-
-compile() {
-  local bp_dir=$(mktmpdir)
-  local build_dir=$(mktmpdir)
-  local cache_dir=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  compileSetup "${@}"
-  "${bp_dir}/bin/compile" "${build_dir}" "${cache_dir}" "${env_dir}"
-}
-
-test-compile() {
-  local bp_dir=$(mktmpdir)
-  local build_dir=$(mktmpdir)
-  local cache_dir=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  compileSetup "${@}"
-  "${bp_dir}/bin/test-compile" "${build_dir}" "${cache_dir}" "${env_dir}"
-}
-
-test() {
-  local bp_dir=$(mktmpdir)
-  local build_dir=$(mktmpdir)
-  local cache_dir=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  local artifact_dir=$(mktmpdir)
-  compileSetup "${@}"
-  "${bp_dir}/bin/test-compile" "${build_dir}" "${cache_dir}" "${env_dir}"
-  echo
-  echo "----------------------------------------------------------------------------------------------"
-  echo
-  "${bp_dir}/bin/test" "${build_dir}" "${env_dir}" #"${artifact_dir}"
+  echo "Compiling ${fix}"
+  echo "in ${BUILD_DIR}"
+  echo "(caching in $CACHE_DIR)"
+  echo "(env in ${ENV_DIR}): ${env[@]}"
 }
 
 cmd="${1:-compile}"
@@ -61,5 +31,6 @@ shift
 fixture="${1:-govendor-basic}"
 shift
 r=("$@")
-echo "${r[@]}"
-$cmd "$fixture" "${r[@]}"
+
+quickSetup "${fixture}" "${r[@]}"
+$cmd "${fixture}" "${r[@]}"
