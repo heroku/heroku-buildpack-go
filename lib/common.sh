@@ -213,7 +213,7 @@ setGitCredHelper() {
             if [ -f "${f}" ]; then
                 echo "Using credentials from GO_GIT_CRED__${protocol}__${host}" >&2
                 t=$(cat ${f})
-                if [[ "${t}" =~ ":" ]]; then
+                if [ "${t}" =~ ":" ]; then
                     username="$(echo $t | cut -d : -f 1)"
                     password="$(echo $t | cut -d : -f 2)"
                 else
