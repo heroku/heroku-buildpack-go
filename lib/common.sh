@@ -171,7 +171,7 @@ setGitCredHelper() {
     git config --global credential.helper '!#GoGitCredHelper
     env_dir="'$(cd ${1}/ && pwd)'"
     gitCredHelper() {
-    echo "${1}\n" >&2 #debug
+    #echo "${1}\n" >&2 #debug
     case "${1}" in
         setup|erase) # Read only, so ignore
         ;;
@@ -203,13 +203,13 @@ setGitCredHelper() {
                         exit 1
                     ;;
                 esac
-                echo LINE=$LINE >&2    #debug
-                echo key=$key >&2      #debug
-                echo value=$value >&2  #debug
+                #echo LINE=$LINE >&2    #debug
+                #echo key=$key >&2      #debug
+                #echo value=$value >&2  #debug
             done
             local f="${env_dir}/GO_GIT_CRED__${protocol}__${host}"
-            echo f=${f} >&2  #debug
-            echo >&2         #debug
+            #echo f=${f} >&2  #debug
+            #echo >&2         #debug
             if [ -f "${f}" ]; then
                 echo "Using credentials from GO_GIT_CRED__${protocol}__${host}" >&2
                 t=$(cat ${f})
@@ -221,9 +221,9 @@ setGitCredHelper() {
                     password="x-oauth-basic"
                 fi
                 echo username=${username}
-                echo username=${username} >&2  #debug
+                #echo username=${username} >&2  #debug
                 echo password=${password}
-                echo password=${password} >&2  #debug
+                #echo password=${password} >&2  #debug
             fi
         ;;
     esac
