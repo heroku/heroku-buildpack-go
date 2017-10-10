@@ -1,13 +1,38 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
-testDetectDepWithMattesMigrate() {
-  detect "dep-mattes-migrate"
-  assertCaptured "Go"
+testGovendorWithPrivateDeps() {
+  if [ -z "${GITHUB_TOKEN}" ]; then
+    echo "!!!"
+    echo "!!! Skipping private Github repo test"
+    echo "!!!"
+    return 0
+  fi
+
+  fixture "govendor-private"
+
+  env "GO_GIT_CRED__HTTPS__GITHUB__COM" "${GITHUB_TOKEN}"
+
+  assertDetected
+
+  compile
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "github.com/go-test-user/go-private-repo-test"
   assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryOutputs "This is in a string from a Private Repo"
 }
-testCompileDepMattesMigrate() {
-  compile "dep-mattes-migrate"
+
+testDepWithMattesMigrate() {
+  fixture "dep-mattes-migrate"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Fetching dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -20,13 +45,12 @@ testCompileDepMattesMigrate() {
   assertCompiledBinaryExists "migrate"
 }
 
-testDetectDepWithDepPruned() {
-  detect "dep-with-dep-pruned"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileDepWithDepPruned() {
-  compile "dep-with-dep-pruned"
+testDepWithDepsPruned() {
+  fixture "dep-with-dep-pruned"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Fetching dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -37,13 +61,12 @@ testCompileDepWithDepPruned() {
   assertCompiledBinaryExists
 }
 
-testDetectDepWithDep() {
-  detect "dep-with-dep"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileDepWithDep() {
-  compile "dep-with-dep"
+testDepWithDep() {
+  fixture "dep-with-dep"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Fetching dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -54,13 +77,12 @@ testCompileDepWithDep() {
   assertCompiledBinaryExists
 }
 
-testDetectDepNoEnsure() {
-  detect "dep-no-ensure"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileDepNoEnsure() {
-  compile "dep-no-ensure"
+testDepNoEnsure() {
+  fixture "dep-no-ensure"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertNotCaptured "Fetching dep"
   assertNotCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -70,13 +92,12 @@ testCompileDepNoEnsure() {
   assertCompiledBinaryExists
 }
 
-testDetectDepInstallMulti() {
-  detect "dep-install-multi"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileDepInstallMulti() {
-  compile "dep-install-multi"
+testDepInstallMulti() {
+  fixture "dep-install-multi"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Fetching dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -90,13 +111,12 @@ testCompileDepInstallMulti() {
   assertCompiledBinaryOutputs "b" "b"
 }
 
-testDetectDepGoVersion() {
-  detect "dep-no-deps"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileDepGoVersion() {
-  compile "dep-go-version"
+testDepGoVersion() {
+  fixture "dep-go-version"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go1.8.3"
   assertCaptured "Fetching dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -106,13 +126,12 @@ testCompileDepGoVersion() {
   assertCompiledBinaryExists
 }
 
-testDetectDepNoDeps() {
-  detect "dep-no-deps"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileDepNoDeps() {
-  compile "dep-no-deps"
+testDepNoDeps() {
+  fixture "dep-no-deps"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Fetching dep"
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
@@ -122,13 +141,12 @@ testCompileDepNoDeps() {
   assertCompiledBinaryExists
 }
 
-testDetectGovendorMattesMigrateCLI() {
-  detect "govendor-mattes-migrate"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGovendorMattesMigrateCLI() {
-  compile "govendor-mattes-migrate"
+testGovendorMattesMigrateCLI() {
+  fixture "govendor-mattes-migrate"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
   assertCaptured "Fetching govendor"
@@ -142,47 +160,12 @@ testCompileGovendorMattesMigrateCLI() {
   assertCompiledBinaryExists "migrate"
 }
 
-testTestGovendorWithTestsSkipBenchmark() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
-  dotest "govendor-with-tests" "${cache}" "${env_dir}"
-  assertCapturedSuccess
-  assertCaptured "RUN   TestHello"
-  assertCaptured "PASS: TestHello"
-  assertCaptured "RUN   ExampleHello"
-  assertCaptured "PASS: ExampleHello"
-  assertNotCaptured "BenchmarkHello"
-}
-testTestGlideWithTestsSkipBenchmark() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
-  dotest "glide-with-tests" "${cache}" "${env_dir}"
-  assertCapturedSuccess
-  assertCaptured "RUN   TestHello"
-  assertCaptured "PASS: TestHello"
-  assertCaptured "RUN   ExampleHello"
-  assertCaptured "PASS: ExampleHello"
-  assertNotCaptured "BenchmarkHello"
-}
-testTestGodepWithTestsSkipBenchmark() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
-  dotest "godep-with-tests" "${cache}" "${env_dir}"
-  assertCapturedSuccess
-  assertCaptured "RUN   TestHello"
-  assertCaptured "PASS: TestHello"
-  assertCaptured "RUN   ExampleHello"
-  assertCaptured "PASS: ExampleHello"
-  assertNotCaptured "BenchmarkHello"
-}
-testTestGBWithTestsSkipBenchmark() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo 'nope' > "${env_dir}/GO_TEST_SKIP_BENCHMARK"
-  dotest "gb-with-tests" "${cache}" "${env_dir}"
+testTestPackGovendorWithTestsSkipBenchmark() {
+  fixture "govendor-with-tests"
+
+  env "GO_TEST_SKIP_BENCHMARK" "nope"
+
+  dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
   assertCaptured "PASS: TestHello"
@@ -191,35 +174,52 @@ testTestGBWithTestsSkipBenchmark() {
   assertNotCaptured "BenchmarkHello"
 }
 
-testTestGovendorWithTests() {
-  dotest "govendor-with-tests"
+testTestPackGlideWithTestsSkipBenchmark() {
+  fixture "glide-with-tests"
+
+  env "GO_TEST_SKIP_BENCHMARK" "nope"
+
+  dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
   assertCaptured "PASS: TestHello"
   assertCaptured "RUN   ExampleHello"
   assertCaptured "PASS: ExampleHello"
-  assertCaptured "BenchmarkHello"
+  assertNotCaptured "BenchmarkHello"
 }
-testTestGlideWithTests() {
-  dotest "glide-with-tests"
+
+testTestPackGodepWithTestsSkipBenchmark() {
+  fixture "godep-with-tests"
+
+  env "GO_TEST_SKIP_BENCHMARK" "nope"
+
+  dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
   assertCaptured "PASS: TestHello"
   assertCaptured "RUN   ExampleHello"
   assertCaptured "PASS: ExampleHello"
-  assertCaptured "BenchmarkHello"
+  assertNotCaptured "BenchmarkHello"
 }
-testTestGodepWithTests() {
-  dotest "godep-with-tests"
+
+testTestPackGBWithTestsSkipBenchmark() {
+  fixture "gb-with-tests"
+
+  env "GO_TEST_SKIP_BENCHMARK" "nope"
+
+  dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
   assertCaptured "PASS: TestHello"
   assertCaptured "RUN   ExampleHello"
   assertCaptured "PASS: ExampleHello"
-  assertCaptured "BenchmarkHello"
+  assertNotCaptured "BenchmarkHello"
 }
-testTestGBWithTests() {
-  dotest "gb-with-tests"
+
+testTestPackGovendorWithTests() {
+  fixture "govendor-with-tests"
+
+  dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
   assertCaptured "PASS: TestHello"
@@ -228,13 +228,48 @@ testTestGBWithTests() {
   assertCaptured "BenchmarkHello"
 }
 
-testDetectGlideWithHgDep() {
-  detect "glide-with-hg-dep"
-  assertCaptured "Go"
+testTestPackGlideWithTests() {
+  fixture "glide-with-tests"
+
+  dotest
   assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertCaptured "BenchmarkHello"
 }
-testCompileGlideWithHgDep() {
-  compile "glide-with-hg-dep"
+
+testTestPackGodepWithTests() {
+  fixture "godep-with-tests"
+
+  dotest
+  assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertCaptured "BenchmarkHello"
+}
+
+testTestPackGBWithTests() {
+  fixture "gb-with-tests"
+
+  dotest
+  assertCapturedSuccess
+  assertCaptured "RUN   TestHello"
+  assertCaptured "PASS: TestHello"
+  assertCaptured "RUN   ExampleHello"
+  assertCaptured "PASS: ExampleHello"
+  assertCaptured "BenchmarkHello"
+}
+
+testGlideWithHgDep() {
+  fixture "glide-with-hg-dep"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -245,19 +280,27 @@ testCompileGlideWithHgDep() {
   assertCompiledBinaryExists
 }
 
-testCompileGovendorCmds() {
-  compile "govendor-cmd"
+testGovendorCmds() {
+  fixture "govendor-cmd"
+
+  assertDetected
+
+  compile
   assertCapturedSuccess
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
   assertCompiledBinaryExists "other"
   assertCompiledBinaryOutputs "other" "other"
 }
-testCompileGovendorCmdsOverride() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
-  compile "govendor-cmd" ${cache} ${env_dir}
+
+testGovendorCmdsOverride() {
+  fixture "govendor-cmd"
+
+  env "GO_INSTALL_PACKAGE_SPEC" "./cmd/fixture"
+
+  assertDetected
+
+  compile
   assertCapturedSuccess
   assertCaptured "Using \$GO_INSTALL_PACKAGE_SPEC override."
   assertCompiledBinaryExists "fixture"
@@ -265,29 +308,40 @@ testCompileGovendorCmdsOverride() {
   assertFileDoesNotExist "bin/other"
 }
 
-testCompileGodepCmds() {
-  compile "godep-cmd"
+testGodepCmds() {
+  fixture "godep-cmd"
+
+  assertDetected
+
+  compile
   assertCapturedSuccess
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
   assertCompiledBinaryExists "other"
   assertCompiledBinaryOutputs "other" "other"
 }
-testCompileGodepCmdsOverride() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo './cmd/fixture' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
-  compile "godep-cmd" ${cache} ${env_dir}
+
+testGodepCmdsOverride() {
+  fixture "godep-cmd"
+
+  env "GO_INSTALL_PACKAGE_SPEC" "./cmd/fixture"
+
+  assertDetected
+
+  compile
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
   assertFileDoesNotExist "bin/other"
 }
 
-testCompileGodepBasicGo14WithGOVERSIONOverride() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo 'go1.6' > "${env_dir}/GOVERSION"
-  compile "godep-basic-go14" ${cache} ${env_dir}
+testGodepBasicGo14WithGOVERSIONOverride() {
+  fixture "godep-basic-go14"
+
+  env "GOVERSION" "go1.6"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go1.6"
   assertCaptured "Using \$GOVERSION override."
   assertCapturedSuccess
@@ -295,27 +349,28 @@ testCompileGodepBasicGo14WithGOVERSIONOverride() {
   assertFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
-testCompileGovendorGo14WithGOVERSIONOverride() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo 'go1.6' > "${env_dir}/GOVERSION"
-  compile "govendor-go15" ${cache} ${env_dir}
+testGovendorGo14WithGOVERSIONOverride() {
+  fixture "govendor-go15"
+
+  env "GOVERSION" "go1.6"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go1.6"
   assertCaptured "Using \$GOVERSION override."
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
 
-testDetectGlideMassageVendor() {
-  detect "glide-massage-vendor"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGlideMassageVendor() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo '. github.com/mattes/migrate' > "${env_dir}/GO_INSTALL_PACKAGE_SPEC"
-  compile "glide-massage-vendor" ${cache} ${env_dir}
+testGlideMassageVendor() {
+  fixture "glide-massage-vendor"
+
+  env "GO_INSTALL_PACKAGE_SPEC" ". github.com/mattes/migrate"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -349,13 +404,12 @@ testCompileGlideMassageVendor() {
   assertCompiledBinaryExists "migrate"
 }
 
-testDetectGlideWithOutDeps() {
-  detect "glide-wo-deps"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGlideWithOutDeps() {
-  compile "glide-wo-deps"
+testGlideWithOutDeps() {
+  fixture "glide-wo-deps"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -365,13 +419,12 @@ testCompileGlideWithOutDeps() {
   assertCompiledBinaryExists
 }
 
-testDetectGlideWithDeps() {
-  detect "glide-with-deps"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGlideWithDeps() {
-  compile "glide-with-deps"
+testGlideWithDeps() {
+  fixture "glide-with-deps"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -381,13 +434,12 @@ testCompileGlideWithDeps() {
   assertCompiledBinaryExists
 }
 
-testDetectGlideBasic() {
-  detect "glide-basic"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGlideBasic() {
-  compile "glide-basic"
+testGlideBasic() {
+  fixture "glide-basic"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -396,11 +448,15 @@ testCompileGlideBasic() {
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
-testCompileGlideBasicWithTools() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
-  compile "glide-basic" ${cache} ${env_dir}
+
+testGlideBasicWithTools() {
+  fixture "glide-basic"
+
+  env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -410,11 +466,15 @@ testCompileGlideBasicWithTools() {
   assertCompiledBinaryExists
   assertFileExists ".heroku/go/bin/go"
 }
-testCompileGlideBasicInGOPATH() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
-  compile "glide-basic" ${cache} ${env_dir}
+
+testGlideBasicInGOPATH() {
+  fixture "glide-basic"
+
+  env "GO_SETUP_GOPATH_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
@@ -426,47 +486,48 @@ testCompileGlideBasicInGOPATH() {
   assertFileDoesNotExist "main.go"
 }
 
-testDetectGodepVendorGo17() {
-  detect "godep-vendor-go17"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepVendorGo17() {
-  compile "godep-vendor-go17"
+testGodepVendorGo17() {
+  fixture "godep-vendor-go17"
+
+  assertDetected
+
+  compile
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
 
-testDetectGodepBasicGo17() {
-  detect "godep-basic-go17"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepBasicGo17() {
-  compile "godep-basic-go17"
+testGodepBasicGo17() {
+  fixture "godep-basic-go17"
+
+  assertDetected
+
+  compile
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"
   assertCompiledBinaryOutputs "fixture" "go1.7beta1"
 }
-testCompileGodepBasicGo17WithGO15VENDOREXPERIMENT() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo '1' > "${env_dir}/GO15VENDOREXPERIMENT"
-  compile "godep-basic-go17" ${cache} ${env_dir}
+
+testGodepBasicGo17WithGO15VENDOREXPERIMENT() {
+  fixture "godep-basic-go17"
+
+  env "GO15VENDOREXPERIMENT" "1"
+
+  assertDetected
+
+  compile
   assertCaptured "GO15VENDOREXPERIMENT is set, but is not supported by go"
   assertCaptured "run \`heroku config:unset GO15VENDOREXPERIMENT\` to unset."
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
 
-testDetectGovendorExcluded() {
-  detect "govendor-excluded"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGovendorExcluded() {
-  compile "govendor-excluded"
+testGovendorExcluded() {
+  fixture "govendor-excluded"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
   assertCaptured "Fetching govendor"
@@ -479,29 +540,26 @@ testCompileGovendorExcluded() {
   assertCompiledBinaryExists
 }
 
-testDetectGodepBasicGo14() {
-  detect "godep-basic-go14"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepBasicGo14() {
-  compile "godep-basic-go14"
+testGodepBasicGo14() {
+  fixture "godep-basic-go14"
+
+  assertDetected
+
+  compile
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFileExists ".profile.d/concurrency.sh"
 }
 
-testDetectGodepCGOVendored(){
-  detect "godep-cgo-vendored"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileCGOVendored() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo '-I${build_dir}/vendor/include' > "${env_dir}/CGO_CFLAGS"
-  echo '-L${build_dir}/vendor/lib -lyara' > "${env_dir}/CGO_LDFLAGS"
-  compile "godep-cgo-vendored" ${cache} ${env_dir}
+testGodepCGOVendored(){
+  fixture "godep-cgo-vendored"
+
+  env "CGO_CFLAGS" '-I${build_dir}/vendor/include'
+  env "CGO_LDFLAGS" '-L${build_dir}/vendor/lib -lyara'
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture/vendor/github.com/hillu/go-yara"
@@ -510,13 +568,12 @@ testCompileCGOVendored() {
   assertCompiledBinaryExists
 }
 
-testDetectGodepMassageVendor() {
-  detect "godep-massage-vendor"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepMassageVendor() {
-  compile "godep-massage-vendor"
+testGodepMassageVendor() {
+  fixture "godep-massage-vendor"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku . github.com/heroku/fixture/vendor/github.com/mattes/migrate"
@@ -549,13 +606,12 @@ testCompileGodepMassageVendor() {
   assertCompiledBinaryExists "migrate"
 }
 
-testDetectGodepWithPackageNames() {
-  detect "godep-with-package-names"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepWithPackageNames() {
-  compile "godep-with-package-names"
+testGodepWithPackageNames() {
+  fixture "godep-with-package-names"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertNotCaptured "Installing package '.' (default)"
@@ -566,13 +622,12 @@ testCompileGodepWithPackageNames() {
   assertCompiledBinaryExists "pkg"
 }
 
-testDetectGodepCGOBasic() {
-  detect "godep-cgo-basic"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepCGOB() {
-  compile "godep-cgo-basic"
+testGodepCGOBasic() {
+  fixture "godep-cgo-basic"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing package '.' (default)"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -581,13 +636,12 @@ testCompileGodepCGOB() {
   assertCompiledBinaryExists
 }
 
-testDetectGodepDevelGo() {
-  detect "godep-devel-go"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepDevelGo() {
-  compile "godep-devel-go"
+testGodepDevelGo() {
+  fixture "godep-devel-go"
+
+  assertDetected
+
+  compile
   assertCaptured "You are using a development build of Go."
   assertCaptured "Installing bootstrap go"
   assertCaptured "Downloading development Go version devel-15f7a66"
@@ -596,57 +650,52 @@ testCompileGodepDevelGo() {
   assertCaptured "go version devel +15f7a66"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertTrue "Binary has the right value" '[[ "$(${compile_dir}/bin/fixture)" == *"devel +15f7a66"* ]]'
+  assertCompiledBinaryOutputs "fixture" "devel +15fa66"
+  #assertTrue "Binary has the right value" '[[ "$(${BUILD_DIR}/bin/fixture)" == *"devel +15f7a66"* ]]'
 }
 
-testDetectGodepBinFile() {
-  detect "godep-bin-file"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepBinFile() {
-  compile "godep-bin-file"
+testGodepBinFile() {
+  fixture "godep-bin-file"
+
+  assertDetected
+
+  compile
   assertCapturedError 1 "File bin exists and is not a directory."
 }
 
-testDetectGovendorMissingRootPath() {
-  detect "govendor-missing-rootPath"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGovendorMissingRootPath() {
-  compile "govendor-missing-rootPath"
+testGovendorMissingRootPath() {
+  fixture "govendor-missing-rootPath"
+
+  assertDetected
+
+  compile
   assertCapturedError 1 "The 'rootPath' field is not specified in 'vendor/vendor.json'."
 }
 
-testDetectGovendorMalformed() {
-  detect "govendor-malformed"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGovendorMalformed() {
-  compile "govendor-malformed"
+testGovendorMalformed() {
+  fixture "govendor-malformed"
+
+  assertDetected
+
+  compile
   assertCapturedError 1 "Bad vendor/vendor.json file"
 }
 
-testDetectGodepMalformed() {
-  detect "godep-malformed"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepMalformed() {
-  compile "godep-malformed"
+testGodepMalformed() {
+  fixture "godep-malformed"
+
+  assertDetected
+
+  compile
   assertCapturedError 1 "Bad Godeps/Godeps.json file"
-
 }
 
-testDetectGBVendor() {
-  detect "gb-vendor"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGBVendor() {
-  compile "gb-vendor"
+testGBVendor() {
+  fixture "gb-vendor"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
@@ -656,13 +705,12 @@ testCompileGBVendor() {
   assertCompiledBinaryExists
 }
 
-testDetectGBBasic() {
-  detect "gb-basic"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGBBasic() {
-  compile "gb-basic"
+testGBBasic() {
+  fixture "gb-basic"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
@@ -671,11 +719,15 @@ testCompileGBBasic() {
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
-testCompileGBBasicWithTools() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
-  compile "gb-basic" ${cache} ${env_dir}
+
+testGBBasicWithTools() {
+  fixture "gb-basic"
+
+  env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
@@ -688,49 +740,46 @@ testCompileGBBasicWithTools() {
   assertFileExists ".heroku/go/bin/go"
 }
 
-testDetectGodepLDSymbolValue() {
-  detect "godep-ld-symbol-value"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepLDSymbolValue() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "main.fixture" > "${env_dir}/GO_LINKER_SYMBOL"
-  echo "fixture" > "${env_dir}/GO_LINKER_VALUE"
-  compile "godep-ld-symbol-value" ${cache} ${env_dir}
+testGodepLDSymbolValue() {
+  fixture "godep-ld-symbol-value"
+
+  env "GO_LINKER_SYMBOL" "main.fixture"
+  env "GO_LINKER_VALUE" "fixture"
+
+  assertDetected
+
+  compile
   assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture ."
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
+  assertCompiledBinaryOutputs "fixture" "fixture"
+#  assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
 }
 
-# Older versions of Go have a different format for specifying linked flags
-testDetectGodepLDSymbolGo14Value() {
-  detect "godep-ld-symbol-value-go14"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepLDSymbolGo14Value() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "main.fixture" > "${env_dir}/GO_LINKER_SYMBOL"
-  echo "fixture" > "${env_dir}/GO_LINKER_VALUE"
-  compile "godep-ld-symbol-value-go14" ${cache} ${env_dir}
+# # Older versions of Go have a different format for specifying linked flags
+testGodepLDSymbolGo14Value() {
+  fixture "godep-ld-symbol-value-go14"
+
+  env "GO_LINKER_SYMBOL" "main.fixture"
+  env "GO_LINKER_VALUE" "fixture"
+
+  assertDetected
+
+  compile
   assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture fixture ." #Nothing vendored
   assertCaptured "Deprecated or unsupported version of go"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
+  assertCompiledBinaryOutputs "fixture" "fixture"
+  #assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
 }
 
-testDetectGodepBasic() {
-  detect "godep-basic"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepBasic() {
-  compile "godep-basic"
+testGodepBasic() {
+  fixture "godep-basic"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -740,11 +789,15 @@ testCompileGodepBasic() {
   assertCompiledBinaryExists
   assertFileDoesNotExist ".profile.d/concurrency.sh"
 }
-testCompileGodepBasicWithTools() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
-  compile "godep-basic" ${cache} ${env_dir}
+
+testGodepBasicWithTools() {
+  fixture "godep-basic"
+
+  env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -757,11 +810,15 @@ testCompileGodepBasicWithTools() {
   assertFileDoesNotExist ".profile.d/concurrency.sh"
   assertFileExists ".heroku/go/bin/go"
 }
-testCompileGodepBasicInGOPATH() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
-  compile "godep-basic" ${cache} ${env_dir}
+
+testGodepBasicInGOPATH() {
+  fixture "godep-basic"
+
+  env "GO_SETUP_GOPATH_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -774,21 +831,24 @@ testCompileGodepBasicInGOPATH() {
   assertFileDoesNotExist "main.go"
 }
 
-testCompileGodepCreateProcfile() {
-  compile "godep-basic-wo-procfile"
+testGodepCreateProcfile() {
+  fixture "godep-basic-wo-procfile"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFile "web: fixture" "Procfile"
 }
 
-testDetectGovendorBasic() {
-  detect "govendor-basic"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGovendorBasic() {
-  compile "govendor-basic"
+testGovendorBasic() {
+  fixture "govendor-basic"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -797,11 +857,15 @@ testCompileGovendorBasic() {
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
-testCompileGovendorBasicWithTools() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
-  compile "govendor-basic" ${cache} ${env_dir}
+
+testGovendorBasicWithTools() {
+  fixture "govendor-basic"
+
+  env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -813,11 +877,15 @@ testCompileGovendorBasicWithTools() {
   assertCompiledBinaryExists
   assertFileExists ".heroku/go/bin/go"
 }
-testCompileGovendorBasicInGOPATH() {
-  local cache=$(mktmpdir)
-  local env_dir=$(mktmpdir)
-  echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
-  compile "govendor-basic" ${cache} ${env_dir}
+
+testGovendorBasicInGOPATH() {
+  fixture "govendor-basic"
+
+  env "GO_SETUP_GOPATH_IN_IMAGE" "true"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking vendor/vendor.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -829,21 +897,24 @@ testCompileGovendorBasicInGOPATH() {
   assertFileDoesNotExist "main.go"
 }
 
-testCompileGovendorCreateProcfile() {
-  compile "govendor-basic-wo-procfile"
+testGovendorCreateProcfile() {
+  fixture "govendor-basic-wo-procfile"
+
+  assertDetected
+
+  compile
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertFile "web: fixture" "Procfile"
 }
 
-testDetectGodepOldWorkspace() {
-  detect "godep-old-workspace"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepOldWorkspace() {
-  compile "godep-old-workspace"
+testGodepOldWorkspace() {
+  fixture "godep-old-workspace"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: godep go install -v -tags heroku ."
@@ -853,13 +924,12 @@ testCompileGodepOldWorkspace() {
   assertCompiledBinaryExists
 }
 
-testDetectGodepVendor() {
-  detect "godep-vendor"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepVendor() {
-  compile "godep-vendor"
+testGodepVendor() {
+  fixture "godep-vendor"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
@@ -869,13 +939,12 @@ testCompileGodepVendor() {
   assertCompiledBinaryExists
 }
 
-testDetectGodepPackageSpec() {
-  detect "godep-package-spec"
-  assertCaptured "Go"
-  assertCapturedSuccess
-}
-testCompileGodepPackageSpec() {
-  compile "godep-package-spec"
+testGodepPackageSpec() {
+  fixture "godep-package-spec"
+
+  assertDetected
+
+  compile
   assertCaptured "Checking Godeps/Godeps.json file."
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ./cmd/..."
@@ -885,100 +954,8 @@ testCompileGodepPackageSpec() {
   assertCompiledBinaryExists
 }
 
-# Utils
-
 pushd $(dirname 0) >/dev/null
 popd >/dev/null
 
 source $(pwd)/test/utils
-
-mktmpdir() {
-  dir=$(mktemp -t testXXXXX)
-  rm -rf $dir
-  mkdir $dir
-  echo $dir
-}
-
-detect() {
-  capture $(pwd)/bin/detect $(pwd)/test/fixtures/$1
-}
-
-compile_dir=""
-
-default_process_types_cleanup() {
-  file="/tmp/default_process_types"
-  if [ -f "$file" ]; then
-    rm "$file"
-  fi
-}
-
-compile() {
-  default_process_types_cleanup
-  bp_dir=$(mktmpdir)
-  compile_dir=$(mktmpdir)
-  cache_dir=${2:-$(mktmpdir)}
-  env_dir=${3}
-  cp -a $(pwd)/* ${bp_dir}
-  cp -a ${bp_dir}/test/fixtures/${1}/. ${compile_dir}
-  capture ${bp_dir}/bin/compile ${compile_dir} ${cache_dir} ${env_dir}
-}
-
-dotest(){
-  default_process_types_cleanup
-  bp_dir=$(mktmpdir)
-  compile_dir=$(mktmpdir)
-  cache_dir=${2:-$(mktmpdir)}
-  env_dir=${3:-$(mktmpdir)}
-  cp -a $(pwd)/* ${bp_dir}
-  cp -a ${bp_dir}/test/fixtures/${1}/. ${compile_dir}
-  capture "${bp_dir}/bin/test-compile" "${compile_dir}" "${cache_dir}" "${env_dir}"
-  capture "${bp_dir}/bin/test" "${compile_dir}" "${env_dir}"
-}
-
-compileDir() {
-  default_process_types_cleanup
-
-  local bp_dir=$(mktmpdir)
-  local compile_dir=${1:-$(mktmpdir)}
-  local cache_dir=${2:-$(mktmpdir)}
-  local env_dir=$3
-
-  cp -a $(pwd)/* ${bp_dir}
-  capture ${bp_dir}/bin/compile ${compile_dir} ${cache_dir} ${env_dir}
-}
-
-release() {
-  bp_dir=$(mktmpdir)
-  cp -a $(pwd)/* ${bp_dir}
-  capture ${bp_dir}/bin/release ${bp_dir}/test/fixtures/$1
-}
-
-assertFile() {
-  assertEquals "$1" "$(cat ${compile_dir}/$2)"
-}
-
-assertFileDoesNotExist() {
-  local name=${1}
-  local tgt="${compile_dir}/${name}"
-  assertTrue "File ${name} does not exist" "[ ! -f ${tgt} ]"
-}
-
-assertFileExists() {
-  local name=${1}
-  local tgt="${compile_dir}/${name}"
-  assertTrue "File ${name} exists" "[ -f ${tgt} ]"
-}
-
-assertCompiledBinaryExists() {
-  local name=${1:-fixture}
-  local tgt="${compile_dir}/bin/${name}"
-  assertTrue "Compiled binary (${tgt}) exists" "[ -x ${tgt} ]"
-}
-
-assertCompiledBinaryOutputs() {
-  local name=${1}
-  local output=${2}
-  capture ${compile_dir}/bin/${name}
-}
-
 source $(pwd)/test/shunit2

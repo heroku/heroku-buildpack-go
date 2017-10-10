@@ -6,6 +6,7 @@
 oneTimeSetUp()
 {
    TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
+   BUILDPACK_HOME="/buildpack"
 }
 
 oneTimeTearDown()
@@ -20,9 +21,11 @@ setUp()
   STD_ERR="${OUTPUT_DIR}/stderr"
   BUILD_DIR="${OUTPUT_DIR}/build"
   CACHE_DIR="${OUTPUT_DIR}/cache"
+  ENV_DIR="${OUTPUT_DIR}/env"
   mkdir -p ${OUTPUT_DIR}
   mkdir -p ${BUILD_DIR}
   mkdir -p ${CACHE_DIR}
+  mkdir -p ${ENV_DIR}
 }
 
 tearDown()
@@ -56,19 +59,78 @@ resetCapture()
   unset rtrn # deprecated
 }
 
-detect()
-{
+fixture() {
+  local fp="${BUILDPACK_HOME}/test/fixtures/${1}"
+  tar -cf - -C $fp . | tar -x -C ${BUILD_DIR}
+}
+
+env(){
+  local var="${1}"
+  local val="${2}"
+  if [ -z "${var}" ]; then
+    fail "set env var w/o specifying name"
+    exit 1
+  fi
+  echo -n "${val}" > "${ENV_DIR}/${var}"
+}
+
+detect() {
+  echo "* detect"
   capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}
 }
 
-compile()
-{
-  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR}
+assertDetected() {
+  detect
+  assertCaptured "Go"
+  assertCapturedSuccess
+}
+
+compile() {
+  echo "* compile"
+  capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} ${ENV_DIR}
+}
+
+dotest(){
+  echo "* test-compile"
+  capture "${BUILDPACK_HOME}/bin/test-compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
+  echo "* test"
+  capture "${BUILDPACK_HOME}/bin/test" "${BUILD_DIR}" "${ENV_DIR}"
 }
 
 release()
 {
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
+}
+
+assertFile() {
+  local content="${1}"
+  local name="${2}"
+  local tgt="${BUILD_DIR}/${name}"
+  assertEquals "${content}" "$(cat ${tgt})"
+}
+
+assertFileDoesNotExist() {
+  local name=${1}
+  local tgt="${BUILD_DIR}/${name}"
+  assertTrue "File ${name} exist" "[ ! -f ${tgt} ]"
+}
+
+assertFileExists() {
+  local name=${1}
+  local tgt="${BUILD_DIR}/${name}"
+  assertTrue "File ${name} does not exist" "[ -f ${tgt} ]"
+}
+
+assertCompiledBinaryExists() {
+  local name=${1:-fixture}
+  local tgt="${BUILD_DIR}/bin/${name}"
+  assertTrue "Compiled binary (${tgt}) exists" "[ -x ${tgt} ]"
+}
+
+assertCompiledBinaryOutputs() {
+  local name="${1}"
+  local output="${2}"
+  capture "${BUILD_DIR}/bin/${name}"
 }
 
 assertCapturedEquals()
