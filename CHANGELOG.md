@@ -7,6 +7,7 @@
 * Tests now better us shunit2 setup/teardown, instead of not cleaning up after themselves.
 * Run tests against both the older heroku/cedar:14 image and the new heroku/heroku:16-build image.
 * Because of the three changes above, tests are now faster.
+* Allow `go1.X.0` versions that expand to `go1.X`, effectively pinning the minor version to the first version in the X series.
 
 ## v76 (2017-10-06)
 
