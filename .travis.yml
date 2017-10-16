@@ -1,9 +1,10 @@
 language: bash
 sudo: required
 services:
-- docker
+  - docker
 install: docker pull heroku/cedar:14
-script: make IMAGE=$IMAGE test
+script:
+  - make IMAGE=$IMAGE test
 env:
   matrix:
     - IMAGE=heroku/cedar:14
