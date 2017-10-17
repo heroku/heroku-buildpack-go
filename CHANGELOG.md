@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v77 (2017-10-17)
+
 * Add support for Git credentials specified via config vars. See https://github.com/heroku/heroku-buildpack-go#private-git-repos for more info. So far this has only been tested with Github and personal access tokens over https, but should work for other methods as well.
 * Tests now use a local file:// URL for most dependencies. This enables offline mode for most tests and makes it easier to test local changes before syncing the production bucket.
 * Tests now better us shunit2 setup/teardown, instead of not cleaning up after themselves.
