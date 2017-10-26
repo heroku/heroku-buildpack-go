@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add go1.9.2 and go1.8.5 and default go1.9/go1.8 to them.
+
 ## v77 (2017-10-17)
 
 * Add support for Git credentials specified via config vars. See https://github.com/heroku/heroku-buildpack-go#private-git-repos for more info. So far this has only been tested with Github and personal access tokens over https, but should work for other methods as well.
