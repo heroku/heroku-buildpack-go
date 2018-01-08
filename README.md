@@ -23,7 +23,7 @@ vendor
 Procfile
 web.go
 
-$ heroku create
+$ heroku apps:create
 Creating polar-waters-4785...
 ...
 
