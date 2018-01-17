@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v79 (2018-01-17)
+
 * Add go1.10beta1 and go1.10beta2
 
 ## v78 (2017-10-26)
