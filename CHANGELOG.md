@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add go1.9.3 and make it the default
+
 ## v79 (2018-01-17)
 
 * Add go1.10beta1 and go1.10beta2
