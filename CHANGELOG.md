@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Bump dep to v0.4.0
+
 ## v80 (2018-01-24)
 
 * Add go1.9.3 and make it the default
