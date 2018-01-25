@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Bump dep to v0.4.0
+* Bump dep to v0.4.1
 
 ## v80 (2018-01-24)
 

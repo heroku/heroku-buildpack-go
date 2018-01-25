@@ -39,7 +39,7 @@
     ]
   },
   "Dep": {
-    "DefaultVersion": "v0.4.0"
+    "DefaultVersion": "v0.4.1"
   },
   "Glide": {
     "DefaultVersion": "v0.12.3"
@@ -78,7 +78,7 @@
       "godep_linux_amd64",
       "migrate-v3.0.0-linux-amd64.tar.gz",
       "tq-v0.5-linux-amd64",
-      "dep-v0.4.0-linux-amd64"
+      "dep-v0.4.1-linux-amd64"
     ]
   }
 }
