@@ -4,6 +4,7 @@
 
 * Bump dep to v0.4.0
 * Bump dep to v0.4.1
+* Add go1.10rc1 and default it as the version for go1.10
 
 ## v80 (2018-01-24)
 
