@@ -3,7 +3,7 @@
     "Supported": ["go1.8.5", "go1.9.3"],
     "DefaultVersion": "go1.9.3",
     "VersionExpansion": {
-      "go1.10": "go1.10beta2",
+      "go1.10": "go1.10rc1",
       "go1.9.0": "go1.9",
       "go1.9": "go1.9.3",
       "go1.8.0": "go1.8",
