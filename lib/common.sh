@@ -249,7 +249,7 @@ determineTool() {
         name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
         if [ -z "${name}" ]; then
             err "The 'metadata.heroku[\"root-package\"]' field is not specified in 'Gopkg.toml'."
-            err "root-package must be set to the root pacakage name used by your repository."
+            err "root-package must be set to the root package name used by your repository."
             err ""
             err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
             exit 1
