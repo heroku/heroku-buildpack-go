@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add go1.9.4 & 1.8.7 and default go1.9/go1.8 to them.
+
 ## v81 (2018-01-26)
 
 * Bump dep to v0.4.0
@@ -88,7 +90,7 @@ Support go 1.8.1. Default to go1.8.1.
 
 ## v63 (2017-04-04)
 
-Add $GO_TEST_SKIP_BENCHMARK, that when set to anything skips the benchmark during test execution. 
+Add $GO_TEST_SKIP_BENCHMARK, that when set to anything skips the benchmark during test execution.
 
 ## v62 (2017-02-16)
 

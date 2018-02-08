@@ -11,6 +11,10 @@
         "URL": "https://storage.googleapis.com/golang/go1.10beta1.linux-amd64.tar.gz",
         "SHA": "ec7a10b5bf147a8e06cf64e27384ff3c6d065c74ebd8fdd31f572714f74a1055"
     },
+    "go1.9.4.linux-amd64.tar.gz": {
+        "URL": "https://storage.googleapis.com/golang/go1.9.4.linux-amd64.tar.gz",
+        "SHA": "15b0937615809f87321a457bb1265f946f9f6e736c563d6c5e0bd2c22e44f779"
+    },
     "go1.9.3.linux-amd64.tar.gz": {
         "URL": "https://storage.googleapis.com/golang/go1.9.3.linux-amd64.tar.gz",
         "SHA": "a4da5f4c07dfda8194c4621611aeb7ceaab98af0b38bfb29e1be2ebb04c3556c"
@@ -42,6 +46,10 @@
     "go1.9beta1.linux-amd64.tar.gz": {
         "URL": "https://storage.googleapis.com/golang/go1.9beta1.linux-amd64.tar.gz",
         "SHA": "85719a2c704ad1352052e185c760d7c65b9d8a18b491287a7e5f6775ccc27d3b"
+    },
+    "go1.8.7.linux-amd64.tar.gz": {
+        "URL": "https://storage.googleapis.com/golang/go1.8.7.linux-amd64.tar.gz",
+        "SHA": "de32e8db3dc030e1448a6ca52d87a1e04ad31c6b212007616cfcc87beb0e4d60"
     },
     "go1.8.5.linux-amd64.tar.gz": {
         "URL": "https://storage.googleapis.com/golang/go1.8.5.linux-amd64.tar.gz",
