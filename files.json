@@ -1,4 +1,8 @@
-{
+{    
+    "go1.10rc2.linux-amd64.tar.gz": {
+        "URL": "https://dl.google.com/go/go1.10rc2.linux-amd64.tar.gz",
+        "SHA": "6a6a4c0654bc603bcfee4d6ac34a479c260ac61b3edcc8d6773384eb0bda512e"
+    },
     "go1.10rc1.linux-amd64.tar.gz": {
         "URL": "https://dl.google.com/go/go1.10rc1.linux-amd64.tar.gz",
         "SHA": "c10d3cc7760bf3799037bd39027bbffdc568aea21d6fe60fe833373289c7b7c6"
