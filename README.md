@@ -208,7 +208,7 @@ The value of a matching var will be used as the username. If the value contains 
 The following example will cause git to use the `FakePersonalAccessTokenHere` as the username when authenticating to `github.com` via `https`:
 
 ```console
-$ heroku config:set GO_GIT_CRED__HTTPS__GITHUB__COM=FakePersoalAccessTokenHere
+$ heroku config:set GO_GIT_CRED__HTTPS__GITHUB__COM=FakePersonalAccessTokenHere
 ```
 
 ## Hacking on this Buildpack
