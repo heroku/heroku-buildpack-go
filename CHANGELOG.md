@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Add go1.10rc2 and default go1.10 to it.
+* Add `1.X` versions expansions. Previously the full version string needed to start with `go`. Example: `go1.9` was required instead of `1.9`. Now both expand to the current go 1.9 version (currently `go1.9.4`).
+
 ## v82 (2018-02-07)
 
 * Add go1.9.4 & 1.8.7 and default go1.9/go1.8 to them.
