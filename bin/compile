@@ -85,10 +85,17 @@ urlFor() {
     esac
 }
 
-# Expand to supported versions of Go, see data.json for supported expansions.
-# All others are returned as is.
+# Expand a version identifier to supported versions of Go. If the version
+# identifier starts with one or more digits, then "go" is prepended before
+# expansion. So `1.9` => `go1.9`, `1.9.4` => `go1.9.4`, `devel` => `devel`. See
+# data.json for supported expansions. All others are returned as is without go
+# prepended to it.
 expandVer() {
-    echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${1}'" then .Go.VersionExpansion."'${1}'" else "'${1}'" end')
+    local v="${1}"
+    if [[ ${v} =~ ^[[:digit:]]+ ]]; then
+        v="go${v}"
+    fi
+    echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
 }
 
 # Report deprecated versions to user

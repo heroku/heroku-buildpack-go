@@ -208,7 +208,7 @@ The value of a matching var will be used as the username. If the value contains 
 The following example will cause git to use the `FakePersonalAccessTokenHere` as the username when authenticating to `github.com` via `https`:
 
 ```console
-$ heroku config:set GO_GIT_CRED__HTTPS__GITHUB__COM=FakePersonalAccessTokenHere
+heroku config:set GO_GIT_CRED__HTTPS__GITHUB__COM=FakePersonalAccessTokenHere
 ```
 
 ## Hacking on this Buildpack
@@ -224,6 +224,16 @@ Requires docker.
 ```console
 make test
 ```
+
+### Compiling a fixture
+
+Requires docker.
+
+```console
+make FIXTURE=<fixture name> compile
+```
+
+You will then be dropped into a bash prompt in the container in which the fixture was compiled in.
 
 ## Using with cgo
 

@@ -15,6 +15,10 @@ shell: docker
 quick: BASH_COMMAND := test/quick; bash
 quick: docker
 
+# make FIXTURE=<fixture name> compile
+compile: BASH_COMMAND := test/quick compile $(FIXTURE); bash
+compile: docker
+
 publish:
 	bin/publish heroku/go
 
