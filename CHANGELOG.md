@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v84 (2018-02-16)
+
 * Better naked version expansion that allows not only for 1.9 -> go1.9.4, but also 1.9.4 -> go1.9.4, which was missing previously.
 * Add support for go1.10 (which will expand to the current go1.10.X version) and go1.10.0 (which pins to go1.10).
 * Add `make sync` target and update README around syncing.
