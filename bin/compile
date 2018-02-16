@@ -92,7 +92,7 @@ urlFor() {
 # prepended to it.
 expandVer() {
     local v="${1}"
-    if [[ ${v} =~ ^[[:digit:]]+ ]]; then
+    if [[ "${v}" =~ ^[[:digit:]]+ ]]; then
         v="go${v}"
     fi
     echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
