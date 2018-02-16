@@ -111,6 +111,21 @@ testDepInstallMulti() {
   assertCompiledBinaryOutputs "b" "b"
 }
 
+testDepNakedGoVersion() {
+  fixture "dep-naked-go-version"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go1.8.3"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testDepGoVersion() {
   fixture "dep-go-version"
 
