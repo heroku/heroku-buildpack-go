@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v85 (2018-02-23)
+
 * Check to see if the buildpack knows about a file before trying to download it. Fixes #227.
 * Fixed GO_LINKER_SYMBOL handling for go1.10+ (Thanks @djui)
 
