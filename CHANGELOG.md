@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fixed GO_LINKER_SYMBOL handling for go1.10+ (Thanks @djui)
+
 ## v84 (2018-02-16)
 
 * Better naked version expansion that allows not only for 1.9 -> go1.9.4, but also 1.9.4 -> go1.9.4, which was missing previously.
