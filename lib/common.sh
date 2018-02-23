@@ -55,14 +55,38 @@ finished() {
 determinLocalFileName() {
     local fileName="${1}"
     local localName="jq"
-    if [ "${fileName}" != "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq'
+    if [ "${fileName}" != "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
         localName="$(<"${FilesJSON}" jq -r '."'${fileName}'".LocalName | if . == null then "'${fileName}'" else . end')"
     fi
     echo "${localName}"
 }
 
+knownFile() {
+    local fileName="${1}"
+    if [ "${fileName}" == "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
+        true
+    else
+        <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null
+    fi
+}
+
 downloadFile() {
     local fileName="${1}"
+
+    if ! knownFile ${fileName}; then
+        err ""
+        err "The requested file (${fileName}) is unknown to the buildpack!"
+        err ""
+        err "The buildpack tracks and validates the SHA256 sums of the files"
+        err "it uses. Because the buildpack doesn't know about the file"
+        err "it likely won't be able to obtain a copy and validate the SHA."
+        err ""
+        err "To find out more info about this error please visit:"
+        err "    https://devcenter.heroku.com/articles/unknown-go-buildack-files"
+        err ""
+        exit 1
+    fi
+
     local targetDir="${2}"
     local xCmd="${3}"
     local localName="$(determinLocalFileName "${fileName}")"
