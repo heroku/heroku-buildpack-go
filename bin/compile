@@ -295,6 +295,11 @@ ensureGo() {
 
     export GOROOT="${goPath}"
     PATH="${goPath}/bin:${PATH}"
+
+    # Export GOCACHE if Go >= 1.10
+    if go env | grep -q '^GOCACHE='; then
+      export GOCACHE="${cache}/go-build-cache"
+    fi
 }
 
 setGoVersionFromEnvironment() {
@@ -415,7 +420,7 @@ case "${TOOL}" in
             dep ensure
         fi
         massagePkgSpecForVendor
-        
+
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
     ;;
