@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+* Add go1.10.1 and go1.9.5
+* Default to go1.10.1
+* go1.10 expands to go1.10.1 and go1.9 expands to go1.9.5
+* Deprecate go1.8*
+
 ## v85 (2018-02-23)
 
 * Check to see if the buildpack knows about a file before trying to download it. Fixes #227.
