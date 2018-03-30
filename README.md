@@ -184,8 +184,9 @@ git push heroku master
 
 ## Usage with other vendoring systems
 
-If your vendor system of choice is not listed here, create `vendor/vendor.json`
-with the following contents, adjusted as needed for your project's root path.
+If your vendor system of choice is not listed here or your project only uses 
+packages in the standard library, create `vendor/vendor.json` with the 
+following contents, adjusted as needed for your project's root path.
 
 ```json
 {
