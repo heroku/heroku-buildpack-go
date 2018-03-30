@@ -190,7 +190,7 @@ following contents, adjusted as needed for your project's root path.
 
 ```json
 {
-    "comment": "For other heroku options see: https://devcenter.heroku.com/articles/go-dependencies-via-govendor#build-configuration",
+    "comment": "For other heroku options see: https://devcenter.heroku.com/articles/go-support",
     "rootPath": "github.com/yourOrg/yourRepo",
     "heroku": {
         "sync": false
