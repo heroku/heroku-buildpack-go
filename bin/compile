@@ -393,6 +393,12 @@ fi
 
 export GOPATH
 
+# Determine git versions
+cd "${src}"
+git describe --always --long --dirty
+git rev-parse --abbrev-ref HEAD
+cd -
+
 # GB installation
 case "${TOOL}" in
     dep)
