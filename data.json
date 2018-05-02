@@ -1,10 +1,10 @@
 {
   "Go": {
-    "Supported": ["go1.9.5", "go1.10.1"],
-    "DefaultVersion": "go1.10.1",
+    "Supported": ["go1.9.6", "go1.10.2"],
+    "DefaultVersion": "go1.10.2",
     "VersionExpansion": {
       "go1.10.0": "go1.10",
-      "go1.10": "go1.10.1",
+      "go1.10": "go1.10.2",
       "go1.9.0": "go1.9",
       "go1.9": "go1.9.4",
       "go1.8.0": "go1.8",
