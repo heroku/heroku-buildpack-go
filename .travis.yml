@@ -9,6 +9,6 @@ env:
   matrix:
     - IMAGE=heroku/cedar:14
     - IMAGE=heroku/heroku:16-build
-    - IMAGE=troels/heroku:18-build
+    - IMAGE=heroku/heroku:18-build
   global:
     - secure: eRuNKAX1KXhAevMeng2BliSZnD1drwWUAO73yUqhEPv+vaiwmiUfqTtsco5ud9/f5lL3kupSaC1c6GdDJbn4ISryr67hZ5SAltoS8sBKXglABRFR7Zio5QI5cEqmGCSetMdIHFe5BS3KxKPBVniQydKEf6vLm/gtdU17piNkimU=
