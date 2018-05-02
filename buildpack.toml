@@ -1,0 +1,15 @@
+[buildpack]
+name = "Go"
+
+  [publish.Ignore]
+  files = [
+    "test/",
+    "bin/sync-files.sh",
+    "bin/copy",
+    "bin/fetch-test-assets",
+    "bin/publish",
+    "file-cache/",
+    ".gitignore",
+    ".travis.yml",
+    "Makefile"
+  ]
