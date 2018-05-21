@@ -3,8 +3,6 @@
 set -o pipefail
 set -e
 
-#export BUILDPACK_SERVER_URL=https://buildkits.heroku.com
-
 BUILDPACK="${1}"
 if [ -z "${BUILDPACK}" ]; then
   echo "usage: $0 <build-pack>"
@@ -21,7 +19,7 @@ function errExit {
     exit 1
 }
 
-CVER=$(heroku buildkits:revisions ${BUILDPACK} | head -n 2 | tail -n 1 | cut -d \  -f 1 | cut -d v -f 2)
+CVER=$(heroku buildpacks:versions heroku/go | head -n 3 | tail -n 1 | awk '{ print $1 }')
 echo -e "\nCurrent Version: $CVER"
 
 if [ -z "${CVER}" ]; then
@@ -63,25 +61,13 @@ if [ "${key}" != "y" ]; then
   errExit "aborting"
 fi
 
-tmp=$(bin/copy)
-function cleanUp {
-  rm -rf ${tmp}
-}
-trap cleanUp SIGHUP SIGINT SIGTERM EXIT
-
-echo "Publishing ${BUILDPACK}"
-heroku buildkits:publish "${BUILDPACK}" -d "${tmp}"
-PVER="$(heroku buildkits:revisions ${BUILDPACK} | awk '/^v/ {print $1; exit}')"
-
-
 if [ "${BUILDPACK}" == "heroku/go" ]; then
-  if [ "${PVER}" != "v${NVER}" ]; then
-    errExit "Published version (${PVER}) and calculated version (${NVER}) do not match."
-  fi
-
   git add CHANGELOG.md
   git commit -m "Bump to v${NVER}" -m "${CHANGES}"
   git tag -m "v${NVER}" -m "${CHANGES}" "v${NVER}"
   git push origin master
   git push --tags
 fi
+
+echo "Publishing ${BUILDPACK}"
+heroku buildpacks:publish "${BUILDPACK}" "v${NVER}"
