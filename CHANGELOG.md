@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v88 (2018-06-12)
+
 * Add go1.10.3 and go1.9.7
 * Default to go1.10.3
 * go1.10 expands to go1.10.3 and go1.9 expands to go1.9.7
