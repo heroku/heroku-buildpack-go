@@ -320,7 +320,7 @@ testGovendorCmdsOverride() {
   assertCaptured "Using \$GO_INSTALL_PACKAGE_SPEC override."
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
-  assertFileDoesNotExist "bin/other"
+  assertBuildDirFileDoesNotExist "bin/other"
 }
 
 testGodepCmds() {
@@ -346,7 +346,7 @@ testGodepCmdsOverride() {
   compile
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
-  assertFileDoesNotExist "bin/other"
+  assertBuildDirFileDoesNotExist "bin/other"
 }
 
 testGodepBasicGo14WithGOVERSIONOverride() {
@@ -361,7 +361,7 @@ testGodepBasicGo14WithGOVERSIONOverride() {
   assertCaptured "Using \$GOVERSION override."
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
 testGovendorGo14WithGOVERSIONOverride() {
@@ -479,7 +479,7 @@ testGlideBasicWithTools() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGlideBasicInGOPATH() {
@@ -497,8 +497,8 @@ testGlideBasicInGOPATH() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists "src/github.com/heroku/fixture/main.go"
-  assertFileDoesNotExist "main.go"
+  assertBuildDirFileExists "src/github.com/heroku/fixture/main.go"
+  assertBuildDirFileDoesNotExist "main.go"
 }
 
 testGodepVendorGo17() {
@@ -519,7 +519,7 @@ testGodepBasicGo17() {
   compile
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
   assertCompiledBinaryOutputs "fixture" "go1.7beta1"
 }
 
@@ -563,7 +563,7 @@ testGodepBasicGo14() {
   compile
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".profile.d/concurrency.sh"
+  assertBuildDirFileExists ".profile.d/concurrency.sh"
 }
 
 testGodepCGOVendored(){
@@ -752,7 +752,7 @@ testGBBasicWithTools() {
   assertCaptured "Copying gb binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGodepLDSymbolValue() {
@@ -802,7 +802,7 @@ testGodepBasic() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
 testGodepBasicWithTools() {
@@ -822,8 +822,8 @@ testGodepBasicWithTools() {
   assertNotCaptured "Copying godep binary" #We don't copy the binary when a workspace isn't present
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGodepBasicInGOPATH() {
@@ -841,9 +841,9 @@ testGodepBasicInGOPATH() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
-  assertFileExists "src/github.com/heroku/fixture/main.go"
-  assertFileDoesNotExist "main.go"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileExists "src/github.com/heroku/fixture/main.go"
+  assertBuildDirFileDoesNotExist "main.go"
 }
 
 testGodepCreateProcfile() {
@@ -890,7 +890,7 @@ testGovendorBasicWithTools() {
   assertCaptured "Copying govendor binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGovendorBasicInGOPATH() {
@@ -908,8 +908,8 @@ testGovendorBasicInGOPATH() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists "src/github.com/heroku/fixture/main.go"
-  assertFileDoesNotExist "main.go"
+  assertBuildDirFileExists "src/github.com/heroku/fixture/main.go"
+  assertBuildDirFileDoesNotExist "main.go"
 }
 
 testGovendorCreateProcfile() {
@@ -967,6 +967,45 @@ testGodepPackageSpec() {
   assertCaptured "github.com/heroku/fixture/cmd/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+}
+
+testGoCacheGoVersionGreaterThanOrEqualTo110() {
+  local cache_dir="${CACHE_DIR}/go-build-cache"
+
+  fixture "dep-go-1-10"
+
+  assertDetected
+  assertDirDoesNotExist $cache_dir
+
+  compile
+  assertCaptured "Installing go1.10"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertDirExists "${cache_dir}"
+  assertFileExists "${cache_dir}/README"
+}
+
+testGoCacheGoVersionLessThan110() {
+  local cache_dir="${CACHE_DIR}/go-build-cache"
+
+  fixture "dep-go-version"
+
+  assertDetected
+  assertDirDoesNotExist $cache_dir
+
+  compile
+  assertCaptured "Installing go1.8.3"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertDirDoesNotExist "${cache_dir}"
 }
 
 pushd $(dirname 0) >/dev/null
