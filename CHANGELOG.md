@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add go1.11beta1 (unsupported) for experimenters
+* Add go1.11beta2 (unsupported) for experimenters
 
 ## v89 (2018-06-12)
 * GOCACHE support
