@@ -185,8 +185,8 @@ ensureGolangMigrate() {
     else
         rm -rf "$(dirname "${mmPath}")"
         mkdir -p "${mmPath}"
-        ensureFile "migrate-${mmVersion}-linux-amd64.tar.gz" "${tmp}" "tar -C ${mmPath} -zxf"
         step "Installing github.com/golang-migrate/migrate ${mmVersion}"
+        ensureFile "migrate-${mmVersion}.linux-amd64.tar.gz" "${tmp}" "tar -C ${mmPath} -zxf"
         mv "${mmPath}/migrate.linux-amd64" "${targetFile}"
         chmod a+x "${targetFile}"
     fi
