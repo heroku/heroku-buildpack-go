@@ -184,8 +184,8 @@ git push heroku master
 
 ## Usage with other vendoring systems
 
-If your vendor system of choice is not listed here or your project only uses 
-packages in the standard library, create `vendor/vendor.json` with the 
+If your vendor system of choice is not listed here or your project only uses
+packages in the standard library, create `vendor/vendor.json` with the
 following contents, adjusted as needed for your project's root path.
 
 ```json
@@ -285,8 +285,7 @@ make publish # && follow the prompts
 
 ### New Go version
 
-1. Edit `files.json`, and add an entry for the new version, including the SHA,
-   which can be copied from golang.org.
+1. Run `bin/add-version <version>`, eg `bin/add-version go1.11` to update `files.json`.
 1. Update `data.json`, to update the `VersionExpansion` object.
 1. run `make ACCESS_KEY='THE KEY' SECRET_KEY='THE SECRET KEY' sync`.
    This will download everything from the bucket, plus any missing files from
