@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+
+BASEURL="https://storage.googleapis.com/golang"
+V="$1"
+
+if [ -z "$V" ]; then
+    echo "usage: $0 <go version>" >&2
+    exit 1
+fi
+
+tgz_fn="$V.linux-amd64.tar.gz"
+tgz_url="$BASEURL/$tgz_fn"
+sha256_url="$tgz_url.sha256"
+
+if ! sha256_content="$(curl -s -f "$sha256_url")"; then
+    echo "error: adding $V: couldn't fetch $sha256_url" >&2
+    exit 1
+fi
+
+TGZ_FN="$tgz_fn" TGZ_URL="$tgz_url" SHA256="$sha256_content" jq -S '.[env.TGZ_FN] = {URL: env.TGZ_URL, SHA: env.SHA256 }' files.json > files.json.tmp
+mv files.json.tmp files.json
+
+echo "added $V to files.json"
