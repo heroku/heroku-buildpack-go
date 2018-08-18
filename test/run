@@ -1,6 +1,46 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModBasic() {
+  fixture "mod-basic"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  # This appears to be missing in this case.
+  #assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModDeps() {
+  fixture "mod-deps"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModDepsVendored() {
+  fixture "mod-deps-vendored"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testGovendorWithPrivateDeps() {
   if [ -z "${GITHUB_TOKEN}" ]; then
     echo "!!!"
