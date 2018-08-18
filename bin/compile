@@ -33,6 +33,13 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         warn ""
         case "${TOOL}" in
+            gomodules)
+                warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
+                warn "// +heroku install ./cmd/..."
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
+                warn ""
+            ;;
             dep)
                 warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
                 warn ""
