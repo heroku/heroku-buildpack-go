@@ -400,6 +400,21 @@ export GOPATH
 
 # GB installation
 case "${TOOL}" in
+    gomodules)
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)) }}' ${goMOD})}
+        if [ -z "${pkgs}" ]; then
+            pkgs="default"
+        fi
+        warnPackageSpecOverride
+        handleDefaultPkgSpec
+        massagePkgSpecForVendor
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd ${build}
+        export GOBIN="${build}/bin"
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
     dep)
         eval "$(setupGOPATH ${name})"
         depTOML="${src}/Gopkg.toml"
