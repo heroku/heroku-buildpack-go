@@ -68,6 +68,7 @@
   "test": {
     "assets": [
       "jq-linux64",
+      "go1.11rc1.linux-amd64.tar.gz",
       "go1.10.3.linux-amd64.tar.gz",
       "go1.8.3.linux-amd64.tar.gz",
       "go1.7.6.linux-amd64.tar.gz",
