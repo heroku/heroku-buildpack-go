@@ -40,6 +40,9 @@ testModDeps() {
   compile
   assertCaptured "Installing go"
   assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "finding github.com/gorilla/context v1.1.1"
+  assertCaptured "finding github.com/gorilla/mux v1.6.2"
+  assertCaptured "downloading github.com/gorilla/mux v1.6.2"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
@@ -52,7 +55,10 @@ testModDepsVendored() {
 
   compile
   assertCaptured "Installing go"
-  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Running: go install -v -tags heroku -mod=vendor ."
+  assertNotCaptured "finding github.com/gorilla/context v1.1.1"
+  assertNotCaptured "finding github.com/gorilla/mux v1.6.2"
+  assertNotCaptured "downloading github.com/gorilla/mux v1.6.2"
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists

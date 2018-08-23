@@ -416,6 +416,10 @@ case "${TOOL}" in
         handleDefaultPkgSpec
         massagePkgSpecForVendor
 
+        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
+            FLAGS=(${FLAGS[@]} -mod=vendor)
+        fi
+
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd ${build}
         export GOBIN="${build}/bin"

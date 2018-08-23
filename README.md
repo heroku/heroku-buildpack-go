@@ -78,6 +78,11 @@ following way:
 
   Example: `// +heroku install ./cmd/... ./special`
 
+If a top level `vendor` directory exists and the `go.sum` file has a size
+greater than zero, `go install` is invoked with `-mod=vendor`, causing the build
+to skip downloading and checking of dependencies. This results in only the
+dependencies from the top level `vendor` directory being used.
+
 ## dep specifics
 
 The `Gopkg.toml` file allows for arbitrary, tool specific fields. This buildpack
