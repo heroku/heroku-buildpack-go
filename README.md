@@ -42,6 +42,7 @@ $ git push heroku master
 
 This buildpack will detect your repository as Go if you are using either:
 
+- [go modules][gomodules]
 - [dep][dep]
 - [govendor][govendor]
 - [glide][glide]
@@ -51,6 +52,31 @@ This buildpack will detect your repository as Go if you are using either:
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
 article][app-engine-build-constraints] for more info.
+
+## Go Module Specifics
+
+The `go.mod` file allows for arbitrary comments. This buildpack utilizes [build
+constraint](https://golang.org/pkg/go/build/#hdr-Build_Constraints) style
+comments to track Heroku build specific configuration which is encoded in the
+following way:
+
+- `// +heroku goVersion <version>`: the major version of go you would like Heroku
+  to use when compiling your code. If not specified defaults to the most recent
+  supported version of Go. Exact versions (ex `go1.9.4`) can also be specified
+  if needed, but is not generally recommended. Since Go doesn't release `.0`
+  versions, specifying a `.0` version will pin your code to the initial release
+  of the given major version (ex `go1.10.0` == `go1.10` w/o auto updating to
+  `go1.10.1` when it becomes available).
+
+  Example: `// +heroku goVersion go1.11`
+
+- `// +heroku install <packagespec>[, <packagespec>]`: a space seperated list of
+  the packages you want to install. If not specified, this defaults to `.`.
+  Other common choices are: `./cmd/...` (all packages and sub packages in the
+  `cmd` directory) and `./...` (all packages and sub packages of the current
+  directory). The exact choice depends on the layout of your repository though.
+
+  Example: `// +heroku install ./cmd/... ./special`
 
 ## dep specifics
 
@@ -63,7 +89,7 @@ the following way:
   .`. There is no default for this and it must be specified.
 
 - `metadata.heroku['go-version']` (String): the major version of go you would
-  like Heroku to use when compiling your code: if not specified defaults to the
+  like Heroku to use when compiling your code. if not specified defaults to the
   most recent supported version of Go.
 
 - `metadata.heroku['install']` (Array of Strings): a list of the packages you
@@ -309,3 +335,4 @@ make publish # && follow the prompts
 [vendor.json]: https://github.com/kardianos/vendor-spec
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [glide]: https://github.com/Masterminds/glide
+[gomodules]: https://github.com/golang/go/wiki/Modules
