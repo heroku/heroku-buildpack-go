@@ -1,6 +1,23 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModInstall() {
+  fixture "mod-install"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture/cmd/fixture1"
+  assertCaptured "github.com/heroku/fixture/cmd/fixture2"
+  assertCaptured "github.com/heroku/fixture/other"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "fixture1"
+  assertCompiledBinaryExists "fixture2"
+  assertCompiledBinaryExists "other"
+}
+
 testModBasic() {
   fixture "mod-basic"
 
