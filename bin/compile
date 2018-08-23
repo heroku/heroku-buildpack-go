@@ -408,7 +408,7 @@ export GOPATH
 # GB installation
 case "${TOOL}" in
     gomodules)
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)) }}' ${goMOD})}
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
         if [ -z "${pkgs}" ]; then
             pkgs="default"
         fi

@@ -270,7 +270,7 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
-        ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4 } }' ${goMOD})}
+        ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
         warnGoVersionOverride
     elif [ -f "${depTOML}" ]; then
         TOOL="dep"
