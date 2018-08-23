@@ -14,6 +14,7 @@ depTOML="${build}/Gopkg.toml"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
+goMOD="${build}/go.mod"
 
 steptxt="----->"
 YELLOW='\033[1;33m'
@@ -267,7 +268,11 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${depTOML}" ]; then
+    if [ -f "${goMOD}" ]; then
+        TOOL="gomodules"
+        ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
+        warnGoVersionOverride
+    elif [ -f "${depTOML}" ]; then
         TOOL="dep"
         ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
         name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
@@ -334,7 +339,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "dep, Godep, GB or govendor are required. For instructions:"
+        err "Go modules, dep, Godep, GB or govendor are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi

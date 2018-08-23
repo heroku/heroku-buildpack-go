@@ -33,6 +33,13 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         warn ""
         case "${TOOL}" in
+            gomodules)
+                warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
+                warn "// +heroku install ./cmd/..."
+                warn ""
+                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
+                warn ""
+            ;;
             dep)
                 warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
                 warn ""
@@ -400,6 +407,25 @@ export GOPATH
 
 # GB installation
 case "${TOOL}" in
+    gomodules)
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
+        if [ -z "${pkgs}" ]; then
+            pkgs="default"
+        fi
+        warnPackageSpecOverride
+        handleDefaultPkgSpec
+        massagePkgSpecForVendor
+
+        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
+            FLAGS=(${FLAGS[@]} -mod=vendor)
+        fi
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd ${build}
+        export GOBIN="${build}/bin"
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    ;;
     dep)
         eval "$(setupGOPATH ${name})"
         depTOML="${src}/Gopkg.toml"
