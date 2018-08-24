@@ -39,6 +39,10 @@
     "SupportsVendorExperiment": [
       "go1.5", "go1.5.1", "go1.5.2", "go1.5.3", "go1.5.4",
       "go1.6", "go1.6.1", "go1.6.2", "go1.6.3", "go1.6.4"
+    ],
+    "SupportsModuleExperiment": [
+      "go1.11beta2", "go1.11beta3", "go1.11rc1", "go1.11rc2",
+      "go1.11"
     ]
   },
   "Dep": {
