@@ -10,6 +10,24 @@ testModOldVersion() {
   assertCapturedError 1 "Please add the following comment to your go.mod file to specify"
 }
 
+testDepWithGolangMigrate() {
+  fixture "dep-golang-migrate"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "Installing github.com/golang-migrate/migrate"
+  assertCaptured "Fetching migrate"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryExists "migrate"
+}
+
 testModInstall() {
   fixture "mod-install"
 
