@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v91 (2018-08-24)
 * Add go1.11rc2 (unsupported) for experimenters
 * Add basic support for go modules (unsupported) for experimenters
 * Adds support for Golang Migrate (github.com/golang-migrate/migrate) as an additional tool
