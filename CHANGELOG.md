@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.11 and mark it as supported
 
 ## v91 (2018-08-24)
 * Add go1.11rc2 (unsupported) for experimenters
