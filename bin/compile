@@ -19,7 +19,7 @@ GovendorVersion="$(<${DataJSON} jq -r '.Govendor.DefaultVersion')"
 GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
-MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
+GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
 TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
 # BazaarVersion="2.7.0"
 
@@ -191,44 +191,44 @@ ensureGlide() {
     fi
 }
 
-ensureMattesMigrate() {
+ensureGolangMigrate() {
     local mmVersion="DEFAULT"
     case "${TOOL}" in
         govendor)
-            mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
+            mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/golang-migrate/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
         ;;
         dep)
-            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^github.com/mattes/migrate | sed s:github.com/mattes/migrate::)
+            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^github.com/golang-migrate/migrate | sed s:github.com/golang-migrate/migrate::)
             f=${f:-"@DEFAULT"}
             mmVersion="$(echo $f | cut -d @ -f 2)"
         ;;
     esac
     if [[ "${mmVersion}" = "DEFAULT" ]]; then
-        mmVersion="${MattesMigrateVersion}"
+        mmVersion="${GolangMigrateVersion}"
     fi
     local tmp="$(mktemp -d)"
-    local mmPath="${cache}/mattesMigrate/${mmVersion}"
+    local mmPath="${cache}/golangMigrate/${mmVersion}"
     local targetFile="${build}/bin/migrate"
 
     if [ -x "targetFile" ]; then
-        warning '"migrate" binary already exists in ~/bin, not installing github.com/mattes/migrate'
+        warning '"migrate" binary already exists in ~/bin, not installing github.com/golang-migrate/migrate'
     else
         rm -rf "$(dirname "${mmPath}")"
         mkdir -p "${mmPath}"
-        step "Installing github.com/mattes/migrate ${mmVersion}"
-        ensureFile "migrate-${mmVersion}-linux-amd64.tar.gz" "${tmp}" "tar -C ${mmPath} -zxf"
+        step "Installing github.com/golang-migrate/migrate ${mmVersion}"
+        ensureFile "migrate-${mmVersion}.linux-amd64.tar.gz" "${tmp}" "tar -C ${mmPath} -zxf"
         mv "${mmPath}/migrate.linux-amd64" "${targetFile}"
         chmod a+x "${targetFile}"
     fi
 }
 
-wantMattesMigrate() {
+wantGolangMigrate() {
     case "${TOOL}" in
         govendor)
-            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/golang-migrate/migrate"])' &> /dev/null
         ;;
         dep)
-          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^github.com/mattes/migrate$" &> /dev/null
+          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^github.com/golang-migrate/migrate$" &> /dev/null
         ;;
         *)
             false
@@ -236,9 +236,9 @@ wantMattesMigrate() {
     esac
 }
 
-installMattesMigrateIfWanted() {
-    if wantMattesMigrate; then
-        ensureMattesMigrate
+installGolangMigrateIfWanted() {
+    if wantGolangMigrate; then
+        ensureGolangMigrate
     fi
 }
 
@@ -577,7 +577,7 @@ case "${TOOL}" in
     ;;
 esac
 
-installMattesMigrateIfWanted
+installGolangMigrateIfWanted
 
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
     mv -t "${build}" "${src}/Procfile"
