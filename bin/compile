@@ -25,7 +25,7 @@ TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
 
 # For specified versions of Go we need to keep concurrency.sh
 needConcurrency() {
-    <"${DataJSON}" jq -e '.Go.NeedsConcurrency | indices(["'${1}'"]) | length | if . == 0 then false else true end' &> /dev/null
+    <"${DataJSON}" jq -e '.Go.NeedsConcurrency | any(. == "'${1}'")' &> /dev/null
 }
 
 handleDefaultPkgSpec() {
@@ -492,7 +492,7 @@ case "${TOOL}" in
             fi
         fi
         # Warn that GO15VENDOREXPIERMENT is set, but the go version does not support it.
-        if <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | indices(["'${ver}'"]) | length | if . == 0 then true else false end' &> /dev/null; then
+        if ! <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | any(. == "'${ver}'")' &> /dev/null; then
             if [ -n "${GO15VENDOREXPERIMENT}" ]; then
                 warn ""
                 warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
