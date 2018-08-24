@@ -343,6 +343,11 @@
     "SHA": "13fbabe2db0ee3f79611c8171b0596939a3f384025f62925ed136267681e4fbf",
     "URL": "https://github.com/mattes/migrate/releases/download/v3.0.0/migrate.linux-amd64.tar.gz"
   },
+  
+  "migrate-v3.4.0-linux-amd64.tar.gz": {
+    "SHA": "cc4b544f982fb3cf0ac84fe9c78f3fc37513f31daba90f247e9d477f5daf2396",
+    "URL": "https://github.com/golang-migrate/migrate/releases/download/v3.4.0/migrate.linux-amd64.tar.gz"
+  },
   "tq-v0.4-linux-amd64": {
     "LocalName": "tq",
     "SHA": "36d33a30e2cafe4b747b8de2449185a13239fb6da2887dde74f3d390fc639e3b",

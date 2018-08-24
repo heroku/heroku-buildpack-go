@@ -3,6 +3,8 @@
 ## Unreleased
 * Add go1.11rc2 (unsupported) for experimenters
 * Add basic support for go modules (unsupported) for experimenters
+* Adds support for Golang Migrate (github.com/golang-migrate/migrate) as an additional tool
+* Deprecates support for Mattes Migrate (is now Golang Migrate)
 
 ## v90 (2018-08-16)
 * Add go1.11beta1 (unsupported) for experimenters
