@@ -113,7 +113,7 @@ the following way:
   has multiple versions an optional `@<version>` suffix can be specified to
   select that specific version of the tool. Otherwise the buildpack's default
   version is chosen. Currently the only supported tool is
-  `github.com/mattes/migrate` at `v3.0.0` (also the default version).
+  `github.com/golang-migrate/migrate` at `v3.4.0` (also the default version).
 
 ```toml
 [metadata.heroku]
@@ -121,7 +121,7 @@ the following way:
   go-version = "go1.8.3"
   install = [ "./cmd/...", "./foo" ]
   ensure = "false"
-  additional-tools = ["github.com/mattes/migrate"]
+  additional-tools = ["github.com/golang-migrate/migrate"]
 ...
 ```
 
@@ -154,8 +154,8 @@ top level json keys:
   the buildpack is aware of that you want it to install. If the tool has
   multiple versions an optional `@<version>` suffix can be specified to select
   that specific version of the tool. Otherwise the buildpack's default version
-  is chosen. Currently the only supported tool is `github.com/mattes/migrate` at
-  `v3.0.0` (also the default version).
+  is chosen. Currently the only supported tool is `github.com/golang-migrate/migrate` at
+  `v3.4.0` (also the default version).
 
 Example with everything, for a project using `go1.9`, located at
 `$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single package
