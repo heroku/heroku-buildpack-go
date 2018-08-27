@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v92 (2018-08-27)
 * Add go1.11 and mark it as supported
 * Add go1.10.4 and make it the default, supported version
 
