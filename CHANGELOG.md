@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Be clearer about what version of go is chosen if none is specified. Addresses #266.
 
 ## v92 (2018-08-27)
 * Add go1.11 and mark it as supported
