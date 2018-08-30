@@ -281,7 +281,8 @@ determineTool() {
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
-            ver=${DefaultGoVersion}
+            #ver=${DefaultGoVersion}
+            ver="go1.11"
             warn "The go.mod file for this project does not specify a Go version"
             warn ""
             warn "Defaulting to ${ver}"

@@ -61,12 +61,9 @@ comments to track Heroku build specific configuration which is encoded in the
 following way:
 
 - `// +heroku goVersion <version>`: the major version of go you would like
-  Heroku to use when compiling your code. If not specified this defaults to the
-  buildpack's [DefaultVersion]. Exact versions (ex `go1.9.4`) can also be
-  specified if needed, but is not generally recommended. Since Go doesn't
-  release `.0` versions, specifying a `.0` version will pin your code to the
-  initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
-  updating to `go1.10.1` when it becomes available).
+  Heroku to use when compiling your code. If not specified this currently
+  defaults to `go1.11`. Specifying a version < go1.11 will cause a build error
+  because modules are not supported by older versions of go.
 
   Example: `// +heroku goVersion go1.11`
 
