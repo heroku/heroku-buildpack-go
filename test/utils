@@ -7,6 +7,7 @@ oneTimeSetUp()
 {
    TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
    BUILDPACK_HOME="/buildpack"
+   DEFAULT_GO_VERSION=$(head < $BUILDPACK_HOME/data.json | grep DefaultVersion | cut -d : -f 2 | cut -d , -f 1 | sed -e s:\"::g -e s:\ ::g)
 }
 
 oneTimeTearDown()

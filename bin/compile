@@ -110,27 +110,6 @@ expandVer() {
 # Use after expandVer
 reportVer() {
     local ver="${1}"
-
-    if [ "${TOOL}" = "gomodules" ]; then
-        warn ""
-        warn "Go modules are an experimental feature of go1.11"
-        warn "Any issues building code that uses Go modules should be"
-        warn "reported via: https://github.com/heroku/heroku-buildpack-go/issues"
-        warn ""
-        warn "Additional documentation for using Go modules with this buildpack"
-        warn "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
-        warn ""
-        if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
-            err "You are using ${ver}, which does not support the Go modules experiment"
-            err ""
-            err "Please add the following comment to your go.mod file to specify go1.11:"
-            err "// +heroku goVersion go1.11"
-            err ""
-            err "Then commit and push again."
-           exit 1
-        fi
-    fi
-
     if <"${DataJSON}" jq  -e '.Go.Supported | any(. == "'${ver}'")' &> /dev/null; then
         return
     fi

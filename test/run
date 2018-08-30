@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+
+testModNoVersion() {
+  fixture "mod-no-version"
+
+  assertDetected
+
+  compile
+  assertCaptured "Go modules are an experimental feature of go1.11"
+  assertCaptured "Any issues building code that uses Go modules should be"
+  assertCaptured "reported via: https://github.com/heroku/heroku-buildpack-go/issues" 
+  assertCaptured "Additional documentation for using Go modules with this buildpack"
+  assertCaptured "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
+  assertCaptured "The go.mod file for this project does not specify a Go version"
+  assertCaptured "Defaulting to go1.11"
+  assertCaptured "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
+
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testModOldVersion() {
   fixture "mod-old-version"
 

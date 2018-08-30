@@ -30,8 +30,8 @@ Creating polar-waters-4785...
 $ git push heroku master
 ...
 -----> Go app detected
------> Installing go1.9... done
------> Running: go install -tags heroku ./...
+-----> Installing go1.11... done
+-----> Running: go install -tags heroku .
 -----> Discovering process types
        Procfile declares types -> web
 
@@ -60,13 +60,10 @@ constraint](https://golang.org/pkg/go/build/#hdr-Build_Constraints) style
 comments to track Heroku build specific configuration which is encoded in the
 following way:
 
-- `// +heroku goVersion <version>`: the major version of go you would like Heroku
-  to use when compiling your code. If not specified defaults to the most recent
-  supported version of Go. Exact versions (ex `go1.9.4`) can also be specified
-  if needed, but is not generally recommended. Since Go doesn't release `.0`
-  versions, specifying a `.0` version will pin your code to the initial release
-  of the given major version (ex `go1.10.0` == `go1.10` w/o auto updating to
-  `go1.10.1` when it becomes available).
+- `// +heroku goVersion <version>`: the major version of go you would like
+  Heroku to use when compiling your code. If not specified this currently
+  defaults to `go1.11`. Specifying a version < go1.11 will cause a build error
+  because modules are not supported by older versions of go.
 
   Example: `// +heroku goVersion go1.11`
 
@@ -94,8 +91,12 @@ the following way:
   .`. There is no default for this and it must be specified.
 
 - `metadata.heroku['go-version']` (String): the major version of go you would
-  like Heroku to use when compiling your code. if not specified defaults to the
-  most recent supported version of Go.
+  like Heroku to use when compiling your code. If not specified this defaults to
+  the buildpack's [DefaultVersion]. Exact versions (ex `go1.9.4`) can also be
+  specified if needed, but is not generally recommended. Since Go doesn't
+  release `.0` versions, specifying a `.0` version will pin your code to the
+  initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
+  updating to `go1.10.1` when it becomes available).
 
 - `metadata.heroku['install']` (Array of Strings): a list of the packages you
   want to install. If not specified, this defaults to `["."]`. Other common
@@ -140,8 +141,12 @@ top level json keys:
    govendor to modify a dependency.
 
 - `heroku.goVersion` (String): the major version of go you would like Heroku to
-  use when compiling your code: if not specified defaults to the most recent
-  supported version of Go.
+  use when compiling your code. If not specified this defaults to the
+  buildpack's [DefaultVersion]. Exact versions (ex `go1.9.4`) can also be
+  specified if needed, but is not generally recommended. Since Go doesn't
+  release `.0` versions, specifying a `.0` version will pin your code to the
+  initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
+  updating to `go1.10.1` when it becomes available).
 
 - `heroku.install` (Array of Strings): a list of the packages you want to install.
   If not specified, this defaults to `["."]`. Other common choices are:
@@ -184,11 +189,16 @@ control the build process.
 
 The base package name is determined by running `glide name`.
 
-The Go version used to compile code defaults to the latest released version of Go.
-This can be overridden by the `$GOVERSION` environment variable. Setting
-`$GOVERSION` to a major version will result in the buildpack using the
-latest released minor version in that series. Setting `$GOVERSION` to a specific
-minor Go version will pin Go to that version. Examples:
+The Go version used to compile code defaults to the buildpack's
+[DefaultVersion]. This can be overridden by the `$GOVERSION` environment
+variable. Setting `$GOVERSION` to a major version will result in the buildpack
+using the latest released minor version in that series. Setting `$GOVERSION` to
+a specific minor Go version will pin Go to that version. Since Go doesn't
+release `.0` versions, specifying a `.0` version will pin your code to the
+initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
+updating to `go1.10.1` when it becomes available).
+
+Examples:
 
 ```console
 heroku config:set GOVERSION=go1.9   # Will use go1.9.X, Where X is that latest minor release in the 1.9 series
@@ -341,3 +351,4 @@ make publish # && follow the prompts
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [glide]: https://github.com/Masterminds/glide
 [gomodules]: https://github.com/golang/go/wiki/Modules
+[DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4

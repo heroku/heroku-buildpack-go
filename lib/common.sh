@@ -270,8 +270,35 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
+        warn ""
+        warn "Go modules are an experimental feature of go1.11"
+        warn "Any issues building code that uses Go modules should be"
+        warn "reported via: https://github.com/heroku/heroku-buildpack-go/issues"
+        warn ""
+        warn "Additional documentation for using Go modules with this buildpack"
+        warn "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
+        warn ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
         warnGoVersionOverride
+        if [ -z "${ver}" ]; then
+            #ver=${DefaultGoVersion}
+            ver="go1.11"
+            warn "The go.mod file for this project does not specify a Go version"
+            warn ""
+            warn "Defaulting to ${ver}"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
+            warn ""
+        fi
+        if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
+            err "You are using ${ver}, which does not support the Go modules experiment"
+            err ""
+            err "Please add the following comment to your go.mod file to specify go1.11:"
+            err "// +heroku goVersion go1.11"
+            err ""
+            err "Then commit and push again."
+           exit 1
+        fi
     elif [ -f "${depTOML}" ]; then
         TOOL="dep"
         ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
