@@ -279,6 +279,7 @@ determineTool() {
         warn "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
         warn ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
+        name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
             #ver=${DefaultGoVersion}

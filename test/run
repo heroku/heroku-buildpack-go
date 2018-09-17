@@ -10,7 +10,7 @@ testModNoVersion() {
   compile
   assertCaptured "Go modules are an experimental feature of go1.11"
   assertCaptured "Any issues building code that uses Go modules should be"
-  assertCaptured "reported via: https://github.com/heroku/heroku-buildpack-go/issues" 
+  assertCaptured "reported via: https://github.com/heroku/heroku-buildpack-go/issues"
   assertCaptured "Additional documentation for using Go modules with this buildpack"
   assertCaptured "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
   assertCaptured "The go.mod file for this project does not specify a Go version"
@@ -77,6 +77,16 @@ testModBasic() {
   #assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+}
+
+testModBasicWithoutProcfile() {
+  fixture "mod-basic-wo-procfile"
+
+  assertDetected
+
+  compile
+  assertCompiledBinaryExists
+  assertFile "web: fixture" "Procfile"
 }
 
 testModDeps() {
