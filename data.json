@@ -4,7 +4,7 @@
     "DefaultVersion": "go1.10.4",
     "VersionExpansion": {
       "go1.11.0": "go1.11",
-      "go1.11": "go1.11",
+      "go1.11": "go1.11.1",
       "go1.10.0": "go1.10",
       "go1.10": "go1.10.4",
       "go1.9.0": "go1.9",
