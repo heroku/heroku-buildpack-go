@@ -282,8 +282,7 @@ determineTool() {
         name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
-            #ver=${DefaultGoVersion}
-            ver="go1.11"
+            ver=${DefaultGoVersion}
             warn "The go.mod file for this project does not specify a Go version"
             warn ""
             warn "Defaulting to ${ver}"
