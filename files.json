@@ -104,6 +104,14 @@
     "SHA": "6a6a4c0654bc603bcfee4d6ac34a479c260ac61b3edcc8d6773384eb0bda512e",
     "URL": "https://dl.google.com/go/go1.10rc2.linux-amd64.tar.gz"
   },
+  "go1.11.1.linux-amd64.tar.gz": {
+    "SHA": "2871270d8ff0c8c69f161aaae42f9f28739855ff5c5204752a8d92a1c9f63993",
+    "URL": "https://storage.googleapis.com/golang/go1.11.1.linux-amd64.tar.gz"
+  },
+  "go1.11.linux-amd64.tar.gz": {
+    "SHA": "b3fcf280ff86558e0559e185b601c9eade0fd24c900b4c63cd14d1d38613e499",
+    "URL": "https://storage.googleapis.com/golang/go1.11.linux-amd64.tar.gz"
+  },
   "go1.11beta1.linux-amd64.tar.gz": {
     "SHA": "df7fe096ffab5d331d35c6d038d2ec0426b45ce17f55a93037e371d3af9d4e6d",
     "URL": "https://storage.googleapis.com/golang/go1.11beta1.linux-amd64.tar.gz"
@@ -119,10 +127,6 @@
   "go1.11rc2.linux-amd64.tar.gz": {
     "SHA": "7d3fc1dec64b056cbd22ffd80bb9733725c1296aabfd58cc92bab8a5c6560e03",
     "URL": "https://storage.googleapis.com/golang/go1.11rc2.linux-amd64.tar.gz"
-  },
-  "go1.11.linux-amd64.tar.gz": {
-    "SHA": "b3fcf280ff86558e0559e185b601c9eade0fd24c900b4c63cd14d1d38613e499",
-    "URL": "https://storage.googleapis.com/golang/go1.11.linux-amd64.tar.gz"
   },
   "go1.2.1.linux-amd64.tar.gz": {
     "SHA": "d6e9623b8cf566599003dac6c402d03a62f48d98158bfcfc3b0c743b51ad4be6",
@@ -351,7 +355,6 @@
     "SHA": "13fbabe2db0ee3f79611c8171b0596939a3f384025f62925ed136267681e4fbf",
     "URL": "https://github.com/mattes/migrate/releases/download/v3.0.0/migrate.linux-amd64.tar.gz"
   },
-  
   "migrate-v3.4.0-linux-amd64.tar.gz": {
     "SHA": "cc4b544f982fb3cf0ac84fe9c78f3fc37513f31daba90f247e9d477f5daf2396",
     "URL": "https://github.com/golang-migrate/migrate/releases/download/v3.4.0/migrate.linux-amd64.tar.gz"
