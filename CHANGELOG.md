@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v94 (2018-10-19)
+
 * Remove the need for Procfiles in simple situations for go modules
 * Add go1.11.1, use it as the default for go1.11
 * Promote go1.11.1 as the default install
