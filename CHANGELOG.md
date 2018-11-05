@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v95 (2018-11-05)
 * Add go1.11.2, use it as the default for go1.11
 * Add go1.10.5, use it as the default for go1.10
 
