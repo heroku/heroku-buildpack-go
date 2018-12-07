@@ -25,9 +25,14 @@ if [ -f "${build}/.heroku/go/.meta" ]; then
   source "${build}/.heroku/go/.meta"
 fi
 
-export GOPATH="${build}"
-export GOROOT="${build}/.heroku/go"
-PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+if [[ "${TOOL}" == "gomodules" ]]; then
+    export GOROOT="${build}/.heroku/go"
+    PATH="${build}/bin:${GOROOT}/bin:${PATH}"
+else
+    export GOPATH="${build}"
+    export GOROOT="${build}/.heroku/go"
+    PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+fi
 
 # Install our vendored copy of github.com/apg/patter
 GOPATH="${GOPATH}:${testpack}/lib" GOBIN="${build}/bin" go install github.com/apg/patter
@@ -64,6 +69,11 @@ case "${TOOL}" in
             step "Running Benchmarks With: gb test -run=_ -bench=. -benchmem -v ${trailer}"
             gb test -run=_ -bench=. -benchmem -v 2>&1
         fi
+    ;;
+    gomodules)
+        cd "${build}"
+        step 'Running Test With: go test -race -v | patter'
+        go test -race -v 2>&1 | tee -a ${output} | patter
     ;;
     *)
         warn "Testing is not supported for ${TOOL}"
