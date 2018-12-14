@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Fix git Credential Helper for go module use (missing brackets) - @chrisroberts
+* Fix dep help text for package install - @andrewslotin
 
 ## v95 (2018-11-05)
 * Add go1.11.2, use it as the default for go1.11
