@@ -42,7 +42,7 @@ handleDefaultPkgSpec() {
                 warn ""
             ;;
             dep)
-                warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
+                warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
                 warn ""
                 warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
                 warn ""
