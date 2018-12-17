@@ -1,12 +1,12 @@
 {
   "Go": {
-    "Supported": ["go1.10.5", "go1.11.2"],
-    "DefaultVersion": "go1.11.2",
+    "Supported": ["go1.10.7", "go1.11.4"],
+    "DefaultVersion": "go1.11.4",
     "VersionExpansion": {
       "go1.11.0": "go1.11",
-      "go1.11": "go1.11.2",
+      "go1.11": "go1.11.4",
       "go1.10.0": "go1.10",
-      "go1.10": "go1.10.5",
+      "go1.10": "go1.10.7",
       "go1.9.0": "go1.9",
       "go1.9": "go1.9.7",
       "go1.8.0": "go1.8",
@@ -46,7 +46,7 @@
     ]
   },
   "Dep": {
-    "DefaultVersion": "v0.4.1"
+    "DefaultVersion": "v0.5.0"
   },
   "Glide": {
     "DefaultVersion": "v0.12.3"
