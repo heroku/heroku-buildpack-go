@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v98 (2018-12-18)
 * Fix git Credential Helper for go module use (missing brackets) - @chrisroberts
 * Fix dep help text for package install - @andrewslotin
 * Add go1.11.3 & go1.11.4 using go1.11.4 as the default for go1.11
