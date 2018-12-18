@@ -34,10 +34,9 @@ echo "Release Date: ${DATE}"
 CHANGES=$(
 sed -n "
 /## Unreleased/,/## v${CVER}/ {
-  /^$/,/^$/ {
+    /^## / d
     /^$/ d
     p
-  }
 }" < CHANGELOG.md
 )
 echo -e "\nCHANGES\n----------\n${CHANGES}\n----------\n"
