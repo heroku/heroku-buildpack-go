@@ -6,6 +6,12 @@
 * Add go1.11.3 & go1.11.4 using go1.11.4 as the default for go1.11
 * Add go1.10.6 & go1.10.7 using go1.10.7 as the default for go1.10
 
+## v97 (2018-11-05)
+* Re-apply v95
+
+## v96 (2018-11-05)
+* Rollback
+
 ## v95 (2018-11-05)
 * Add go1.11.2, use it as the default for go1.11
 * Add go1.10.5, use it as the default for go1.10
