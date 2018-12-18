@@ -1,12 +1,12 @@
 {
   "Go": {
-    "Supported": ["go1.10.5", "go1.11.2"],
-    "DefaultVersion": "go1.11.2",
+    "Supported": ["go1.10.7", "go1.11.4"],
+    "DefaultVersion": "go1.11.4",
     "VersionExpansion": {
       "go1.11.0": "go1.11",
-      "go1.11": "go1.11.2",
+      "go1.11": "go1.11.4",
       "go1.10.0": "go1.10",
-      "go1.10": "go1.10.5",
+      "go1.10": "go1.10.7",
       "go1.9.0": "go1.9",
       "go1.9": "go1.9.7",
       "go1.8.0": "go1.8",
@@ -42,7 +42,7 @@
     ],
     "SupportsModuleExperiment": [
       "go1.11beta2", "go1.11beta3", "go1.11rc1", "go1.11rc2",
-      "go1.11", "go1.11.1", "go1.11.2"
+      "go1.11", "go1.11.1", "go1.11.2", "go1.11.3", "go1.11.4"
     ]
   },
   "Dep": {
@@ -75,8 +75,8 @@
   "test": {
     "assets": [
       "jq-linux64",
-      "go1.11.2.linux-amd64.tar.gz",
-      "go1.10.5.linux-amd64.tar.gz",
+      "go1.11.4.linux-amd64.tar.gz",
+      "go1.10.7.linux-amd64.tar.gz",
       "go1.8.3.linux-amd64.tar.gz",
       "go1.7.6.linux-amd64.tar.gz",
       "go1.6.4.linux-amd64.tar.gz",
