@@ -80,6 +80,10 @@ greater than zero, `go install` is invoked with `-mod=vendor`, causing the build
 to skip downloading and checking of dependencies. This results in only the
 dependencies from the top level `vendor` directory being used.
 
+If the file `bin/pre-compile` or `bin/post-compile` exists in the repository and
+is executable then it will be executed either before compilation (pre-compile) of
+the repo, or after compilation (post-compile).
+
 ## dep specifics
 
 The `Gopkg.toml` file allows for arbitrary, tool specific fields. This buildpack
