@@ -1,6 +1,22 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModWithHooks() {
+  fixture "mod-basic-with-hooks"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "-----> Running bin/pre-compile hook"
+  assertCaptured "PRE COMPILE"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "-----> Running bin/post-compile hook"
+  assertCaptured "POST COMPILE"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
 
 testModNoVersion() {
   fixture "mod-no-version"
