@@ -80,9 +80,24 @@ greater than zero, `go install` is invoked with `-mod=vendor`, causing the build
 to skip downloading and checking of dependencies. This results in only the
 dependencies from the top level `vendor` directory being used.
 
-If the file `bin/pre-compile` or `bin/post-compile` exists in the repository and
-is executable then it will be executed either before compilation (pre-compile) of
-the repo, or after compilation (post-compile).
+### Pre/Post Compile Hooks
+
+If the file `bin/go-pre-compile` or `bin/go-post-compile` exists and is
+executable then it will be executed either before compilation (go-pre-compile)
+of the repo, or after compilation (go-post-compile).
+
+Because the buildpack installs compiled executables to `bin`, the
+`go-post-compile` hook can be written in go if it's installed by the specified
+`<packagespec>` (see above).
+
+Example:
+
+```console
+$ cat go.mod
+// +heroku install ./cmd/...
+$ ls -F cmd
+client/ go-post-compile/ server/
+```
 
 ## dep specifics
 

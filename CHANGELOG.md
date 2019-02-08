@@ -4,6 +4,7 @@
 * Add go1.10.8 and default to it when go1.10 is specified
 * Add go1.11.5 and default to it when go1.11 is specified or no version is specified.
 * Support go modules on Heroku CI (bin/test-compile & bin/test).
+* Add pre/post compile run hooks: /bin/go-pre-compile & /bin/go-post-compile
 
 ## v99 (2019-01-15)
 * Add go1.12beta1 and default to it when go1.12 is specified

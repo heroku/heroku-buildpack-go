@@ -452,15 +452,17 @@ case "${TOOL}" in
         unset GIT_DIR # unset git dir or it will mess with goinstall
         cd ${build}
         export GOBIN="${build}/bin"
-        if [[ -x bin/pre-compile ]]; then
-            echo "-----> Running bin/pre-compile hook"
-            sub_env bin/pre-compile
+        if [[ -f bin/go-pre-compile ]]; then
+            step "Running bin/go-pre-compile hook"
+            chmod a+x bin/go-pre-compile
+            bin/go-pre-compile
         fi
         step "Running: go install -v ${FLAGS[@]} ${pkgs}"
         go install -v "${FLAGS[@]}" ${pkgs} 2>&1
-        if [[ -x bin/post-compile ]]; then
-            echo "-----> Running bin/post-compile hook"
-            sub_env bin/post-compile
+        if [[ -f bin/go-post-compile ]]; then
+            step "Running bin/go-post-compile hook"
+            chmod a+x bin/go-post-compile
+            bin/go-post-compile
         fi
     ;;
     dep)
