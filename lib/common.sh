@@ -32,12 +32,6 @@ TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
-if [[ ! -f  /tmp/stdlib.sh ]]; then
-  curl --retry 3 -s https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh > /tmp/stdlib.sh
-fi
-# shellcheck source=/dev/null
-source /tmp/stdlib.sh
-
 warn() {
     echo -e "${YELLOW} !!    $@${NC}"
 }

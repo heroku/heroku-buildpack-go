@@ -8,11 +8,11 @@ testModWithHooks() {
 
   compile
   assertCaptured "Installing go"
-  assertCaptured "-----> Running bin/pre-compile hook"
+  assertCaptured "-----> Running bin/go-pre-compile hook"
   assertCaptured "PRE COMPILE"
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture"
-  assertCaptured "-----> Running bin/post-compile hook"
+  assertCaptured "-----> Running bin/go-post-compile hook"
   assertCaptured "POST COMPILE"
   assertCapturedSuccess
   assertCompiledBinaryExists
