@@ -1,0 +1,13 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "cdlCAwFsMp+pW1YdtDS6mr+kbmE=",
+			"path": "gitlab.com/freeformz/private-go-test",
+			"revision": "2344ad11b1c97555c29c6e22c7f50dbc31b0d8d7",
+			"revisionTime": "2017-10-06T03:36:45Z"
+		}
+	],
+	"rootPath": "github.com/heroku/fixture"
+}

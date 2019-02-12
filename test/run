@@ -137,7 +137,7 @@ testModDepsVendored() {
   assertCompiledBinaryExists
 }
 
-testGovendorWithPrivateDeps() {
+testGovendorWithPrivateDepsGithub() {
   if [ -z "${GITHUB_TOKEN}" ]; then
     echo "!!!"
     echo "!!! Skipping private Github repo test"
@@ -145,7 +145,7 @@ testGovendorWithPrivateDeps() {
     return 0
   fi
 
-  fixture "govendor-private"
+  fixture "govendor-private-github"
 
   env "GO_GIT_CRED__HTTPS__GITHUB__COM" "${GITHUB_TOKEN}"
 
@@ -158,6 +158,32 @@ testGovendorWithPrivateDeps() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCaptured "github.com/go-test-user/go-private-repo-test"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryOutputs "This is in a string from a Private Repo"
+}
+
+testGovendorWithPrivateDepsGitlab() {
+  if [ -z "${GITLAB_TOKEN}" ]; then
+    echo "!!!"
+    echo "!!! Skipping private Gitlab repo test"
+    echo "!!!"
+    return 0
+  fi
+
+  fixture "govendor-private-gitlab"
+
+  env "GO_GIT_CRED__HTTPS__GITLAB__COM" "${GITLAB_TOKEN}"
+
+  assertDetected
+
+  compile
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "gitlab.com/freeformz/private-go-test"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "This is in a string from a Private Repo"
