@@ -237,13 +237,17 @@ setGitCredHelper() {
             if [ -f "${f}" ]; then
                 echo "Using credentials from GO_GIT_CRED__${protocol}__${host}" >&2
                 t=$(cat ${f})
-                if [[ "${t}" =~ ":" ]]; then
+                #echo "t=${t}" >&2  #debug
+                case "${t}" in
+                  *:*)
                     username="$(echo $t | cut -d : -f 1)"
                     password="$(echo $t | cut -d : -f 2)"
-                else
+                  ;;
+                  *)
                     username="${t}"
                     password="x-oauth-basic"
-                fi
+                  ;;
+                esac
                 echo username=${username}
                 #echo username=${username} >&2  #debug
                 echo password=${password}
