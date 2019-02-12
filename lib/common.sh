@@ -270,7 +270,7 @@ determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
         warn ""
-        warn "Go modules are an experimental feature of go1.11"
+        warn "Go modules are an experimental feature of go1.11+"
         warn "Any issues building code that uses Go modules should be"
         warn "reported via: https://github.com/heroku/heroku-buildpack-go/issues"
         warn ""
@@ -292,8 +292,10 @@ determineTool() {
         if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
             err "You are using ${ver}, which does not support the Go modules experiment"
             err ""
-            err "Please add the following comment to your go.mod file to specify go1.11:"
-            err "// +heroku goVersion go1.11"
+            err "These go versions support Go modules: $(<${DataJSON} jq -c -r -M '.Go.SupportsModuleExperiment | sort | join(", ")')"
+            err ""
+            err "Please add a comment in your go.mod file, or update an existing one, to specify a Go version that does like so:"
+            err "// +heroku goVersion go1.11.5"
             err ""
             err "Then commit and push again."
            exit 1

@@ -43,7 +43,7 @@ testModOldVersion() {
   assertDetected
 
   compile
-  assertCapturedError 1 "Please add the following comment to your go.mod file to specify"
+  assertCapturedError 1 "Please add a comment in your go.mod file, or update an existing one, to specify a Go version that does like so"
 }
 
 testDepWithGolangMigrate() {
