@@ -12,6 +12,16 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 source "${buildpack}/lib/common.sh"
 ensureInPath "jq-linux64" "${cache}/.jq/bin"
 
+# This is used by the buildpack stdlib for metrics
+BPLOG_PREFIX="buildpack.go"
+
+STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
+
+### Load dependencies
+
+curl --silent --retry 5 --retry-max-time 15 'https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh' > "$STDLIB_FILE"
+source "$STDLIB_FILE"
+
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
 GlideVersion="$(<${DataJSON} jq -r '.Glide.DefaultVersion')"
@@ -22,7 +32,6 @@ MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
 MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
 GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
 TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
-# BazaarVersion="2.7.0"
 
 # For specified versions of Go we need to keep concurrency.sh
 needConcurrency() {
@@ -110,6 +119,8 @@ expandVer() {
 # Use after expandVer
 reportVer() {
     local ver="${1}"
+    mcount "version.go.$ver"
+
     if <"${DataJSON}" jq  -e '.Go.Supported | any(. == "'${ver}'")' &> /dev/null; then
         return
     fi
