@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## v101 (2019-02-21)
+
 ## v100 (2019-02-12)
 * Add go1.10.8 and default to it when go1.10 is specified
 * Add go1.11.5 and default to it when go1.11 is specified or no version is specified.
