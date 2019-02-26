@@ -1,10 +1,10 @@
 {
   "Go": {
-    "Supported": ["go1.10.8", "go1.11.5"],
+    "Supported": ["go1.11.5", "go1.12"],
     "DefaultVersion": "go1.11.5",
     "VersionExpansion": {
-      "go1.12.0": "go1.12rc1",
-      "go1.12": "go1.12rc1",
+      "go1.12.0": "go1.12",
+      "go1.12": "go1.12",
       "go1.11.0": "go1.11",
       "go1.11": "go1.11.5",
       "go1.10.0": "go1.10",
@@ -45,7 +45,7 @@
     "SupportsModuleExperiment": [
       "go1.11beta2", "go1.11beta3", "go1.11rc1", "go1.11rc2",
       "go1.11", "go1.11.1", "go1.11.2", "go1.11.3", "go1.11.4",
-      "go1.11.5", "go1.12beta1", "go1.12beta2","go1.12rc1"
+      "go1.11.5", "go1.12beta1", "go1.12beta2","go1.12rc1", "go1.12"
     ]
   },
   "Dep": {
