@@ -445,6 +445,7 @@ fi
 
 export GOPATH
 
+mcount "pkgmanagement.$TOOL"
 # GB installation
 case "${TOOL}" in
     gomodules)
