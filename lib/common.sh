@@ -32,6 +32,10 @@ TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
+info() {
+    echo -e "${GREEN}        $@${NC}"
+}
+
 warn() {
     echo -e "${YELLOW} !!    $@${NC}"
 }
@@ -273,9 +277,9 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
-        warn ""
-        warn "Found a go.mod file and using Go modules"
-        warn ""
+        info ""
+        step "Detected go modules - go.mod"
+        info ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
         name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
         warnGoVersionOverride

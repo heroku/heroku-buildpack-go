@@ -642,5 +642,7 @@ if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
 
-warn "We placed the compiled binary in /bin on your dyno."
-warn "If you want to invoke it in your Procfile use ./bin/your-installed-directory-name"
+info ""
+info "We placed the compiled binary in ./bin on your dyno."
+info "If you want to invoke it in your Procfile use ./bin/your-installed-directory-name"
+info ""
