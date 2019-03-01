@@ -258,6 +258,29 @@ following contents, adjusted as needed for your project's root path.
 }
 ```
 
+## Default Procfile
+
+If there is no Procfile in the base directory of the code being built and the
+buildpack can figure out the name of the base package (also known as the
+module), then a default Procfile is created that includes a `web` process type
+that runs the resulting executable from compiling the base package.
+
+For example, if the package name was `github.com/heroku/example`, this buildpack
+would create a Procfile that looks like this:
+
+```sh
+$ cat Procfile
+web: example
+```
+
+This is useful when the base package is also the only main package to build.
+
+If you have adopted the `cmd/<executable name>` structure this won't work and
+you will need to create a [Procfile].
+
+Note: This buildpack should be able to figure out the name of the base package
+in all cases, except when gb is being used.
+
 ## Private Git Repos
 
 The buildpack installs a custom git credential handler. Any tool that shells out to git (most do) should be able to transparently use this feature. Note: It has only been tested with Github repos over https using personal access tokens.
@@ -371,3 +394,4 @@ make publish # && follow the prompts
 [glide]: https://github.com/Masterminds/glide
 [gomodules]: https://github.com/golang/go/wiki/Modules
 [DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4
+[Procfile]: https://devcenter.heroku.com/articles/procfile
