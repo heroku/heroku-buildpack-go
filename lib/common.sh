@@ -274,12 +274,7 @@ determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
         warn ""
-        warn "Go modules are an experimental feature of go1.11+"
-        warn "Any issues building code that uses Go modules should be"
-        warn "reported via: https://github.com/heroku/heroku-buildpack-go/issues"
-        warn ""
-        warn "Additional documentation for using Go modules with this buildpack"
-        warn "can be found here: https://github.com/heroku/heroku-buildpack-go#go-module-specifics"
+        warn "Found a go.mod file and using Go modules"
         warn ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
         name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
@@ -294,7 +289,7 @@ determineTool() {
             warn ""
         fi
         if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
-            err "You are using ${ver}, which does not support the Go modules experiment"
+            err "You are using ${ver}, which does not support the Go modules"
             err ""
             err "These go versions support Go modules: $(<${DataJSON} jq -c -r -M '.Go.SupportsModuleExperiment | sort | join(", ")')"
             err ""

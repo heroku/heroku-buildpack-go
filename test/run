@@ -951,7 +951,6 @@ testGodepLDSymbolGo14Value() {
 
   compile
   assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture fixture ." #Nothing vendored
-  assertCaptured "Deprecated or unsupported version of go"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "fixture"
