@@ -34,7 +34,7 @@ TOOL=""
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
 info() {
-    echo -e "${GREEN}        $@${NC}"
+    echo -e "${GREEN}       $@${NC}"
 }
 
 warn() {
@@ -294,7 +294,7 @@ determineTool() {
             warn ""
         fi
         if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
-            err "You are using ${ver}, which does not support the Go modules"
+            err "You are using ${ver}, which does not support Go modules"
             err ""
             err "These go versions support Go modules: $(<${DataJSON} jq -c -r -M '.Go.SupportsModuleExperiment | sort | join(", ")')"
             err ""
