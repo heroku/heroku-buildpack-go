@@ -642,7 +642,9 @@ if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
 
-info ""
-info "We placed the compiled binary in ./bin on your dyno."
-info "If you want to invoke it in your Procfile use ./bin/your-installed-directory-name"
-info ""
+bin_path="${build}/bin"
+bin_files=`ls ${bin_path}`
+echo -e "\nCompiled the following binaries:"
+for fyle in $bin_files; do
+  info "$(echo ./bin/$fyle)\n"
+done 
