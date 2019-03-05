@@ -648,5 +648,4 @@ echo -e "\nCompiled the following binaries:"
 for fyle in $bin_files; do
   info "$(echo ./bin/$fyle)"
 done 
-
-echo -e "\n"
+echo ""
