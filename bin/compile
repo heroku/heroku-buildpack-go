@@ -47,8 +47,6 @@ handleDefaultPkgSpec() {
                 warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
                 warn "// +heroku install ./cmd/..."
                 warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
-                warn ""
             ;;
             dep)
                 warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
@@ -115,15 +113,11 @@ expandVer() {
     echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
 }
 
-# Report deprecated versions to user
+# Report development versions to user
 # Use after expandVer
 reportVer() {
     local ver="${1}"
     mcount "version.go.$ver"
-
-    if <"${DataJSON}" jq  -e '.Go.Supported | any(. == "'${ver}'")' &> /dev/null; then
-        return
-    fi
 
     case $ver in
         devel*)
@@ -133,12 +127,6 @@ reportVer() {
             warn "but is otherwise unsupported."
             warn ""
             warn "Build tests are NOT RUN!!"
-            warn ""
-        ;;
-        *)
-            warn ""
-            warn "Deprecated or unsupported version of go ($ver)"
-            warn "See https://devcenter.heroku.com/articles/go-support#go-versions for supported version information."
             warn ""
         ;;
     esac
@@ -653,3 +641,11 @@ echo "TOOL=${TOOL}" > "${t}"
 if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
+
+bin_path="${build}/bin"
+bin_files=`ls ${bin_path}`
+echo -e "\nCompiled the following binaries:"
+for fyle in $bin_files; do
+  info "$(echo ./bin/$fyle)"
+done 
+echo ""
