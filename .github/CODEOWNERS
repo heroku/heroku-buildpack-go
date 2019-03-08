@@ -1,2 +1,6 @@
+* @sowjumn
+* @freeformz
+
+# keep @heroku/languages last so the team is the one automatically tagged in code reviews
 * @heroku/languages
 
