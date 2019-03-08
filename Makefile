@@ -24,7 +24,7 @@ compile: BASH_COMMAND := test/quick compile $(FIXTURE); bash
 compile: docker
 
 publish:
-	@bash etc/publish.sh
+	@bash sbin/publish.sh
 
 docker: test-assets
 	$(eval TMP := $(shell bin/copy true))
