@@ -395,6 +395,11 @@ setupGOPATH() {
     echo "src=${src}"
 }
 
+installPkgs() {
+    step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+    go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+}
+
 loadEnvDir "${env_dir}"
 
 setGitCredHelper "${env_dir}"
@@ -440,7 +445,15 @@ case "${TOOL}" in
     gomodules)
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
         if [ -z "${pkgs}" ]; then
-            pkgs="default"
+            if [ -d "${build}/cmd" ]; then
+                # Supports standard Go directory structure  https://github.com/golang-standards/project-layout#go-directories
+                step "Detected \"cmd\" directory. Installing packages under \"cmd\""
+                mcount "pkginstall.cmd"
+                pkgs="./cmd/..."
+            else
+                mcount "pkginstall.default"
+                pkgs="default"
+            fi
         fi
         warnPackageSpecOverride
         handleDefaultPkgSpec
@@ -458,8 +471,9 @@ case "${TOOL}" in
             chmod a+x bin/go-pre-compile
             bin/go-pre-compile
         fi
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+
+        installPkgs
+
         if [[ -f bin/go-post-compile ]]; then
             step "Running bin/go-post-compile hook"
             chmod a+x bin/go-post-compile
@@ -487,8 +501,7 @@ case "${TOOL}" in
         fi
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     godep)
         eval "$(setupGOPATH ${name})"
@@ -527,8 +540,7 @@ case "${TOOL}" in
             godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         else
             massagePkgSpecForVendor
-            step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-            go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+            installPkgs
         fi
     ;;
     govendor)
@@ -550,8 +562,7 @@ case "${TOOL}" in
         fi
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     glide)
         ensureGlide "${GlideVersion}"
@@ -576,8 +587,7 @@ case "${TOOL}" in
 
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     gb)
         ensureGB "${GBVersion}"
