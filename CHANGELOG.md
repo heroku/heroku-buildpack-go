@@ -3,10 +3,6 @@
 ## Unreleased
 
 ## v103 (2019-03-07)
-
-## v103 (2019-03-07)
-
-## v103 (2019-03-07)
 * Removed warnings on command line
 * Added info about compiled binaries
 
