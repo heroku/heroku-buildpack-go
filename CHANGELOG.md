@@ -1,7 +1,11 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v104 (2019-03-11)
 * Fix up Go modules testing to include mod=vendor or mod=readonly and set GOPATH to a temporary directory so downloaded deps' tests aren't executed.
+* Move publish script to /sbin/publish / don't push to master since it's disabled.
+* Add Codeowners to automate PR reviews.
 
 ## v103 (2019-03-07)
 * Removed warnings on command line
