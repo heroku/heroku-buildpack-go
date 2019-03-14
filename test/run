@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModcmdDetection() {
+  fixture "mod-cmd"
+
+  assertDetected
+
+  compile
+  assertCaptured "Detected go modules - go.mod"
+  assertCaptured "Installing go"
+  assertCaptured "Detected \"cmd\" directory. Installing packages under \"cmd\""
+  assertCaptured "Running: go install -v -tags heroku ./cmd/..."
+  assertCaptured "github.com/heroku/fixture/cmd/fixture"
+  assertCaptured "github.com/heroku/fixture/cmd/other"
+  assertCaptured "Compiled the following binaries:"
+  assertCaptured "./bin/fixture"
+  assertCaptured "./bin/other"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
 testModWithHooks() {
   fixture "mod-basic-with-hooks"
 
