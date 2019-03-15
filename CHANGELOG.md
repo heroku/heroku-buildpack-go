@@ -1,6 +1,9 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.12.1 & go1.11.6
+* Default to go1.12.1
+* If ./cmd exists and no package spec is set, then set package spec to ./cmd/...
 
 ## v104 (2019-03-11)
 * Fix up Go modules testing to include mod=vendor or mod=readonly and set GOPATH to a temporary directory so downloaded deps' tests aren't executed.
