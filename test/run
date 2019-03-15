@@ -44,7 +44,7 @@ testModNoVersion() {
 
   compile
   assertCaptured "The go.mod file for this project does not specify a Go version"
-  assertCaptured "Defaulting to go1.11"
+  assertCaptured "Defaulting to go"
   assertCaptured "Detected go modules - go.mod"
  
   assertCapturedSuccess
