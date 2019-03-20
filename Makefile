@@ -24,12 +24,12 @@ compile: BASH_COMMAND := test/quick compile $(FIXTURE); bash
 compile: docker
 
 publish:
-	bin/publish heroku/go
+	@bash sbin/publish.sh
 
 docker: test-assets
 	$(eval TMP := $(shell bin/copy true))
 	@echo "Running docker ($(IMAGE)) with /buildpack=$(TMP) ..."
-	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
+	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
 	@rm -rf $(TMP)
 
 test-assets:

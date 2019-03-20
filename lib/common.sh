@@ -14,8 +14,10 @@ depTOML="${build}/Gopkg.toml"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
+goMOD="${build}/go.mod"
 
 steptxt="----->"
+GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
@@ -31,6 +33,9 @@ TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
+info() {
+    echo -e "${GREEN}       $@${NC}"
+}
 
 warn() {
     echo -e "${YELLOW} !!    $@${NC}"
@@ -237,13 +242,17 @@ setGitCredHelper() {
             if [ -f "${f}" ]; then
                 echo "Using credentials from GO_GIT_CRED__${protocol}__${host}" >&2
                 t=$(cat ${f})
-                if [ "${t}" =~ ":" ]; then
+                #echo "t=${t}" >&2  #debug
+                case "${t}" in
+                  *:*)
                     username="$(echo $t | cut -d : -f 1)"
                     password="$(echo $t | cut -d : -f 2)"
-                else
+                  ;;
+                  *)
                     username="${t}"
                     password="x-oauth-basic"
-                fi
+                  ;;
+                esac
                 echo username=${username}
                 #echo username=${username} >&2  #debug
                 echo password=${password}
@@ -267,7 +276,35 @@ setGoVersionFromEnvironment() {
 }
 
 determineTool() {
-    if [ -f "${depTOML}" ]; then
+    if [ -f "${goMOD}" ]; then
+        TOOL="gomodules"
+        info ""
+        step "Detected go modules - go.mod"
+        info ""
+        ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
+        name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
+        warnGoVersionOverride
+        if [ -z "${ver}" ]; then
+            ver=${DefaultGoVersion}
+            warn "The go.mod file for this project does not specify a Go version"
+            warn ""
+            warn "Defaulting to ${ver}"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
+            warn ""
+        fi
+        if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
+            err "You are using ${ver}, which does not support Go modules"
+            err ""
+            err "These go versions support Go modules: $(<${DataJSON} jq -c -r -M '.Go.SupportsModuleExperiment | sort | join(", ")')"
+            err ""
+            err "Please add a comment in your go.mod file, or update an existing one, to specify a Go version that does like so:"
+            err "// +heroku goVersion go1.11.5"
+            err ""
+            err "Then commit and push again."
+           exit 1
+        fi
+    elif [ -f "${depTOML}" ]; then
         TOOL="dep"
         ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
         name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
@@ -334,7 +371,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "dep, Godep, GB or govendor are required. For instructions:"
+        err "Go modules, dep, Godep, GB or govendor are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi

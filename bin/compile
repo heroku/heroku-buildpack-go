@@ -12,6 +12,16 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 source "${buildpack}/lib/common.sh"
 ensureInPath "jq-linux64" "${cache}/.jq/bin"
 
+# This is used by the buildpack stdlib for metrics
+BPLOG_PREFIX="buildpack.go"
+
+STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
+
+### Load dependencies
+
+curl --silent --retry 5 --retry-max-time 15 'https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh' > "$STDLIB_FILE"
+source "$STDLIB_FILE"
+
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
 GlideVersion="$(<${DataJSON} jq -r '.Glide.DefaultVersion')"
@@ -20,12 +30,12 @@ GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
 MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
+GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
 TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
-# BazaarVersion="2.7.0"
 
 # For specified versions of Go we need to keep concurrency.sh
 needConcurrency() {
-    <"${DataJSON}" jq -e '.Go.NeedsConcurrency | indices(["'${1}'"]) | length | if . == 0 then false else true end' &> /dev/null
+    <"${DataJSON}" jq -e '.Go.NeedsConcurrency | any(. == "'${1}'")' &> /dev/null
 }
 
 handleDefaultPkgSpec() {
@@ -33,8 +43,13 @@ handleDefaultPkgSpec() {
         warn "Installing package '.' (default)"
         warn ""
         case "${TOOL}" in
+            gomodules)
+                warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
+                warn "// +heroku install ./cmd/..."
+                warn ""
+            ;;
             dep)
-                warn "To install a different package spec set 'metadata.heroku.pkg-spec' in 'Gopkg.toml'"
+                warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
                 warn ""
                 warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
                 warn ""
@@ -98,13 +113,13 @@ expandVer() {
     echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
 }
 
-# Report deprecated versions to user
+# Report development versions to user
 # Use after expandVer
 reportVer() {
-    if <"${DataJSON}" jq -e '.Go.Supported | indices(["'${1}'"]) | length | if . > 0 then true else false end' &> /dev/null; then
-        return
-    fi
-    case $1 in
+    local ver="${1}"
+    mcount "version.go.$ver"
+
+    case $ver in
         devel*)
             warn ""
             warn "You are using a development build of Go."
@@ -112,12 +127,6 @@ reportVer() {
             warn "but is otherwise unsupported."
             warn ""
             warn "Build tests are NOT RUN!!"
-            warn ""
-        ;;
-        *)
-            warn ""
-            warn "Deprecated or unsupported version of go ($1)"
-            warn "See https://devcenter.heroku.com/articles/go-support#go-versions for supported version information."
             warn ""
         ;;
     esac
@@ -161,44 +170,34 @@ ensureGlide() {
     fi
 }
 
-ensureMattesMigrate() {
-    local mmVersion="DEFAULT"
-    case "${TOOL}" in
-        govendor)
-            mmVersion="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("github.com/mattes/migrate@"))) | if .[0] then .[0] else "@DEFAULT" end | split("@") | .[1]')"
-        ;;
-        dep)
-            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^github.com/mattes/migrate | sed s:github.com/mattes/migrate::)
-            f=${f:-"@DEFAULT"}
-            mmVersion="$(echo $f | cut -d @ -f 2)"
-        ;;
-    esac
-    if [[ "${mmVersion}" = "DEFAULT" ]]; then
-        mmVersion="${MattesMigrateVersion}"
-    fi
+ensureMigrateTool() {
+    local t="${1}"
+    local mtVersion="${2}"
     local tmp="$(mktemp -d)"
-    local mmPath="${cache}/mattesMigrate/${mmVersion}"
+    local mtPath="${cache}/${t}/${mtVersion}"
     local targetFile="${build}/bin/migrate"
 
     if [ -x "targetFile" ]; then
-        warning '"migrate" binary already exists in ~/bin, not installing github.com/mattes/migrate'
+        warning '"migrate" binary already exists in ~/bin, not installing '${t}
     else
-        rm -rf "$(dirname "${mmPath}")"
-        mkdir -p "${mmPath}"
-        step "Installing github.com/mattes/migrate ${mmVersion}"
-        ensureFile "migrate-${mmVersion}-linux-amd64.tar.gz" "${tmp}" "tar -C ${mmPath} -zxf"
-        mv "${mmPath}/migrate.linux-amd64" "${targetFile}"
+        rm -rf "$(dirname "${mtPath}")"
+        mkdir -p "${mtPath}"
+        step "Installing ${t} ${mtVersion}"
+        ensureFile "migrate-${mtVersion}-linux-amd64.tar.gz" "${tmp}" "tar -C ${mtPath} -zxf"
+        mv "${mtPath}/migrate.linux-amd64" "${targetFile}"
         chmod a+x "${targetFile}"
     fi
 }
 
-wantMattesMigrate() {
+wantAdditionalTool() {
+    local addt="${1}"
+
     case "${TOOL}" in
         govendor)
-            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["github.com/mattes/migrate"])' &> /dev/null
+            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["'${addt}'"])' &> /dev/null
         ;;
         dep)
-          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^github.com/mattes/migrate$" &> /dev/null
+          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^${addt}$" &> /dev/null
         ;;
         *)
             false
@@ -206,9 +205,45 @@ wantMattesMigrate() {
     esac
 }
 
+additionalToolVersion() {
+    local addt="${1}"
+    local default="${2}"
+
+    local tv=""
+    case "${TOOL}" in
+        govendor)
+            tv="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("'${addt}'@"))) | if .[0] then .[0] else "@'${default}'" end | split("@") | .[1]')"
+        ;;
+        dep)
+            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^${addt} | sed s:${addt}::)
+            f=${f:-"@${default}"}
+            tv="$(echo $f | cut -d @ -f 2)"
+        ;;
+    esac
+
+    echo $tv
+}
+
+installGolangMigrateIfWanted() {
+    local t="github.com/golang-migrate/migrate"
+    if wantAdditionalTool $t; then
+        ensureMigrateTool $t $(additionalToolVersion $t ${GolangMigrateVersion})
+    fi
+}
+
 installMattesMigrateIfWanted() {
-    if wantMattesMigrate; then
-        ensureMattesMigrate
+    local t="github.com/mattes/migrate"
+    if wantAdditionalTool $t; then
+        warn ""
+        warn "Mattes Migrate is now Golang Migrate"
+        warn "Support for Mattes Migrate will be removed in the future"
+        warn "Please change the addition tool specification from 'github.com/mattes/migrate' to"
+        warn "'github.com/golang-migrate/migrate'"
+        warn ""
+        warn "Note: Supported Golang Migrate versions start at v3.4.0"
+        warn ""
+
+        ensureMigrateTool $t $(additionalToolVersion $t ${MattesMigrateVersion})
     fi
 }
 
@@ -295,6 +330,11 @@ ensureGo() {
 
     export GOROOT="${goPath}"
     PATH="${goPath}/bin:${PATH}"
+
+    # Export GOCACHE if Go >= 1.10
+    if go env | grep -q '^GOCACHE='; then
+      export GOCACHE="${cache}/go-build-cache"
+    fi
 }
 
 setGoVersionFromEnvironment() {
@@ -355,6 +395,11 @@ setupGOPATH() {
     echo "src=${src}"
 }
 
+installPkgs() {
+    step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+    go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+}
+
 loadEnvDir "${env_dir}"
 
 setGitCredHelper "${env_dir}"
@@ -394,7 +439,47 @@ fi
 export GOPATH
 
 # GB installation
+mcount "pkgmanagement.$TOOL"
+
 case "${TOOL}" in
+    gomodules)
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
+        if [ -z "${pkgs}" ]; then
+            if [ -d "${build}/cmd" ]; then
+                # Supports standard Go directory structure  https://github.com/golang-standards/project-layout#go-directories
+                step "Detected \"cmd\" directory. Installing packages under \"cmd\""
+                mcount "pkginstall.cmd"
+                pkgs="./cmd/..."
+            else
+                mcount "pkginstall.default"
+                pkgs="default"
+            fi
+        fi
+        warnPackageSpecOverride
+        handleDefaultPkgSpec
+        massagePkgSpecForVendor
+
+        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
+            FLAGS=(${FLAGS[@]} -mod=vendor)
+        fi
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        cd ${build}
+        export GOBIN="${build}/bin"
+        if [[ -f bin/go-pre-compile ]]; then
+            step "Running bin/go-pre-compile hook"
+            chmod a+x bin/go-pre-compile
+            bin/go-pre-compile
+        fi
+
+        installPkgs
+
+        if [[ -f bin/go-post-compile ]]; then
+            step "Running bin/go-post-compile hook"
+            chmod a+x bin/go-post-compile
+            bin/go-post-compile
+        fi
+    ;;
     dep)
         eval "$(setupGOPATH ${name})"
         depTOML="${src}/Gopkg.toml"
@@ -415,9 +500,8 @@ case "${TOOL}" in
             dep ensure
         fi
         massagePkgSpecForVendor
-        
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+
+        installPkgs
     ;;
     godep)
         eval "$(setupGOPATH ${name})"
@@ -438,7 +522,7 @@ case "${TOOL}" in
             fi
         fi
         # Warn that GO15VENDOREXPIERMENT is set, but the go version does not support it.
-        if <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | indices(["'${ver}'"]) | length | if . == 0 then true else false end' &> /dev/null; then
+        if ! <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | any(. == "'${ver}'")' &> /dev/null; then
             if [ -n "${GO15VENDOREXPERIMENT}" ]; then
                 warn ""
                 warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
@@ -456,8 +540,7 @@ case "${TOOL}" in
             godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
         else
             massagePkgSpecForVendor
-            step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-            go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+            installPkgs
         fi
     ;;
     govendor)
@@ -485,8 +568,7 @@ case "${TOOL}" in
             $PreBuildHook
         fi
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     glide)
         ensureGlide "${GlideVersion}"
@@ -511,8 +593,7 @@ case "${TOOL}" in
 
         massagePkgSpecForVendor
 
-        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+        installPkgs
     ;;
     gb)
         ensureGB "${GBVersion}"
@@ -529,6 +610,7 @@ case "${TOOL}" in
     ;;
 esac
 
+installGolangMigrateIfWanted
 installMattesMigrateIfWanted
 
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
@@ -575,3 +657,11 @@ echo "TOOL=${TOOL}" > "${t}"
 if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
+
+bin_path="${build}/bin"
+bin_files=`ls ${bin_path}`
+echo -e "\nCompiled the following binaries:"
+for fyle in $bin_files; do
+  info "$(echo ./bin/$fyle)"
+done
+echo ""

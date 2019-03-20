@@ -2,6 +2,89 @@
 
 ## Unreleased
 
+## v105 (2019-03-18)
+* Add go1.12.1 & go1.11.6
+* Default to go1.12.1
+* If ./cmd exists and no package spec is set, then set package spec to ./cmd/...
+
+## v104 (2019-03-11)
+* Fix up Go modules testing to include mod=vendor or mod=readonly and set GOPATH to a temporary directory so downloaded deps' tests aren't executed.
+* Move publish script to /sbin/publish / don't push to master since it's disabled.
+* Add Codeowners to automate PR reviews.
+
+## v103 (2019-03-07)
+* Removed warnings on command line
+* Added info about compiled binaries
+
+## v102 (2019-03-01)
+* Add go1.12 and default to it when go1.12 is specified.
+* Add go1.12 to the list of supported versions.
+* Deprecate go1.10*
+
+## v101 (2019-02-21)
+* Track count of go versions being deployed
+
+## v100 (2019-02-12)
+* Add go1.10.8 and default to it when go1.10 is specified
+* Add go1.11.5 and default to it when go1.11 is specified or no version is specified.
+* Support go modules on Heroku CI (bin/test-compile & bin/test).
+* Add pre/post compile run hooks: /bin/go-pre-compile & /bin/go-post-compile
+* Add go1.12rc1 and default to it when go1.12 is specified.
+
+## v99 (2019-01-15)
+* Add go1.12beta1 and default to it when go1.12 is specified
+* Add go1.12beta2 and default to it when go1.12 is specified
+
+## v98 (2018-12-18)
+* Fix git Credential Helper for go module use (missing brackets) - @chrisroberts
+* Fix dep help text for package install - @andrewslotin
+* Add go1.11.3 & go1.11.4 using go1.11.4 as the default for go1.11
+* Add go1.10.6 & go1.10.7 using go1.10.7 as the default for go1.10
+
+## v97 (2018-11-05)
+* Re-apply v95
+
+## v96 (2018-11-05)
+* Rollback
+
+## v95 (2018-11-05)
+* Add go1.11.2, use it as the default for go1.11
+* Add go1.10.5, use it as the default for go1.10
+
+## v94 (2018-10-19)
+* Remove the need for Procfiles in simple situations for go modules
+* Add go1.11.1, use it as the default for go1.11
+* Promote go1.11.1 as the default install
+* Deprecate go1.9.X
+
+## v93 (2018-08-30)
+* Be clearer about what version of go is chosen if none is specified. Addresses #266.
+* Handle version stuff in the right place for go modules.
+
+## v92 (2018-08-27)
+* Add go1.11 and mark it as supported
+* Add go1.10.4 and make it the default, supported version
+
+## v91 (2018-08-24)
+* Add go1.11rc2 (unsupported) for experimenters
+* Add basic support for go modules (unsupported) for experimenters
+* Adds support for Golang Migrate (github.com/golang-migrate/migrate) as an additional tool
+* Deprecates support for Mattes Migrate (is now Golang Migrate)
+
+## v90 (2018-08-16)
+* Add go1.11beta1 (unsupported) for experimenters
+* Add go1.11beta2 (unsupported) for experimenters
+* Add go1.11rc1 (unsupported) for experimenters
+
+## v89 (2018-06-12)
+* GOCACHE support
+
+## v88 (2018-06-12)
+
+* Add go1.10.3 and go1.9.7
+* Default to go1.10.3
+* go1.10 expands to go1.10.3 and go1.9 expands to go1.9.7
+
 ## v87 (2018-05-03)
 
 * Add go1.10.2 and go1.9.6

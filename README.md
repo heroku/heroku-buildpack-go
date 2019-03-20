@@ -30,8 +30,8 @@ Creating polar-waters-4785...
 $ git push heroku master
 ...
 -----> Go app detected
------> Installing go1.9... done
------> Running: go install -tags heroku ./...
+-----> Installing go1.11... done
+-----> Running: go install -tags heroku .
 -----> Discovering process types
        Procfile declares types -> web
 
@@ -42,6 +42,7 @@ $ git push heroku master
 
 This buildpack will detect your repository as Go if you are using either:
 
+- [go modules][gomodules]
 - [dep][dep]
 - [govendor][govendor]
 - [glide][glide]
@@ -51,6 +52,52 @@ This buildpack will detect your repository as Go if you are using either:
 This buildpack adds a `heroku` [build constraint][build-constraint], to enable
 heroku-specific code. See the [App Engine build constraints
 article][app-engine-build-constraints] for more info.
+
+## Go Module Specifics
+
+The `go.mod` file allows for arbitrary comments. This buildpack utilizes [build
+constraint](https://golang.org/pkg/go/build/#hdr-Build_Constraints) style
+comments to track Heroku build specific configuration which is encoded in the
+following way:
+
+- `// +heroku goVersion <version>`: the major version of go you would like
+  Heroku to use when compiling your code. If not specified this defaults to the
+  buildpack's [DefaultVersion]. Specifying a version < go1.11 will cause a build
+  error because modules are not supported by older versions of go.
+
+  Example: `// +heroku goVersion go1.11`
+
+- `// +heroku install <packagespec>[, <packagespec>]`: a space seperated list of
+  the packages you want to install. If not specified, this defaults to `.`.
+  Other common choices are: `./cmd/...` (all packages and sub packages in the
+  `cmd` directory) and `./...` (all packages and sub packages of the current
+  directory). The exact choice depends on the layout of your repository though.
+
+  Example: `// +heroku install ./cmd/... ./special`
+
+If a top level `vendor` directory exists and the `go.sum` file has a size
+greater than zero, `go install` is invoked with `-mod=vendor`, causing the build
+to skip downloading and checking of dependencies. This results in only the
+dependencies from the top level `vendor` directory being used.
+
+### Pre/Post Compile Hooks
+
+If the file `bin/go-pre-compile` or `bin/go-post-compile` exists and is
+executable then it will be executed either before compilation (go-pre-compile)
+of the repo, or after compilation (go-post-compile).
+
+Because the buildpack installs compiled executables to `bin`, the
+`go-post-compile` hook can be written in go if it's installed by the specified
+`<packagespec>` (see above).
+
+Example:
+
+```console
+$ cat go.mod
+// +heroku install ./cmd/...
+$ ls -F cmd
+client/ go-post-compile/ server/
+```
 
 ## dep specifics
 
@@ -63,8 +110,12 @@ the following way:
   .`. There is no default for this and it must be specified.
 
 - `metadata.heroku['go-version']` (String): the major version of go you would
-  like Heroku to use when compiling your code: if not specified defaults to the
-  most recent supported version of Go.
+  like Heroku to use when compiling your code. If not specified this defaults to
+  the buildpack's [DefaultVersion]. Exact versions (ex `go1.9.4`) can also be
+  specified if needed, but is not generally recommended. Since Go doesn't
+  release `.0` versions, specifying a `.0` version will pin your code to the
+  initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
+  updating to `go1.10.1` when it becomes available).
 
 - `metadata.heroku['install']` (Array of Strings): a list of the packages you
   want to install. If not specified, this defaults to `["."]`. Other common
@@ -82,7 +133,7 @@ the following way:
   has multiple versions an optional `@<version>` suffix can be specified to
   select that specific version of the tool. Otherwise the buildpack's default
   version is chosen. Currently the only supported tool is
-  `github.com/mattes/migrate` at `v3.0.0` (also the default version).
+  `github.com/golang-migrate/migrate` at `v3.4.0` (also the default version).
 
 ```toml
 [metadata.heroku]
@@ -90,7 +141,7 @@ the following way:
   go-version = "go1.8.3"
   install = [ "./cmd/...", "./foo" ]
   ensure = "false"
-  additional-tools = ["github.com/mattes/migrate"]
+  additional-tools = ["github.com/golang-migrate/migrate"]
 ...
 ```
 
@@ -109,8 +160,12 @@ top level json keys:
    govendor to modify a dependency.
 
 - `heroku.goVersion` (String): the major version of go you would like Heroku to
-  use when compiling your code: if not specified defaults to the most recent
-  supported version of Go.
+  use when compiling your code. If not specified this defaults to the
+  buildpack's [DefaultVersion]. Exact versions (ex `go1.9.4`) can also be
+  specified if needed, but is not generally recommended. Since Go doesn't
+  release `.0` versions, specifying a `.0` version will pin your code to the
+  initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
+  updating to `go1.10.1` when it becomes available).
 
 - `heroku.install` (Array of Strings): a list of the packages you want to install.
   If not specified, this defaults to `["."]`. Other common choices are:
@@ -123,8 +178,8 @@ top level json keys:
   the buildpack is aware of that you want it to install. If the tool has
   multiple versions an optional `@<version>` suffix can be specified to select
   that specific version of the tool. Otherwise the buildpack's default version
-  is chosen. Currently the only supported tool is `github.com/mattes/migrate` at
-  `v3.0.0` (also the default version).
+  is chosen. Currently the only supported tool is `github.com/golang-migrate/migrate` at
+  `v3.4.0` (also the default version).
 
 Example with everything, for a project using `go1.9`, located at
 `$GOPATH/src/github.com/heroku/go-getting-started` and requiring a single package
@@ -153,11 +208,16 @@ control the build process.
 
 The base package name is determined by running `glide name`.
 
-The Go version used to compile code defaults to the latest released version of Go.
-This can be overridden by the `$GOVERSION` environment variable. Setting
-`$GOVERSION` to a major version will result in the buildpack using the
-latest released minor version in that series. Setting `$GOVERSION` to a specific
-minor Go version will pin Go to that version. Examples:
+The Go version used to compile code defaults to the buildpack's
+[DefaultVersion]. This can be overridden by the `$GOVERSION` environment
+variable. Setting `$GOVERSION` to a major version will result in the buildpack
+using the latest released minor version in that series. Setting `$GOVERSION` to
+a specific minor Go version will pin Go to that version. Since Go doesn't
+release `.0` versions, specifying a `.0` version will pin your code to the
+initial release of the given major version (ex `go1.10.0` == `go1.10` w/o auto
+updating to `go1.10.1` when it becomes available).
+
+Examples:
 
 ```console
 heroku config:set GOVERSION=go1.9   # Will use go1.9.X, Where X is that latest minor release in the 1.9 series
@@ -184,8 +244,8 @@ git push heroku master
 
 ## Usage with other vendoring systems
 
-If your vendor system of choice is not listed here or your project only uses 
-packages in the standard library, create `vendor/vendor.json` with the 
+If your vendor system of choice is not listed here or your project only uses
+packages in the standard library, create `vendor/vendor.json` with the
 following contents, adjusted as needed for your project's root path.
 
 ```json
@@ -197,6 +257,29 @@ following contents, adjusted as needed for your project's root path.
     }
 }
 ```
+
+## Default Procfile
+
+If there is no Procfile in the base directory of the code being built and the
+buildpack can figure out the name of the base package (also known as the
+module), then a default Procfile is created that includes a `web` process type
+that runs the resulting executable from compiling the base package.
+
+For example, if the package name was `github.com/heroku/example`, this buildpack
+would create a Procfile that looks like this:
+
+```sh
+$ cat Procfile
+web: example
+```
+
+This is useful when the base package is also the only main package to build.
+
+If you have adopted the `cmd/<executable name>` structure this won't work and
+you will need to create a [Procfile].
+
+Note: This buildpack should be able to figure out the name of the base package
+in all cases, except when gb is being used.
 
 ## Private Git Repos
 
@@ -285,8 +368,7 @@ make publish # && follow the prompts
 
 ### New Go version
 
-1. Edit `files.json`, and add an entry for the new version, including the SHA,
-   which can be copied from golang.org.
+1. Run `bin/add-version <version>`, eg `bin/add-version go1.11` to update `files.json`.
 1. Update `data.json`, to update the `VersionExpansion` object.
 1. run `make ACCESS_KEY='THE KEY' SECRET_KEY='THE SECRET KEY' sync`.
    This will download everything from the bucket, plus any missing files from
@@ -310,3 +392,6 @@ make publish # && follow the prompts
 [vendor.json]: https://github.com/kardianos/vendor-spec
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [glide]: https://github.com/Masterminds/glide
+[gomodules]: https://github.com/golang/go/wiki/Modules
+[DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4
+[Procfile]: https://devcenter.heroku.com/articles/procfile

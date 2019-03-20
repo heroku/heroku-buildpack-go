@@ -1,7 +1,157 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
-testGovendorWithPrivateDeps() {
+testModcmdDetection() {
+  fixture "mod-cmd"
+
+  assertDetected
+
+  compile
+  assertCaptured "Detected go modules - go.mod"
+  assertCaptured "Installing go"
+  assertCaptured "Detected \"cmd\" directory. Installing packages under \"cmd\""
+  assertCaptured "Running: go install -v -tags heroku ./cmd/..."
+  assertCaptured "github.com/heroku/fixture/cmd/fixture"
+  assertCaptured "github.com/heroku/fixture/cmd/other"
+  assertCaptured "Compiled the following binaries:"
+  assertCaptured "./bin/fixture"
+  assertCaptured "./bin/other"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModWithHooks() {
+  fixture "mod-basic-with-hooks"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "-----> Running bin/go-pre-compile hook"
+  assertCaptured "PRE COMPILE"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "-----> Running bin/go-post-compile hook"
+  assertCaptured "POST COMPILE"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModNoVersion() {
+  fixture "mod-no-version"
+
+  assertDetected
+
+  compile
+  assertCaptured "The go.mod file for this project does not specify a Go version"
+  assertCaptured "Defaulting to go"
+  assertCaptured "Detected go modules - go.mod"
+ 
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModOldVersion() {
+  fixture "mod-old-version"
+
+  assertDetected
+
+  compile
+  assertCapturedError 1 "Please add a comment in your go.mod file, or update an existing one, to specify a Go version that does like so"
+}
+
+testDepWithGolangMigrate() {
+  fixture "dep-golang-migrate"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "Installing github.com/golang-migrate/migrate"
+  assertCaptured "Fetching migrate"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryExists "migrate"
+}
+
+testModInstall() {
+  fixture "mod-install"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture/cmd/fixture1"
+  assertCaptured "github.com/heroku/fixture/cmd/fixture2"
+  assertCaptured "github.com/heroku/fixture/other"
+  assertCapturedSuccess
+  assertCompiledBinaryExists "fixture1"
+  assertCompiledBinaryExists "fixture2"
+  assertCompiledBinaryExists "other"
+}
+
+testModBasic() {
+  fixture "mod-basic"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  # This appears to be missing in this case.
+  #assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModBasicWithoutProcfile() {
+  fixture "mod-basic-wo-procfile"
+
+  assertDetected
+
+  compile
+  assertCompiledBinaryExists
+  assertFile "web: fixture" "Procfile"
+}
+
+testModDeps() {
+  fixture "mod-deps"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "finding github.com/gorilla/context v1.1.1"
+  assertCaptured "finding github.com/gorilla/mux v1.6.2"
+  assertCaptured "downloading github.com/gorilla/mux v1.6.2"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testModDepsVendored() {
+  fixture "mod-deps-vendored"
+
+  assertDetected
+
+  compile
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku -mod=vendor ."
+  assertNotCaptured "finding github.com/gorilla/context v1.1.1"
+  assertNotCaptured "finding github.com/gorilla/mux v1.6.2"
+  assertNotCaptured "downloading github.com/gorilla/mux v1.6.2"
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+}
+
+testGovendorWithPrivateDepsGithub() {
   if [ -z "${GITHUB_TOKEN}" ]; then
     echo "!!!"
     echo "!!! Skipping private Github repo test"
@@ -9,7 +159,7 @@ testGovendorWithPrivateDeps() {
     return 0
   fi
 
-  fixture "govendor-private"
+  fixture "govendor-private-github"
 
   env "GO_GIT_CRED__HTTPS__GITHUB__COM" "${GITHUB_TOKEN}"
 
@@ -22,6 +172,32 @@ testGovendorWithPrivateDeps() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCaptured "github.com/go-test-user/go-private-repo-test"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertCompiledBinaryOutputs "This is in a string from a Private Repo"
+}
+
+testGovendorWithPrivateDepsGitlab() {
+  if [ -z "${GITLAB_TOKEN}" ]; then
+    echo "!!!"
+    echo "!!! Skipping private Gitlab repo test"
+    echo "!!!"
+    return 0
+  fi
+
+  fixture "govendor-private-gitlab"
+
+  env "GO_GIT_CRED__HTTPS__GITLAB__COM" "${GITLAB_TOKEN}"
+
+  assertDetected
+
+  compile
+  assertCaptured "Checking vendor/vendor.json file."
+  assertCaptured "Installing go"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "Installing package '.' (default)"
+  assertCaptured "github.com/heroku/fixture"
+  assertCaptured "gitlab.com/freeformz/private-go-test"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "This is in a string from a Private Repo"
@@ -280,6 +456,13 @@ testTestPackGBWithTests() {
 }
 
 testGlideWithHgDep() {
+    if [ "${IMAGE}" = "heroku/cedar:14" ]; then
+    echo "!!!"
+    echo "!!! Skipping this test on heroku/cedar:14"
+    echo "!!! See: https://www.mercurial-scm.org/wiki/SecureConnections (3.1)"
+    echo "!!!"
+    return 0
+  fi
   fixture "glide-with-hg-dep"
 
   assertDetected
@@ -320,7 +503,7 @@ testGovendorCmdsOverride() {
   assertCaptured "Using \$GO_INSTALL_PACKAGE_SPEC override."
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
-  assertFileDoesNotExist "bin/other"
+  assertBuildDirFileDoesNotExist "bin/other"
 }
 
 testGodepCmds() {
@@ -346,7 +529,7 @@ testGodepCmdsOverride() {
   compile
   assertCompiledBinaryExists "fixture"
   assertCompiledBinaryOutputs "fixture" "fixture"
-  assertFileDoesNotExist "bin/other"
+  assertBuildDirFileDoesNotExist "bin/other"
 }
 
 testGodepBasicGo14WithGOVERSIONOverride() {
@@ -361,7 +544,7 @@ testGodepBasicGo14WithGOVERSIONOverride() {
   assertCaptured "Using \$GOVERSION override."
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
 testGovendorGo14WithGOVERSIONOverride() {
@@ -479,7 +662,7 @@ testGlideBasicWithTools() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGlideBasicInGOPATH() {
@@ -497,8 +680,8 @@ testGlideBasicInGOPATH() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists "src/github.com/heroku/fixture/main.go"
-  assertFileDoesNotExist "main.go"
+  assertBuildDirFileExists "src/github.com/heroku/fixture/main.go"
+  assertBuildDirFileDoesNotExist "main.go"
 }
 
 testGodepVendorGo17() {
@@ -519,7 +702,7 @@ testGodepBasicGo17() {
   compile
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
   assertCompiledBinaryOutputs "fixture" "go1.7beta1"
 }
 
@@ -563,7 +746,7 @@ testGodepBasicGo14() {
   compile
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".profile.d/concurrency.sh"
+  assertBuildDirFileExists ".profile.d/concurrency.sh"
 }
 
 testGodepCGOVendored(){
@@ -752,7 +935,7 @@ testGBBasicWithTools() {
   assertCaptured "Copying gb binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGodepLDSymbolValue() {
@@ -782,7 +965,6 @@ testGodepLDSymbolGo14Value() {
 
   compile
   assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture fixture ." #Nothing vendored
-  assertCaptured "Deprecated or unsupported version of go"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "fixture"
@@ -802,7 +984,7 @@ testGodepBasic() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
 testGodepBasicWithTools() {
@@ -822,8 +1004,8 @@ testGodepBasicWithTools() {
   assertNotCaptured "Copying godep binary" #We don't copy the binary when a workspace isn't present
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGodepBasicInGOPATH() {
@@ -841,9 +1023,9 @@ testGodepBasicInGOPATH() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileDoesNotExist ".profile.d/concurrency.sh"
-  assertFileExists "src/github.com/heroku/fixture/main.go"
-  assertFileDoesNotExist "main.go"
+  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
+  assertBuildDirFileExists "src/github.com/heroku/fixture/main.go"
+  assertBuildDirFileDoesNotExist "main.go"
 }
 
 testGodepCreateProcfile() {
@@ -890,7 +1072,7 @@ testGovendorBasicWithTools() {
   assertCaptured "Copying govendor binary"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists ".heroku/go/bin/go"
+  assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testGovendorBasicInGOPATH() {
@@ -908,8 +1090,8 @@ testGovendorBasicInGOPATH() {
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFileExists "src/github.com/heroku/fixture/main.go"
-  assertFileDoesNotExist "main.go"
+  assertBuildDirFileExists "src/github.com/heroku/fixture/main.go"
+  assertBuildDirFileDoesNotExist "main.go"
 }
 
 testGovendorCreateProcfile() {
@@ -967,6 +1149,45 @@ testGodepPackageSpec() {
   assertCaptured "github.com/heroku/fixture/cmd/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
+}
+
+testGoCacheGoVersionGreaterThanOrEqualTo110() {
+  local cache_dir="${CACHE_DIR}/go-build-cache"
+
+  fixture "dep-go-1-10"
+
+  assertDetected
+  assertDirDoesNotExist $cache_dir
+
+  compile
+  assertCaptured "Installing go1.10"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertDirExists "${cache_dir}"
+  assertFileExists "${cache_dir}/README"
+}
+
+testGoCacheGoVersionLessThan110() {
+  local cache_dir="${CACHE_DIR}/go-build-cache"
+
+  fixture "dep-go-version"
+
+  assertDetected
+  assertDirDoesNotExist $cache_dir
+
+  compile
+  assertCaptured "Installing go1.8.3"
+  assertCaptured "Fetching dep"
+  assertCaptured "Fetching any unsaved dependencies (dep ensure)"
+  assertCaptured "Running: go install -v -tags heroku ."
+  assertCaptured "github.com/heroku/fixture"
+  assertCapturedSuccess
+  assertCompiledBinaryExists
+  assertDirDoesNotExist "${cache_dir}"
 }
 
 pushd $(dirname 0) >/dev/null
