@@ -657,6 +657,6 @@ bin_path="${build}/bin"
 bin_files=`ls ${bin_path}`
 echo -e "\nCompiled the following binaries:"
 for fyle in $bin_files; do
-  info "$(echo ./bin/$fyle)"
+  info "./bin/$fyle"
 done 
 echo ""
