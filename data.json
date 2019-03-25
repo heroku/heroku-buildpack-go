@@ -117,6 +117,7 @@
   },
   "test": {
     "assets": [
+      "stdlib.sh.v8",
       "jq-linux64",
       "go1.11.6.linux-amd64.tar.gz",
       "go1.12.1.linux-amd64.tar.gz",
