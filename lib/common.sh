@@ -278,11 +278,13 @@ setGoVersionFromEnvironment() {
 determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
-        info ""
-        step "Detected go modules - go.mod"
-        info ""
+        step ""
+        info "Detected go modules via go.mod"
+        step ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
-        name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' ${goMOD} | cut -d/ -f3)
+        name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' < ${goMOD})
+        info "Detected Module Name: ${name}"
+        step ""
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
             ver=${DefaultGoVersion}
