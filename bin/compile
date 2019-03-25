@@ -441,22 +441,46 @@ export GOPATH
 # GB installation
 mcount "pkgmanagement.$TOOL"
 
+mainPackagesInModule() {
+  go list -find -mod=vendor -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
+}
+
 case "${TOOL}" in
     gomodules)
         cd ${build}
         step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
         if [ -z "${pkgs}" ]; then
-            if [ -d "${build}/cmd" ]; then
-                # Supports standard Go directory structure  https://github.com/golang-standards/project-layout#go-directories
-                step "Detected \"cmd\" directory. Installing packages under \"cmd\""
-                mcount "pkginstall.cmd"
-                pkgs="./cmd/..."
-            else
-                mcount "pkginstall.default"
+            pkgs=$(mainPackagesInModule)
+            if [ -z "${pkgs}" ]; then
+                warn ""
+                warn "No main packages found in module ${name}"
+                warn ""
+                warn "Unsure what package(s) to install, defaulting to '.'"
+                warn ""
                 pkgs="default"
+                mcount "pkginstall.default"
+            else
+                info ""
+                info "Detected the following main packages to install:"
+                for pkg in ${pkgs}; do
+                    info "\t ${pkg}"
+                done
+                info ""
+                mcount "pkginstall.auto"
+            fi
+        else
+            if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
+                mcount "pkginstall.go_install_package_spec"
+            else
+                mcount "pkginstall.heroku_install"
             fi
         fi
+
+        if [[ "${pkgs}" =~ "..." ]]; then
+            mcount "pkginstall.dot_dot_dot"
+        fi
+
         warnPackageSpecOverride
         handleDefaultPkgSpec
         massagePkgSpecForVendor
