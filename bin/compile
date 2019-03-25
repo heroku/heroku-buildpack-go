@@ -15,12 +15,12 @@ ensureInPath "jq-linux64" "${cache}/.jq/bin"
 # This is used by the buildpack stdlib for metrics
 BPLOG_PREFIX="buildpack.go"
 
-STDLIB_FILE=$(mktemp -t stdlib.XXXXX)
+STDLIB_DIR=$(mktemp -d -t stdlib.XXXXX)
 
 ### Load dependencies
 
-curl --silent --retry 5 --retry-max-time 15 'https://lang-common.s3.amazonaws.com/buildpack-stdlib/v8/stdlib.sh' > "$STDLIB_FILE"
-source "$STDLIB_FILE"
+ensureFile "stdlib.sh.v8" "${STDLIB_DIR}" "chmod a+x"
+source "${STDLIB_DIR}/stdlib.sh.v8"
 
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
