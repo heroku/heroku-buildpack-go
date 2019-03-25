@@ -443,6 +443,8 @@ mcount "pkgmanagement.$TOOL"
 
 case "${TOOL}" in
     gomodules)
+        cd ${build}
+        step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
         if [ -z "${pkgs}" ]; then
             if [ -d "${build}/cmd" ]; then
@@ -464,7 +466,6 @@ case "${TOOL}" in
         fi
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd ${build}
         export GOBIN="${build}/bin"
         if [[ -f bin/go-pre-compile ]]; then
             step "Running bin/go-pre-compile hook"
