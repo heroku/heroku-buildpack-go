@@ -33,6 +33,39 @@ TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
 
+snapshotBinBefore() {
+  if [ ! -d "${build}/bin" ]; then
+    return 0
+  fi
+  _oifs=$IFS
+  IFS=$'\n'
+  _binBefore=($(shasum ${build}/bin/*))
+  IFS=$_oifs
+}
+
+binDiff() {
+  _oifs=$IFS
+  IFS=$'\n'
+  local binAfter=($(shasum ${build}/bin/*))
+
+  local new=()
+  for a in "${binAfter[@]}"; do
+    local let found=0
+
+    for b in "${_binBefore[@]}"; do
+        if [ "${a}" == "${b}" ]; then
+        let found+=1
+        fi
+    done
+
+    if [ $found -eq 0 ]; then
+        new+=( "./bin/$(basename $(echo $a | awk '{print $2}' ) )" )
+    fi
+  done
+  IFS=$_oifs
+  echo ${new[@]}
+}
+
 info() {
     echo -e "${GREEN}       $@${NC}"
 }

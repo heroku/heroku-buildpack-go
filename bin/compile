@@ -10,6 +10,8 @@ env_dir="${3}"
 
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 source "${buildpack}/lib/common.sh"
+snapshotBinBefore
+
 ensureInPath "jq-linux64" "${cache}/.jq/bin"
 
 # This is used by the buildpack stdlib for metrics
@@ -464,7 +466,7 @@ case "${TOOL}" in
                 info ""
                 info "Detected the following main packages to install:"
                 for pkg in ${pkgs}; do
-                    info "\t ${pkg}"
+                    info "\t\t${pkg}"
                 done
                 info ""
                 mcount "pkginstall.auto"
@@ -677,10 +679,10 @@ if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
 
-bin_path="${build}/bin"
-bin_files=`ls ${bin_path}`
-echo -e "\nCompiled the following binaries:"
-for fyle in $bin_files; do
-  info "./bin/$fyle"
-done 
-echo ""
+_newOrUpdatedBinFiles=$(binDiff)
+info ""
+info "Installed the following binaries:"
+for fyle in ${_newOrUpdatedBinFiles}; do
+  info "\t\t${fyle}"
+done
+info ""
