@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. $(pwd)/test/utils
+. $(pwd)/test/utils.sh
 
 export SHUNIT_TMPDIR=/tmp
 oneTimeSetUp
