@@ -303,21 +303,22 @@ that tests have been added to the `test/run` script and any corresponding fixtur
 
 ### Tests
 
-Requires docker.
+[Make] & [docker] are required to run tests.
 
 ```console
 make test
 ```
 
-### Compiling a fixture
+### Compiling a fixture locally
 
-Requires docker.
+[Make] & [docker] are required to compile a fixture.
 
 ```console
 make FIXTURE=<fixture name> compile
 ```
 
-You will then be dropped into a bash prompt in the container in which the fixture was compiled in.
+You will then be dropped into a bash prompt in the container that the fixture
+was compiled in.
 
 ## Using with cgo
 
@@ -358,9 +359,11 @@ into the compiled executable.
 
 ## Testpack
 
-This buildpack also supports the testpack API.
+This buildpack supports the testpack API.
 
 ## Deploying
+
+[Make] & the [Heroku Toolbelt][toolbelt] are required to deploy.
 
 ```console
 make publish # && follow the prompts
@@ -395,3 +398,6 @@ make publish # && follow the prompts
 [gomodules]: https://github.com/golang/go/wiki/Modules
 [DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4
 [Procfile]: https://devcenter.heroku.com/articles/procfile
+[make]: https://www.gnu.org/software/make/
+[docker]: https://www.docker.com/
+[toolbelt]: https://devcenter.heroku.com/articles/heroku-cli
