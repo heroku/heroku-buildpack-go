@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /usr/bin/env bash
 # $Id: shunit2 335 2011-05-01 20:10:33Z kate.ward@forestent.com $
 # vim:et:ft=sh:sts=2:sw=2
 #

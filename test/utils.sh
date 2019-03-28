@@ -1,22 +1,19 @@
-#!/bin/sh
+##############
+## shunit2 setup/teardown functions
+##
 
-# taken from
-# https://github.com/ryanbrainard/heroku-buildpack-testrunner/blob/master/lib/test_utils.sh
-
-oneTimeSetUp()
-{
+oneTimeSetUp() {
    TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
    BUILDPACK_HOME="/buildpack"
+   # jq isn't in the docker image, so need to do this the hard way
    DEFAULT_GO_VERSION=$(head < $BUILDPACK_HOME/data.json | grep DefaultVersion | cut -d : -f 2 | cut -d , -f 1 | sed -e s:\"::g -e s:\ ::g)
 }
 
-oneTimeTearDown()
-{
+oneTimeTearDown() {
   rm -rf ${TEST_SUITE_CACHE}
 }
 
-setUp()
-{
+setUp() {
   OUTPUT_DIR="$(mktemp -d ${SHUNIT_TMPDIR}/output.XXXX)"
   STD_OUT="${OUTPUT_DIR}/stdout"
   STD_ERR="${OUTPUT_DIR}/stderr"
@@ -27,15 +24,18 @@ setUp()
   mkdir -p ${BUILD_DIR}
   mkdir -p ${CACHE_DIR}
   mkdir -p ${ENV_DIR}
+
 }
 
-tearDown()
-{
+tearDown() {
   rm -rf ${OUTPUT_DIR}
 }
 
-capture()
-{
+##############
+## Helpers
+##
+
+capture() {
   resetCapture
 
   LAST_COMMAND="$@"
@@ -45,10 +45,13 @@ capture()
   rtrn=${RETURN} # deprecated
 }
 
-resetCapture()
-{
+resetCapture() {
   if [ -f ${STD_OUT} ]; then
     rm ${STD_OUT}
+  fi
+
+  if [ -f "${STD_OUT}_no_color" ]; then
+    rm "${STD_OUT}_no_color"
   fi
 
   if [ -f ${STD_ERR} ]; then
@@ -61,11 +64,13 @@ resetCapture()
 }
 
 fixture() {
-  local fp="${BUILDPACK_HOME}/test/fixtures/${1}"
+  local fixture="${1}"
+  echo "* fixture: ${fixture}"
+  local fp="${BUILDPACK_HOME}/test/fixtures/${fixture}"
   tar -cf - -C $fp . | tar -x -C ${BUILD_DIR}
 }
 
-env(){
+env() {
   local var="${1}"
   local val="${2}"
   if [ -z "${var}" ]; then
@@ -91,15 +96,14 @@ compile() {
   capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} ${ENV_DIR}
 }
 
-dotest(){
+dotest() {
   echo "* test-compile"
   capture "${BUILDPACK_HOME}/bin/test-compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
   echo "* test"
   capture "${BUILDPACK_HOME}/bin/test" "${BUILD_DIR}" "${ENV_DIR}"
 }
 
-release()
-{
+release() {
   capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
 }
 
@@ -111,34 +115,34 @@ assertFile() {
 }
 
 assertBuildDirFileDoesNotExist() {
-  local name=${1}
+  local name="${1}"
   local tgt="${BUILD_DIR}/${name}"
   assertTrue "File ${name} exists" "[ ! -f ${tgt} ]"
 }
 
 assertBuildDirFileExists() {
-  local name=${1}
+  local name="${1}"
   local tgt="${BUILD_DIR}/${name}"
   assertTrue "File ${name} does not exist" "[ -f ${tgt} ]"
 }
 
 assertFileExists() {
-  local name=${1}
+  local name="${1}"
   assertTrue "File ${name} does not exist" "[ -f ${name} ]"
 }
 
 assertDirExists() {
-  local path=${1}
+  local path="${1}"
   assertTrue "Dir ${path} does not exist" "[ -d ${path} ]"
 }
 
 assertDirDoesNotExist() {
-  local path=${1}
+  local path="${1}"
   assertTrue "Dir ${path} exists" "[ ! -d ${path} ]"
 }
 
 assertCompiledBinaryExists() {
-  local name=${1:-fixture}
+  local name="${1:-fixture}"
   local tgt="${BUILD_DIR}/bin/${name}"
   assertTrue "Compiled binary (${tgt}) exists" "[ -x ${tgt} ]"
 }
@@ -149,41 +153,35 @@ assertCompiledBinaryOutputs() {
   capture "${BUILD_DIR}/bin/${name}"
 }
 
-assertCapturedEquals()
-{
+assertCapturedEquals() {
   assertEquals "$@" "$(cat ${STD_OUT})"
 }
 
-assertCapturedNotEquals()
-{
+assertCapturedNotEquals() {
   assertNotEquals "$@" "$(cat ${STD_OUT})"
 }
 
-assertCaptured()
-{
+assertCaptured() {
   assertFileContains "$@" "${STD_OUT}"
 }
 
-assertNotCaptured()
-{
+assertNotCaptured() {
   assertFileNotContains "$@" "${STD_OUT}"
 }
 
-assertCapturedSuccess()
-{
+assertCapturedSuccess() {
   assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
   assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
 }
 
 # assertCapturedError [[expectedErrorCode] expectedErrorMsg]
-assertCapturedError()
-{
+assertCapturedError() {
   if [ $# -gt 1 ]; then
-    local expectedErrorCode=${1}
+    local expectedErrorCode="${1}"
     shift
   fi
 
-  local expectedErrorMsg=${1:-""}
+  local expectedErrorMsg="${1:-""}"
 
   if [ -z ${expectedErrorCode} ]; then
     assertTrue "Expected captured exit code to be greater than 0; was <${RETURN}>" "[ ${RETURN} -gt 0 ]"
@@ -196,10 +194,9 @@ assertCapturedError()
   fi
 }
 
-_assertContains()
-{
+_assertContains() {
   if [ 5 -eq $# ]; then
-    local msg=$1
+    local msg="${1}"
     shift
   elif [ ! 4 -eq $# ]; then
     fail "Expected 4 or 5 parameters; Receieved $# parameters"
@@ -211,7 +208,13 @@ _assertContains()
   local haystack_type=$4
 
   case "${haystack_type}" in
-    "file") grep -q -F -e "${needle}" ${haystack} ;;
+    "file")
+      local haystack_no_color="${haystack}_no_color"
+      if [ ! -e ${haystack_no_color} ]; then
+        sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" < ${haystack} > ${haystack_no_color}
+      fi
+      ## echo grep -q -F -e "${needle}" ${haystack_no_color}
+      grep -q -F -e "${needle}" ${haystack_no_color} ;;
     "text") echo "${haystack}" | grep -q -F -e "${needle}" ;;
   esac
 
@@ -225,23 +228,19 @@ _assertContains()
   fi
 }
 
-assertContains()
-{
+assertContains() {
   _assertContains "$@" 0 "text"
 }
 
-assertNotContains()
-{
+assertNotContains() {
   _assertContains "$@" 1 "text"
 }
 
-assertFileContains()
-{
+assertFileContains() {
   _assertContains "$@" 0 "file"
 }
 
-assertFileNotContains()
-{
+assertFileNotContains() {
   _assertContains "$@" 1 "file"
 }
 
@@ -249,8 +248,7 @@ command_exists () {
     type "$1" > /dev/null 2>&1 ;
 }
 
-assertFileMD5()
-{
+assertFileMD5() {
   expectedHash=$1
   filename=$2
 
@@ -265,4 +263,27 @@ assertFileMD5()
   fi
 
   assertEquals "${expected_md5_cmd_output}" "`${md5_cmd}`"
+}
+
+assertModulesBoilerplateCaptured() {
+  assertCaptured "Detected go modules via go.mod"
+  assertCaptured "Detected Module Name: github.com/heroku/fixture"
+  assertCaptured "Determining packages to install"
+}
+
+assertGoInstallOnlyFixturePackageCaptured(){
+  assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture
+github.com/heroku/fixture"
+}
+
+assertInstalledFixtureBinary() {
+  assertCaptured "Installed the following binaries:
+./bin/fixture"
+  assertCompiledBinaryExists fixture
+}
+
+assertGoInstallCaptured() {
+  local go_ver=${1:-${DEFAULT_GO_VERSION}}
+  assertCaptured "Installing ${go_ver}
+Fetching ${go_ver}.linux-amd64.tar.gz... done"
 }
