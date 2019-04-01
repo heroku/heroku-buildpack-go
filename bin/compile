@@ -444,6 +444,7 @@ export GOPATH
 mcount "pkgmanagement.$TOOL"
 
 mainPackagesInModule() {
+  # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
   go list -find -mod=vendor -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
 }
 
@@ -461,7 +462,7 @@ case "${TOOL}" in
                 warn "Unsure what package(s) to install, defaulting to '.'"
                 warn ""
                 pkgs="default"
-                mcount "pkginstall.default"
+                mcount "pkginstall.detect-failed"
             else
                 info ""
                 info "Detected the following main packages to install:"
@@ -480,7 +481,7 @@ case "${TOOL}" in
         fi
 
         if [[ "${pkgs}" =~ "..." ]]; then
-            mcount "pkginstall.dot_dot_dot"
+            mcount "package_spec.contains.dot_dot_dot"
         fi
 
         warnPackageSpecOverride
