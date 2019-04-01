@@ -55,6 +55,11 @@ article][app-engine-build-constraints] for more info.
 
 ## Go Module Specifics
 
+When using go modules, this buildpack will search the code base for `main`
+packages, ignoring any in `vendor/`, and will automatically compile those
+packages. If this isn't what you want you can specify specific package spec(s)
+via the `go.mod` file's `// +heroku install` directive (see below).
+
 The `go.mod` file allows for arbitrary comments. This buildpack utilizes [build
 constraint](https://golang.org/pkg/go/build/#hdr-Build_Constraints) style
 comments to track Heroku build specific configuration which is encoded in the
@@ -67,11 +72,14 @@ following way:
 
   Example: `// +heroku goVersion go1.11`
 
-- `// +heroku install <packagespec>[, <packagespec>]`: a space seperated list of
-  the packages you want to install. If not specified, this defaults to `.`.
-  Other common choices are: `./cmd/...` (all packages and sub packages in the
-  `cmd` directory) and `./...` (all packages and sub packages of the current
-  directory). The exact choice depends on the layout of your repository though.
+- `// +heroku install <packagespec>[ <packagespec>]`: a space seperated list of
+  the packages you want to install. If not specified, the buildpack defaults to
+  detecting the `main` packages in the code base. Generally speaking this should
+  be sufficient for most users. If this isn't what you want you can instruct the
+  buildpack to only build certain packages via this option. Other common choices
+  are: `./cmd/...` (all packages and sub packages in the `cmd` directory) and
+  `./...` (all packages and sub packages of the current directory). The exact
+  choice depends on the layout of your repository though.
 
   Example: `// +heroku install ./cmd/... ./special`
 
