@@ -433,7 +433,7 @@ if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
             xval="${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}"
         ;;
     esac
-    FLAGS=(${FLAGS[@]} -ldflags "-X ${xval}")
+    FLAGS+=(-ldflags "-X ${xval}")
 fi
 
 export GOPATH
@@ -460,7 +460,7 @@ case "${TOOL}" in
         massagePkgSpecForVendor
 
         if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
-            FLAGS=(${FLAGS[@]} -mod=vendor)
+            FLAGS+=(-mod=vendor)
         fi
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
