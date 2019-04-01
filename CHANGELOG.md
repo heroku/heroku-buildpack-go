@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Fixed flag handling, which has been broken since -mod=vendor was added (at least)
 
 ## v105 (2019-03-18)
 * Add go1.12.1 & go1.11.6
