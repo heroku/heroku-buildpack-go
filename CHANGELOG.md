@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Handle non files in bin/ (symlinks, directories, etc) when diffing to determine contents of bin/
 
 ## v106 (2019-04-01)
 * Fixed flag handling, which has been broken since -mod=vendor was added (at least)

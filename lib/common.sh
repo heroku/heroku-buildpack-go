@@ -39,14 +39,24 @@ snapshotBinBefore() {
   fi
   _oifs=$IFS
   IFS=$'\n'
-  _binBefore=($(shasum ${build}/bin/*))
+  _binBefore=()
+  for f in ${build}/bin/*; do
+    if [ -f $f ]; then
+      _binBefore+=($(shasum $f))
+    fi
+  done
   IFS=$_oifs
 }
 
 binDiff() {
   _oifs=$IFS
   IFS=$'\n'
-  local binAfter=($(shasum ${build}/bin/*))
+  local binAfter=()
+  for f in ${build}/bin/*; do
+    if [ -f $f ]; then
+      binAfter+=($(shasum $f))
+    fi
+  done
 
   local new=()
   for a in "${binAfter[@]}"; do
