@@ -3,14 +3,7 @@ set -e
 
 BUCKET="s3://heroku-golang-prod/"
 
-if [ -z "$ACCESS_KEY" -o -z "$SECRET_KEY" ]; then
-  echo "ACCESS_KEY and SECRET_KEY must be set"
-  exit 1
-fi
-
-S3CMD="s3cmd --access_key=${ACCESS_KEY} --secret_key=${SECRET_KEY}"
-
-tools=(jq curl shasum s3cmd)
+tools=(jq curl shasum s3cmd lpass)
 for tool in ${tools[@]}; do
   if ! which -s ${tool}; then
     continue
@@ -32,6 +25,11 @@ jf="${cwd}/files.json"
 td="${cwd}/file-cache"
 mkdir -p "${td}"
 cd "${td}"
+
+echo "Getting bucket credentials"
+
+S3CMD="s3cmd $(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | "--access_key=\(.AccessKeyId) --secret_key=\(.SecretAccessKey)"')"
+echo $S3CMD
 
 echo "Syncing contents of ${BUCKET} to $(pwd)."
 ${S3CMD} sync --check-md5 ${BUCKET} ./
