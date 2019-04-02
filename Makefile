@@ -7,9 +7,8 @@ GO_BUCKET_URL := file:///buildpack/test/assets
 .DEFAULT: test
 .NOTPARALLEL: docker test-assets
 
-# make ACCESS_KEY="..." SECRET_KEY="...." sync
 sync:
-	ACCESS_KEY=$(ACCESS_KEY) SECRET_KEY=$(SECRET_KEY) ./bin/sync-files.sh
+	./bin/sync-files.sh
 
 test: BASH_COMMAND := test/run.sh
 test: docker
