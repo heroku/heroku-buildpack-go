@@ -1,6 +1,25 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModWithNonFilesInBin() {
+  fixture "mod-with-non-files-in-bin"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
+  assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
+  assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
+  assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+}
+
 testModcmdDetection() {
   fixture "mod-cmd"
 
