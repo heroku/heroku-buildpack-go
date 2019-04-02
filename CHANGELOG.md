@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v107 (2019-04-02)
 * Handle non files in bin/ (symlinks, directories, etc) when diffing to determine contents of bin/
 
 ## v106 (2019-04-01)
