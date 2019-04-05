@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModWithQuotesModule() {
+  fixture "mod-with-quoted-module"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+  assertFile "web: fixture" "Procfile"
+}
+
 testModWithNonFilesInBin() {
   fixture "mod-with-non-files-in-bin"
 
