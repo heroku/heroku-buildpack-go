@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Handle quoted module names in go.mod
 
 ## v107 (2019-04-02)
 * Handle non files in bin/ (symlinks, directories, etc) when diffing to determine contents of bin/
