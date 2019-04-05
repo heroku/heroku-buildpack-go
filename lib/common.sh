@@ -325,7 +325,7 @@ determineTool() {
         info "Detected go modules via go.mod"
         step ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
-        name=$(awk '{ if ($1 == "module" ) { print $2; exit } }' < ${goMOD})
+        name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goMOD})
         info "Detected Module Name: ${name}"
         step ""
         warnGoVersionOverride
