@@ -338,16 +338,16 @@ determineTool() {
             warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
             warn ""
         fi
-        if ! <"${DataJSON}" jq  -e '.Go.SupportsModuleExperiment | any(. == "'${ver}'")' &> /dev/null; then
+        if ! echo "\"${ver}\"" | jq -e 'split(".") | map(gsub("go";"")) | map(tonumber) | .[0] >= 1 and .[1] >= 11' &> /dev/null; then
             err "You are using ${ver}, which does not support Go modules"
             err ""
-            err "These go versions support Go modules: $(<${DataJSON} jq -c -r -M '.Go.SupportsModuleExperiment | sort | join(", ")')"
+            err "Go modules are supported by go1.11 and above."
             err ""
-            err "Please add a comment in your go.mod file, or update an existing one, to specify a Go version that does like so:"
-            err "// +heroku goVersion go1.11.5"
+            err "Please add/update the comment in your go.mod file to specify a Go version >= go1.11 like so:"
+            err "// +heroku goVersion ${DefaultGoVersion}"
             err ""
             err "Then commit and push again."
-           exit 1
+            exit 1
         fi
     elif [ -f "${depTOML}" ]; then
         TOOL="dep"

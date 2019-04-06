@@ -101,7 +101,7 @@ testModOldVersion() {
   compile
   assertCaptured "Detected go modules via go.mod"
   assertCaptured "Detected Module Name: github.com/heroku/fixture"
-  assertCapturedError 1 "Please add a comment in your go.mod file, or update an existing one, to specify a Go version that does like so"
+  assertCapturedError 1 "Please add/update the comment in your go.mod file to specify a Go version >= go1.11 like so:"
 }
 
 testDepWithGolangMigrate() {
