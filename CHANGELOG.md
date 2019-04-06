@@ -2,6 +2,10 @@
 
 ## Unreleased
 * Handle quoted module names in go.mod
+* Add go1.12.2, expand go1.12 to go1.12.2, and default to go1.12.2
+* Add go1.11.7 and expand go1.11 to go.11.7.
+* Drop 'Go.SupportsModuleExperiment' from data.json, instead error for go versions < go1.11 when using modules.
+* Drop 'Go.Supported' from data.json since the buildpack is no longer using it for anything.
 
 ## v107 (2019-04-02)
 * Handle non files in bin/ (symlinks, directories, etc) when diffing to determine contents of bin/
