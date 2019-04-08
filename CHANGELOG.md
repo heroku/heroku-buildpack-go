@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v108 (2019-04-08)
 * Handle quoted module names in go.mod
 * Add go1.12.2, expand go1.12 to go1.12.2, and default to go1.12.2
 * Add go1.11.7 and expand go1.11 to go.11.7.
