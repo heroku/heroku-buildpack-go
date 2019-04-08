@@ -318,6 +318,12 @@ setGoVersionFromEnvironment() {
     ver=${GOVERSION:-$DefaultGoVersion}
 }
 
+supportsGoModules() {
+    local version="${1}"
+    # Ex:      "go1.10.4" | ["go1","10", "4"] | ["1","10","4"]     | [1,10,4]      |  [1]           [10]      == exit 1 (fail)
+    echo "\"${version}\"" | jq -e 'split(".") | map(gsub("go";"")) | map(tonumber) | .[0] >= 1 and .[1] < 11' &> /dev/null
+}
+
 determineTool() {
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
@@ -338,7 +344,8 @@ determineTool() {
             warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
             warn ""
         fi
-        if ! echo "\"${ver}\"" | jq -e 'split(".") | map(gsub("go";"")) | map(tonumber) | .[0] >= 1 and .[1] >= 11' &> /dev/null; then
+
+        if supportsGoModules "${ver}"; then
             err "You are using ${ver}, which does not support Go modules"
             err ""
             err "Go modules are supported by go1.11 and above."
