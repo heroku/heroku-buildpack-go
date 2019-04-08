@@ -18,8 +18,8 @@ shell: docker
 quick: BASH_COMMAND := test/quick.sh; bash
 quick: docker
 
-# make FIXTURE=<fixture name> compile
-compile: BASH_COMMAND := test/quick.sh compile $(FIXTURE); bash
+# make FIXTURE=<fixture name> ENV=<FOO=BAR> compile
+compile: BASH_COMMAND := test/quick.sh compile $(FIXTURE) $(ENV); bash
 compile: docker
 
 publish:
