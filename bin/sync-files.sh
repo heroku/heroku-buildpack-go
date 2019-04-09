@@ -29,7 +29,6 @@ cd "${td}"
 echo "Getting bucket credentials"
 
 S3CMD="s3cmd $(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | "--access_key=\(.AccessKeyId) --secret_key=\(.SecretAccessKey)"')"
-echo $S3CMD
 
 echo "Syncing contents of ${BUCKET} to $(pwd)."
 ${S3CMD} sync --check-md5 ${BUCKET} ./
