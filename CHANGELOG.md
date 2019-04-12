@@ -1,6 +1,9 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.12.4, expand go1.12 to go1.12.4, and default to go1.12.4
+* Add go1.11.9 and expand go1.11 to go.11.9.
+* Restore vendored mattes migrate teset on cedar:14 (finally fixed in ^)
 
 ## v109 (2019-04-09)
 * Add go1.12.3, expand go1.12 to go1.12.3, and default to go1.12.3

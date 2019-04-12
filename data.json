@@ -1,11 +1,11 @@
 {
   "Go": {
-    "DefaultVersion": "go1.12.3",
+    "DefaultVersion": "go1.12.4",
     "VersionExpansion": {
       "go1.12.0": "go1.12",
-      "go1.12": "go1.12.3",
+      "go1.12": "go1.12.4",
       "go1.11.0": "go1.11",
-      "go1.11": "go1.11.8",
+      "go1.11": "go1.11.9",
       "go1.10.0": "go1.10",
       "go1.10": "go1.10.8",
       "go1.9.0": "go1.9",
@@ -98,8 +98,8 @@
     "assets": [
       "stdlib.sh.v8",
       "jq-linux64",
-      "go1.11.8.linux-amd64.tar.gz",
-      "go1.12.3.linux-amd64.tar.gz",
+      "go1.11.9.linux-amd64.tar.gz",
+      "go1.12.4.linux-amd64.tar.gz",
       "go1.10.8.linux-amd64.tar.gz",
       "go1.8.3.linux-amd64.tar.gz",
       "go1.7.6.linux-amd64.tar.gz",
