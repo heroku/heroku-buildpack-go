@@ -494,6 +494,7 @@ case "${TOOL}" in
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
         export GOBIN="${build}/bin"
+        export GOPATH="${cache}/go-path"
         if [[ -f bin/go-pre-compile ]]; then
             step "Running bin/go-pre-compile hook"
             chmod a+x bin/go-pre-compile

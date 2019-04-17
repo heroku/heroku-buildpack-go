@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Set GOPATH when using Go modules to capture downloaded dependencies.
 
 ## v110 (2019-04-15)
 * Add go1.12.4, expand go1.12 to go1.12.4, and default to go1.12.4

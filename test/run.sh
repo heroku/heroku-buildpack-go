@@ -1,6 +1,44 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModDepsRecompile() {
+  fixture "mod-deps"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  # The other deps are downloaded/installed
+  assertCaptured "
+go: finding github.com/gorilla/mux v1.6.2
+go: finding github.com/gorilla/context v1.1.1
+go: downloading github.com/gorilla/mux v1.6.2
+go: extracting github.com/gorilla/mux v1.6.2
+github.com/gorilla/mux
+"
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+
+  # Second compile
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  # On the second compile go should already be fetched and installed & the packages should be downloaded already.
+  assertNotCaptured "Fetching ${DEFAULT_GO_VERSION}.linux-amd64.tar.gz... done"
+  assertNotCaptured "Installing ${DEFAULT_GO_VERSION}"
+  assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
+  assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
+  assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
+  assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+}
+
 testModWithQuotesModule() {
   fixture "mod-with-quoted-module"
 
