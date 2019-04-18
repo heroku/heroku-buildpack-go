@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v111 (2019-04-18)
 * Set GOPATH when using Go modules to capture downloaded dependencies.
 
 ## v110 (2019-04-15)
