@@ -1,6 +1,21 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testModProcfileCreation() {
+  fixture "mod-cmd-web"
+
+  assertDetected
+  
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/web
+github.com/heroku/fixture/cmd/other"
+
+  assertCapturedSuccess
+  assertFile "other: bin/other
+web: bin/web" "Procfile"
+}
 testModDepsRecompile() {
   fixture "mod-deps"
 
@@ -51,7 +66,7 @@ testModWithQuotesModule() {
 
   assertCapturedSuccess
   assertInstalledFixtureBinary
-  assertFile "web: fixture" "Procfile"
+  assertFile "web: bin/fixture" "Procfile"
 }
 
 testModWithNonFilesInBin() {
@@ -91,6 +106,9 @@ github.com/heroku/fixture/cmd/other"
   assertCaptured "Installed the following binaries:
 ./bin/fixture
 ./bin/other"
+
+  assertFile "fixture: bin/fixture
+other: bin/other" "Procfile"
   
   assertCapturedSuccess
   assertInstalledFixtureBinary
@@ -211,7 +229,7 @@ testModBasicWithoutProcfile() {
 
   assertCapturedSuccess
   assertInstalledFixtureBinary
-  assertFile "web: fixture" "Procfile"
+  assertFile "web: bin/fixture" "Procfile"
 }
 
 testModDeps() {
@@ -1141,7 +1159,7 @@ testGodepCreateProcfile() {
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFile "web: fixture" "Procfile"
+  assertFile "web: bin/fixture" "Procfile"
 }
 
 testGovendorBasic() {
@@ -1207,7 +1225,7 @@ testGovendorCreateProcfile() {
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFile "web: fixture" "Procfile"
+  assertFile "web: bin/fixture" "Procfile"
 }
 
 testGodepOldWorkspace() {

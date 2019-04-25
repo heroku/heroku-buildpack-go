@@ -448,6 +448,40 @@ mainPackagesInModule() {
   go list -find -mod=vendor -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
 }
 
+setupProcfile() {
+    if [ -f "${build}/Procfile" ]; then
+        return
+    fi
+    local pkgs=$(mainPackagesInModule)
+    if [ -z "${pkgs}" ]; then
+        return
+    fi
+    local pf=()
+    for pkg in ${pkgs}; do
+        local bn=$(basename ${pkg})
+        pf+=("${bn}: bin/${bn}")
+    done
+    if [ ${#pf} -eq 0 ]; then
+        return
+    fi
+    info ""
+    info "Created a Procfile with the following entries:"
+    if [ ${#pf[@]} -eq 1 ]; then
+        local line="web: bin/$(echo ${pf[0]} | cut -d / -f 2)"
+        echo "${line}" > ${build}/Procfile
+        info "\t\t${line}"
+    elif [ ${#pf[@]} -gt 1 ]; then
+        for pfl in "${pf[@]}"; do
+            echo "${pfl}" >> ${build}/Procfile
+            info "\t\t${pfl}"
+        done
+    fi
+    info ""
+    info "If these entries look incomplete or incorrect please create a Procfile with the required entries."
+    info "See https://devcenter.heroku.com/articles/procfile for more details about Procfiles"
+    info ""
+}
+
 case "${TOOL}" in
     gomodules)
         cd ${build}
@@ -636,8 +670,19 @@ esac
 installGolangMigrateIfWanted
 installMattesMigrateIfWanted
 
+_newOrUpdatedBinFiles=$(binDiff)
+info ""
+info "Installed the following binaries:"
+for fyle in ${_newOrUpdatedBinFiles}; do
+  info "\t\t${fyle}"
+done
+
 if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
     mv -t "${build}" "${src}/Procfile"
+fi
+
+if [ "${TOOL}" == "gomodules" ]; then
+    setupProcfile
 fi
 
 if [ ! -e $build/Procfile -a -n "${name}" ]; then
@@ -681,10 +726,3 @@ if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
 
-_newOrUpdatedBinFiles=$(binDiff)
-info ""
-info "Installed the following binaries:"
-for fyle in ${_newOrUpdatedBinFiles}; do
-  info "\t\t${fyle}"
-done
-info ""
