@@ -1,9 +1,12 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* *GoModules* When no Procfile exists and only a single main package exists, setup the resulting executable as the web process type.
+* *GoModules* When no Procfile exists and multiple main packages exist, setup the resulting executables as process types of the same name.
+* *GoModules* This means that a main package in a `web` directory will be setup as the web process type, a package in a `worker` directory will be setup as the worker process type, etc.
 
 ## v111 (2019-04-18)
-* Set GOPATH when using Go modules to capture downloaded dependencies.
+* *GoModules* Set GOPATH to capture downloaded dependencies.
 
 ## v110 (2019-04-15)
 * Add go1.12.4, expand go1.12 to go1.12.4, and default to go1.12.4
@@ -15,10 +18,10 @@
 * Add go1.11.8 and expand go1.11 to go.11.8.
 
 ## v108 (2019-04-08)
-* Handle quoted module names in go.mod
+* *GoModules* Handle quoted module names in go.mod
 * Add go1.12.2, expand go1.12 to go1.12.2, and default to go1.12.2
 * Add go1.11.7 and expand go1.11 to go.11.7.
-* Drop 'Go.SupportsModuleExperiment' from data.json, instead error for go versions < go1.11 when using modules.
+* *GoModules* Drop 'Go.SupportsModuleExperiment' from data.json, instead error for go versions < go1.11 when using modules.
 * Drop 'Go.Supported' from data.json since the buildpack is no longer using it for anything.
 * Skip vendored mattes migrate compile on cedar:14 due to gcc error.
 
@@ -26,8 +29,8 @@
 * Handle non files in bin/ (symlinks, directories, etc) when diffing to determine contents of bin/
 
 ## v106 (2019-04-01)
-* Fixed flag handling, which has been broken since -mod=vendor was added (at least)
-* For Go modules, detect main packages in the repo and install them when there isn't a specified package spec.
+* *GoModules* Fixed flag handling, which has been broken since -mod=vendor was added (at least)
+* *GoModules* Detect main packages in the repo and install them when there isn't a specified package spec.
 * Only list the contents of bin/ that were installed/modified by the buildpack, instead of everything in bin/
 * Small updates to the readme
 
@@ -37,7 +40,7 @@
 * If ./cmd exists and no package spec is set, then set package spec to ./cmd/...
 
 ## v104 (2019-03-11)
-* Fix up Go modules testing to include mod=vendor or mod=readonly and set GOPATH to a temporary directory so downloaded deps' tests aren't executed.
+* *GoModules* Fix up Go modules testing to include mod=vendor or mod=readonly and set GOPATH to a temporary directory so downloaded deps' tests aren't executed.
 * Move publish script to /sbin/publish / don't push to master since it's disabled.
 * Add Codeowners to automate PR reviews.
 
@@ -56,7 +59,7 @@
 ## v100 (2019-02-12)
 * Add go1.10.8 and default to it when go1.10 is specified
 * Add go1.11.5 and default to it when go1.11 is specified or no version is specified.
-* Support go modules on Heroku CI (bin/test-compile & bin/test).
+* *GoModules* Support go modules on Heroku CI (bin/test-compile & bin/test).
 * Add pre/post compile run hooks: /bin/go-pre-compile & /bin/go-post-compile
 * Add go1.12rc1 and default to it when go1.12 is specified.
 
