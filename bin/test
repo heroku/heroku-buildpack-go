@@ -45,8 +45,12 @@ output=$(mktemp)
 case "${TOOL}" in
     gomodules)
         cd "${build}"
+        if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
+            step ".golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"
+            ${build}/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run
+        fi
         _tflags=("-race" "-v")
-        if [[ -d "./vendor" ]]; then
+        if [[ -s "./go.sum" -a -d "./vendor" ]]; then
           _tflags+=("-mod=vendor")
         else
           _tflags+=("-mod=readonly")
