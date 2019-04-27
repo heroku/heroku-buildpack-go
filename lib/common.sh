@@ -4,6 +4,8 @@
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
 
+export _COMMON_LOADED="true"
+
 if [ -z "${buildpack}" ]; then
     buildpack=$(cd "$(dirname $0)/.." && pwd)
 fi
@@ -221,6 +223,7 @@ loadEnvDir() {
     envFlags+=("GO_INSTALL_PACKAGE_SPEC")
     envFlags+=("GO_INSTALL_TOOLS_IN_IMAGE")
     envFlags+=("GO_SETUP_GOPATH_IN_IMAGE")
+    envFlags+=("GO_SETUP_GOPATH_FOR_TEST_CACHE")
     envFlags+=("GO_TEST_SKIP_BENCHMARK")
     envFlags+=("GLIDE_SKIP_INSTALL")
     local env_dir="${1}"

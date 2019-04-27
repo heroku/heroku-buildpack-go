@@ -10,8 +10,20 @@ echo "true" > "${3}/GO_INSTALL_TOOLS_IN_IMAGE"
 if [[ -f "${build}/go.mod" ]]; then
     #go modules, so no GOPATH
     echo "false" > "${3}/GO_SETUP_GOPATH_IN_IMAGE"
+    echo "true" > "${3}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
 else
     echo "true" > "${3}/GO_SETUP_GOPATH_IN_IMAGE"
+    echo "false" > "${3}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
 fi
 
 ${testpack}/bin/compile "${1}" "${2}" "${3}"
+
+if [ -z "${_COMMON_LOADED:-}" ]; then
+    source "${buildpack}/lib/common.sh"
+fi
+
+if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
+    tmp="$(mktemp -d)"
+    mkdir -p "${build}/.heroku/golangci/bin"
+    ensureFile "golangci-lint-1.16.0-linux-amd64.tar.gz" "${tmp}" "tar -C ${build}/.heroku/golangci/bin --strip-components=1 -zxf"
+fi

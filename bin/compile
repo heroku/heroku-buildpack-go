@@ -9,7 +9,9 @@ cache=$(cd "$2/" && pwd)
 env_dir="${3}"
 
 buildpack=$(cd "$(dirname $0)/.." && pwd)
-source "${buildpack}/lib/common.sh"
+if [ -z "${_COMMON_LOADED:-}" ]; then
+    source "${buildpack}/lib/common.sh"
+fi
 snapshotBinBefore
 
 ensureInPath "jq-linux64" "${cache}/.jq/bin"
@@ -528,7 +530,11 @@ case "${TOOL}" in
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
         export GOBIN="${build}/bin"
-        export GOPATH="${cache}/go-path"
+        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" == "true" ]; then
+            export GOPATH="${build}/.heroku/go-path"
+        else
+            export GOPATH="${cache}/go-path"
+        fi
         if [[ -f bin/go-pre-compile ]]; then
             step "Running bin/go-pre-compile hook"
             chmod a+x bin/go-pre-compile

@@ -417,6 +417,10 @@
     "SHA": "4f0b1a01461f2a1892c8065989b8561a88a1c1f09e2a36f01042cd759ea1858c",
     "URL": "https://github.com/tools/godep/releases/download/v75/godep_linux_amd64"
   },
+  "golangci-lint-1.16.0-linux-amd64.tar.gz": {
+    "SHA": "5343fc3ffcbb9910925f4047ec3c9f2e9623dd56a72a17ac76fb2886abc0976b",
+    "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.16.0/golangci-lint-1.16.0-linux-amd64.tar.gz"
+  },
   "govendor_linux_amd64": {
     "LocalName": "govendor",
     "SHA": "90c587c3c2dffa242ed62c62426cd85bae8a74165d5434ccc0c31ee8e25d2588",
