@@ -1159,7 +1159,7 @@ testGodepCreateProcfile() {
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFile "web: bin/fixture" "Procfile"
+  assertFile "web: fixture" "Procfile"
 }
 
 testGovendorBasic() {
@@ -1225,7 +1225,7 @@ testGovendorCreateProcfile() {
   assertCaptured "Installing go"
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertFile "web: bin/fixture" "Procfile"
+  assertFile "web: fixture" "Procfile"
 }
 
 testGodepOldWorkspace() {
