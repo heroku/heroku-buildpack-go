@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v112 (2019-04-30)
 * *GoModules* When no Procfile exists and only a single main package exists, setup the resulting executable as the web process type.
 * *GoModules* When no Procfile exists and multiple main packages exist, setup the resulting executables as process types of the same name.
 * *GoModules* This means that a main package in a `web` directory will be setup as the web process type, a package in a `worker` directory will be setup as the worker process type, etc.
