@@ -367,7 +367,15 @@ into the compiled executable.
 
 ## Testpack
 
-This buildpack supports the testpack API.
+This buildpack supports the [testpack](testpack) API used by [Heroku CI](herokuci).
+
+### Golanglint-ci
+
+If the source code contains a golanglint-ci configuration file in the root of
+the source code (one of `/.golangci.yml`, `/.golangci.toml`, or
+`/.golangci.json`) then golanci-lint is run at the start of the test phase.
+
+Use one of those configuration files to configure the golanglint-ci run.
 
 ## Deploying
 
@@ -388,24 +396,26 @@ make publish # && follow the prompts
    error and it needs to be corrected.
 1. Commit and push.
 
-[go]: http://golang.org/
-[buildpack]: http://devcenter.heroku.com/articles/buildpacks
-[go-linker]: https://golang.org/cmd/ld/
-[dep]: https://github.com/golang/dep
-[godep]: https://github.com/tools/godep
-[govendor]: https://github.com/kardianos/govendor
-[gb]: https://getgb.io/
-[quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
-[build-constraint]: http://golang.org/pkg/go/build/
 [app-engine-build-constraints]: http://blog.golang.org/2013/01/the-app-engine-sdk-and-workspaces-gopath.html
-[source-version]: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
+[build-constraint]: http://golang.org/pkg/go/build/
+[buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [cgo]: http://golang.org/cmd/cgo/
-[vendor.json]: https://github.com/kardianos/vendor-spec
-[gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
-[glide]: https://github.com/Masterminds/glide
-[gomodules]: https://github.com/golang/go/wiki/Modules
 [DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4
-[Procfile]: https://devcenter.heroku.com/articles/procfile
-[make]: https://www.gnu.org/software/make/
+[dep]: https://github.com/golang/dep
 [docker]: https://www.docker.com/
+[gb]: https://getgb.io/
+[glide]: https://github.com/Masterminds/glide
+[go-linker]: https://golang.org/cmd/ld/
+[go]: http://golang.org/
+[godep]: https://github.com/tools/godep
+[gomodules]: https://github.com/golang/go/wiki/Modules
+[gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
+[govendor]: https://github.com/kardianos/govendor
+[herokuci]: https://devcenter.heroku.com/articles/heroku-ci
+[make]: https://www.gnu.org/software/make/
+[Procfile]: https://devcenter.heroku.com/articles/procfile
+[quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
+[source-version]: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
+[testpack]: https://devcenter.heroku.com/articles/testpack-api
 [toolbelt]: https://devcenter.heroku.com/articles/heroku-cli
+[vendor.json]: https://github.com/kardianos/vendor-spec
