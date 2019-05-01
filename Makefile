@@ -22,6 +22,9 @@ quick: docker
 compile: BASH_COMMAND := test/quick.sh compile $(FIXTURE) $(ENV); bash
 compile: docker
 
+testpack: BASH_COMMAND := test/quick.sh dotest $(FIXTURE) $(ENV); bash
+testpack: docker
+
 publish:
 	@bash sbin/publish.sh
 
