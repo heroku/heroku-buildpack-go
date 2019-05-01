@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
+testTestPackModulesGolangLintCI() {
+  fixture "mod-deps-vendored-with-tests"
+
+  dotest
+  assertCapturedSuccess
+  assertCaptured "RUN   Test_BasicTest"
+  assertCaptured "PASS: Test_BasicTest"
+  assertCaptured "/.golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"
+}
+
 testModProcfileCreation() {
   fixture "mod-cmd-web"
 
