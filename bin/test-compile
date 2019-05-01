@@ -18,9 +18,7 @@ fi
 
 ${testpack}/bin/compile "${1}" "${2}" "${3}"
 
-if [ -z "${_COMMON_LOADED:-}" ]; then
-    source "${buildpack}/lib/common.sh"
-fi
+source "${testpack}/lib/common.sh"
 
 if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
     tmp="$(mktemp -d)"
