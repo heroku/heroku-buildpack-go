@@ -4,6 +4,7 @@
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
 
+test -n "${_COMMON_LOADED:-}" && exit 0
 export _COMMON_LOADED="true"
 
 if [ -z "${buildpack}" ]; then
@@ -431,3 +432,5 @@ determineTool() {
         exit 1
     fi
 }
+
+ensureInPath "jq-linux64" "${cache}/.jq/bin"
