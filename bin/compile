@@ -526,7 +526,7 @@ case "${TOOL}" in
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
         export GOBIN="${build}/bin"
-        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" == "true" ]; then
+        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
             export GOPATH="${build}/.heroku/go-path"
         else
             export GOPATH="${cache}/go-path"
@@ -683,7 +683,7 @@ if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
     mv -t "${build}" "${src}/Procfile"
 fi
 
-if [ "${TOOL}" == "gomodules" ]; then
+if [ "${TOOL}" = "gomodules" ]; then
     setupProcfile
 fi
 
