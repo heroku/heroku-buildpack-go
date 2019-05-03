@@ -66,7 +66,7 @@ binDiff() {
     local let found=0
 
     for b in "${_binBefore[@]}"; do
-        if [ "${a}" == "${b}" ]; then
+        if [ "${a}" = "${b}" ]; then
         let found+=1
         fi
     done
@@ -114,7 +114,7 @@ determinLocalFileName() {
 
 knownFile() {
     local fileName="${1}"
-    if [ "${fileName}" == "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
+    if [ "${fileName}" = "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
         true
     else
         <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null

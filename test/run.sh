@@ -981,7 +981,7 @@ testGodepDevelGo() {
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "devel +15fa66"
-  #assertTrue "Binary has the right value" '[[ "$(${BUILD_DIR}/bin/fixture)" == *"devel +15f7a66"* ]]'
+  #assertTrue "Binary has the right value" '[[ "$(${BUILD_DIR}/bin/fixture)" = *"devel +15f7a66"* ]]'
 }
 
 testGodepBinFile() {
