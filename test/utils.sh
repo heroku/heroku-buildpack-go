@@ -45,6 +45,17 @@ capture() {
   rtrn=${RETURN} # deprecated
 }
 
+continue_capture() {
+  LAST_COMMAND="$@"
+
+  $@ >${STD_OUT} 2>${STD_ERR}
+  local cr=$?
+  if [ "$RETURN" = "0" ]; then
+    RETURN=$cr
+  fi
+  rtrn=${RETURN} # deprecated
+}
+
 resetCapture() {
   if [ -f ${STD_OUT} ]; then
     rm ${STD_OUT}
@@ -100,7 +111,7 @@ dotest() {
   echo "* test-compile"
   capture "${BUILDPACK_HOME}/bin/test-compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
   echo "* test"
-  capture "${BUILDPACK_HOME}/bin/test" "${BUILD_DIR}" "${ENV_DIR}"
+  continue_capture "${BUILDPACK_HOME}/bin/test" "${BUILD_DIR}" "${ENV_DIR}"
 }
 
 release() {
