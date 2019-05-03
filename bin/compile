@@ -528,6 +528,7 @@ case "${TOOL}" in
         export GOBIN="${build}/bin"
         if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
             export GOPATH="${build}/.heroku/go-path"
+            mkdir -p $GOPATH # ensure that it's created
         else
             export GOPATH="${cache}/go-path"
         fi

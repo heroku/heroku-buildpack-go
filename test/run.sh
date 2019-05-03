@@ -1,11 +1,30 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
-testTestPackModulesGolangLintCI() {
+testTestPackModulesVendoredGolangLintCI() {
   fixture "mod-deps-vendored-with-tests"
 
   dotest
   assertCapturedSuccess
+  assertCaptured "RUN   Test_BasicTest"
+  assertCaptured "PASS: Test_BasicTest"
+  assertCaptured "/.golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"
+}
+
+testTestPackModulesGolangLintCI() {
+  fixture "mod-deps-with-tests"
+
+  dotest
+  assertCapturedSuccess
+
+  # The other deps are downloaded/installed
+  assertCaptured "
+go: finding github.com/gorilla/mux v1.6.2
+go: finding github.com/gorilla/context v1.1.1
+go: downloading github.com/gorilla/mux v1.6.2
+go: extracting github.com/gorilla/mux v1.6.2
+github.com/gorilla/mux
+"
   assertCaptured "RUN   Test_BasicTest"
   assertCaptured "PASS: Test_BasicTest"
   assertCaptured "/.golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"

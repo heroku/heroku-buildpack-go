@@ -6,7 +6,11 @@ export SHUNIT_TMPDIR=/tmp
 oneTimeSetUp
 setUp
 
+# redefine {continue_,}capture so we don't use the shunit versions
 capture() {
+  $@
+}
+continue_capture() {
   $@
 }
 
@@ -20,7 +24,7 @@ quickSetup() {
     echo "${val}" > "${ENV_DIR}/${env}"
     shift
   done
-  echo "Compiling ${fix}"
+  echo "${cmd} ${fix}"
   echo "in ${BUILD_DIR}"
   echo "(caching in $CACHE_DIR)"
   echo "(env in ${ENV_DIR}): ${env[@]}"
