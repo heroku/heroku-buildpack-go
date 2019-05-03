@@ -3,14 +3,6 @@
 # -----------------------------------------
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
-
-test -n "${_COMMON_LOADED:-}" && exit 0
-export _COMMON_LOADED="true"
-
-if [ -z "${buildpack}" ]; then
-    buildpack=$(cd "$(dirname $0)/.." && pwd)
-fi
-
 DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
 depTOML="${build}/Gopkg.toml"
@@ -432,5 +424,3 @@ determineTool() {
         exit 1
     fi
 }
-
-ensureInPath "jq-linux64" "${cache}/.jq/bin"

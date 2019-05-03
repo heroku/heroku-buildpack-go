@@ -48,7 +48,7 @@ capture() {
 continue_capture() {
   LAST_COMMAND="$@"
 
-  $@ >${STD_OUT} 2>${STD_ERR}
+  $@ >>${STD_OUT} 2>>${STD_ERR}
   local cr=$?
   if [ "$RETURN" = "0" ]; then
     RETURN=$cr

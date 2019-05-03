@@ -29,6 +29,7 @@ ctt bin/detect
 ctt bin/test
 ctt bin/test-compile
 ctt lib/common.sh
+ctt lib/common_tools.sh
 ctt lib/src/github.com/apg/patter/main.go
 ctt vendor/concurrency.sh
 ctt CHANGELOG.md

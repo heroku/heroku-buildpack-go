@@ -8,7 +8,8 @@ testTestPackModulesVendoredGolangLintCI() {
   assertCapturedSuccess
   assertCaptured "RUN   Test_BasicTest"
   assertCaptured "PASS: Test_BasicTest"
-  assertCaptured "/.golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"
+  assertCaptured "/.golangci.{yml,toml,json} detected"
+  assertCaptured "Running: golangci-lint -v --build-tags heroku run"
 }
 
 testTestPackModulesGolangLintCI() {
@@ -27,7 +28,8 @@ github.com/gorilla/mux
 "
   assertCaptured "RUN   Test_BasicTest"
   assertCaptured "PASS: Test_BasicTest"
-  assertCaptured "/.golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"
+  assertCaptured "/.golangci.{yml,toml,json} detected"
+  assertCaptured "Running: golangci-lint -v --build-tags heroku run"
 }
 
 testModProcfileCreation() {
