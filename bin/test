@@ -27,12 +27,17 @@ fi
 
 export GOROOT="${build}/.heroku/go"
 if [[ "$TOOL" = "gomodules" ]]; then
-  # use a tempdir to ensure that anything downloaded by the go tool isn't in $HOME
-  # If GOPATH is under the default becomes $HOME/go. $HOME is == ${build}, so
-  # go test ./... or the later benchmark run will pick up the downloaded packages.
-  export GOPATH="$(mktemp -d)"
+  # Use the GOPATH that was setup during compile, if it exists, so that
+  # any modules downloaded during compile are re-used.
+  if [ -d "${build}/.heroku/go-path" ]; then
+    export GOPATH="${build}/.heroku/go-path"
+  else
+    # Otherwise use a GOPATH that is outside of ${build}
+    export GOPATH="$(mktemp -d)"
+  fi
   PATH="${build}/bin:${GOROOT}/bin:${PATH}"
 else
+  # When not using modules, $build is setup as the GOPATH by compile w/$GO_SETUP_GOPATH_IN_IMAGE
   export GOPATH="${build}"
   PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
 fi
