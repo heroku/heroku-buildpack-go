@@ -3,11 +3,11 @@
 
 set -eo pipefail
 
-mkdir -p "${1}" "${2}" # "${3}"
+mkdir -p "${1}" "${2}"
 build="$(cd ${1}/ && pwd)"
 env_dir="$(cd ${2}/ && pwd)"
-#artifact_dir="$(cd ${3} && pwd)"
 testpack=$(cd "$(dirname $0)/.." && pwd)
+buildpack="${testpack}"
 source "${testpack}/lib/common.sh"
 
 # loadEnvDir "${env_dir}"
@@ -51,7 +51,7 @@ case "${TOOL}" in
     gomodules)
         cd "${build}"
         if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
-            step "/.golangci.{yml,toml,json} detected; Running: golangci-lint -v --build-tags heroku run"
+            step "Running: golangci-lint -v --build-tags heroku run"
             ${build}/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1
         fi
         _tflags=("-race" "-v")
