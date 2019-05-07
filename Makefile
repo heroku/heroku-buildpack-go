@@ -8,7 +8,7 @@ GO_BUCKET_URL := file:///buildpack/test/assets
 .NOTPARALLEL: docker test-assets
 
 sync:
-	./bin/sync-files.sh
+	./sbin/sync-files.sh
 
 test: BASH_COMMAND := test/run.sh
 test: docker
@@ -29,11 +29,11 @@ publish:
 	@bash sbin/publish.sh
 
 docker: test-assets
-	$(eval TMP := $(shell bin/copy true))
+	$(eval TMP := $(shell sbin/copy true))
 	@echo "Running docker ($(IMAGE)) with /buildpack=$(TMP) ..."
 	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
 	@rm -rf $(TMP)
 
 test-assets:
 	@echo "Setting up test assets"
-	@bin/fetch-test-assets
+	@sbin/fetch-test-assets
