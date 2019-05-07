@@ -277,7 +277,12 @@ ensureGo() {
     if [ -d "${goPath}" ]; then
         step "Using ${goVersion}"
     else
-        rm -rf ${cache}/* #For a go version change, we delete everything
+        #For a go version change, we delete everything
+        step "New Go Version, clearing old cache"
+        if [ -d "${cache}/go-path" ]; then
+            find "${cache}/go-path" ! -perm -u=w -print0 | xargs -0 chmod u+w 2>&1
+        fi
+        rm -rf ${cache}/*
         case "${goVersion}" in
             devel*)
                 local bGoVersion="$(expandVer ${DefaultGoVersion})"
