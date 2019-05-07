@@ -1,6 +1,11 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v114 (2019-05-07)
+* *GoModules* Make read-only module files writable so they can be deleted during cache cleaning on Go version upgrade.
+
+## v113 (2019-05-07)
 * *GoModules* *TestPack* When .golangci.{yml,toml,json} exist run `golangci-lint -v --build-tags heroku run` during test. Use your .golangci.{yml,toml,json} to configure golangci-lint.
 * Add go1.12.5, expand go1.12 to go1.12.5, and default to go1.12.5
 * Add go1.11.10 and expand go1.11 to go1.11.10
