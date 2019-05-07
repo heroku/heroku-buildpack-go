@@ -387,19 +387,26 @@ make publish # && follow the prompts
 
 ### New Go version
 
-1. Run `bin/add-version <version>`, eg `bin/add-version go1.11` to update `files.json`.
-1. Update `data.json`, to update the `VersionExpansion` object.
-1. run `make ACCESS_KEY='THE KEY' SECRET_KEY='THE SECRET KEY' sync`.
-   This will download everything from the bucket, plus any missing files from
-   their source locations, and verify their SHAS, then upload anything missing
-   from the bucket back to the s3 bucket. If a file doesn't verify this will
-   error and it needs to be corrected.
+[Make], [jq], [curl], [shasum], [s3cmd], & [LastPassCLI] are required to do this.
+
+1. Run `sbin/add-version <version>`, eg `sbin/add-version go1.11` to update
+   `files.json`.
+1. Update `data.json`, to update the `VersionExpansion` and, if bumping the
+   default version, `DefaultVersion` objects.
+1. run `make sync`.
+   This will prompt you for your lastpass credentials, which are used to pull
+   AWS S3 credentials from a lastpass note. These credentials are then used to
+   download everything from the s3 bucket, plus any missing files from their
+   source locations, verify their SHAS, and upload anything missing from the
+   bucket back to the s3 bucket. If a file doesn't verify this will error and it
+   needs to be corrected.
 1. Commit and push.
 
 [app-engine-build-constraints]: http://blog.golang.org/2013/01/the-app-engine-sdk-and-workspaces-gopath.html
 [build-constraint]: http://golang.org/pkg/go/build/
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [cgo]: http://golang.org/cmd/cgo/
+[curl]: https://curl.haxx.se/
 [DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4
 [dep]: https://github.com/golang/dep
 [docker]: https://www.docker.com/
@@ -412,9 +419,12 @@ make publish # && follow the prompts
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [govendor]: https://github.com/kardianos/govendor
 [herokuci]: https://devcenter.heroku.com/articles/heroku-ci
+[LastPassCLI]: https://github.com/lastpass/lastpass-cli
 [make]: https://www.gnu.org/software/make/
 [Procfile]: https://devcenter.heroku.com/articles/procfile
 [quickstart]: http://mmcgrana.github.com/2012/09/getting-started-with-go-on-heroku.html
+[s3cmd]: https://s3tools.org/s3cmd
+[shasum]: https://ss64.com/osx/shasum.html
 [source-version]: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 [testpack]: https://devcenter.heroku.com/articles/testpack-api
 [toolbelt]: https://devcenter.heroku.com/articles/heroku-cli
