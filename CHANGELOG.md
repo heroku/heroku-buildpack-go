@@ -1,6 +1,9 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* *GoModules* *TestPack* When .golangci.{yml,toml,json} exist run `golangci-lint -v --build-tags heroku run` during test. Use your .golangci.{yml,toml,json} to configure golangci-lint.
+* Add go1.12.5, expand go1.12 to go1.12.5, and default to go1.12.5
+* Add go1.11.10 and expand go1.11 to go1.11.10
 
 ## v112 (2019-04-30)
 * *GoModules* When no Procfile exists and only a single main package exists, setup the resulting executable as the web process type.
@@ -12,17 +15,17 @@
 
 ## v110 (2019-04-15)
 * Add go1.12.4, expand go1.12 to go1.12.4, and default to go1.12.4
-* Add go1.11.9 and expand go1.11 to go.11.9.
+* Add go1.11.9 and expand go1.11 to go1.11.9
 * Restore vendored mattes migrate teset on cedar:14 (finally fixed in ^)
 
 ## v109 (2019-04-09)
 * Add go1.12.3, expand go1.12 to go1.12.3, and default to go1.12.3
-* Add go1.11.8 and expand go1.11 to go.11.8.
+* Add go1.11.8 and expand go1.11 to go1.11.8
 
 ## v108 (2019-04-08)
 * *GoModules* Handle quoted module names in go.mod
 * Add go1.12.2, expand go1.12 to go1.12.2, and default to go1.12.2
-* Add go1.11.7 and expand go1.11 to go.11.7.
+* Add go1.11.7 and expand go1.11 to go1.11.7
 * *GoModules* Drop 'Go.SupportsModuleExperiment' from data.json, instead error for go versions < go1.11 when using modules.
 * Drop 'Go.Supported' from data.json since the buildpack is no longer using it for anything.
 * Skip vendored mattes migrate compile on cedar:14 due to gcc error.
