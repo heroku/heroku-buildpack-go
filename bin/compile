@@ -11,9 +11,7 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
-
-BPLOG_PREFIX="buildpack.go"
-source "${STDLIB_DIR}/stdlib.sh.v8"
+source_stdlib
 
 snapshotBinBefore
 
