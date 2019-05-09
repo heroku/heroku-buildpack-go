@@ -13,7 +13,7 @@ source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
 
 BPLOG_PREFIX="buildpack.go"
-source "${STDLIB_DIR}/stdlib.sh.v8"
+source "stdlib.sh.v8" # uses a path lookup. see common_tools.sh
 
 snapshotBinBefore
 
