@@ -13,7 +13,6 @@ source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
 
 BPLOG_PREFIX="buildpack.go"
-STDLIB_DIR="${TMPDIR:-"/tmp"}/go-buildpack-stdlib"
 source "${STDLIB_DIR}/stdlib.sh.v8"
 
 snapshotBinBefore
