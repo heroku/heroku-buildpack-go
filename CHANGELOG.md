@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* *Dep* Dep bumped to v0.5.2. Dep v0.5.1 & v0.5.0 also made available.
 
 ## v114 (2019-05-07)
 * *GoModules* Make read-only module files writable so they can be deleted during cache cleaning on Go version upgrade.
