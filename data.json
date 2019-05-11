@@ -68,7 +68,7 @@
     ]
   },
   "Dep": {
-    "DefaultVersion": "v0.4.1"
+    "DefaultVersion": "v0.5.2"
   },
   "Glide": {
     "DefaultVersion": "v0.12.3"
@@ -96,7 +96,7 @@
   },
   "test": {
     "assets": [
-      "dep-v0.4.1-linux-amd64",
+      "dep-v0.5.2-linux-amd64",
       "errors-0.8.0.tar.gz",
       "gb-0.4.4.tar.gz",
       "glide-v0.12.3-linux-amd64.tar.gz",
