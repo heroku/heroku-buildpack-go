@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.12.6, expand go1.12 to go1.12.6, and default to go1.12.6
+* Add go1.11.11 and expand go1.11 to go1.11.11
 
 ## v116 (2019-05-14)
 * *Dep* Dep bumped to v0.5.2. Dep v0.5.1 & v0.5.0 also made available.
