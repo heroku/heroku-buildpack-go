@@ -3,8 +3,11 @@ sudo: required
 services:
 - docker
 before_install:
-- echo -e "machine api.github.com\n  login $GITHUB_TOKEN" > ~/.netrc
-install: docker pull heroku/cedar:14
+- echo -e "machine api.github.com\n  login $GITHUB_BASIC" > ~/.netrc
+install:
+- docker pull heroku/cedar:14
+- docker pull heroku/heroku:16-build
+- docker pull heroku/heroku:18-build
 script:
 - make IMAGE=$IMAGE test
 env:
@@ -13,5 +16,7 @@ env:
   - IMAGE=heroku/heroku:16-build
   - IMAGE=heroku/heroku:18-build
   global:
-  - secure: eRuNKAX1KXhAevMeng2BliSZnD1drwWUAO73yUqhEPv+vaiwmiUfqTtsco5ud9/f5lL3kupSaC1c6GdDJbn4ISryr67hZ5SAltoS8sBKXglABRFR7Zio5QI5cEqmGCSetMdIHFe5BS3KxKPBVniQydKEf6vLm/gtdU17piNkimU=
-  - secure: kg3DhdFxAJQ770eCG4TLnR9A7U2YzteLJeyVAykf7cGTQcDp80c+arMlty4ptEbAJUgtajra1EQHzjTFKyDdUYyJIon8a5jjI7RSsIzr+JooOn+peGvVeji5K3M+hACPuBSaIoQIG73w2AYg7I36Exg5c3PqnRf3rwricQ/u1ec=
+  # GITHUB_TOKEN: Used in a test and has/read write access to a private repo.
+  - secure: bsre6S9nXZ6RgS+/L6I34yAZ3GwWG1W0d/3guP6nxGhuobttBlASu81GiFD5YvMv65xj5RpUEhbQBO58KIlDcTc8mHoqWgUeUnC2wHUHRHMTMa5NgkvI84PNBFo8WBSRYPq10W18FapZnQsmFYgZj84kLbHiUZIVN4tJNBlW3BxebH+xitslJhKWfsa7xVVowHgZEA9A+6aKKvgVY9hnBWRkt+jAONtQKXjVCywAbu7258UI6dLAZ0K64bJoE6qjXkDwYbx2QtdAOS2qbhp7EHlJA8SRnekAZIHkwSjaZHPlwKeMLQmhgqySc/yfFuzxr8u9TehcPYsvegdync0LXeyNE9udlHTdLIgnNnUAbXI43vOwM+TLlM+1PTDiBee3UYYoHy9D139RsF1xjlnGjdxjOdYsA4gX75AeUuvtgTDYs3YX607NiDx6plWM12Oo8N83hsuLIMxfcU0lhYPV0EVnCSwrJa0cIQp2/LSnYluQ2C7muBmY7YAsrm/ZZ9q4SMMdiB1c3vo9mFQt0eHFfd59apFQvYBzNnMNTXqUabuPxeeDH0kQq9TKB4kQTstTwh3jRHXIo8hLLN8ExqcO2KEPx55/H3HuIEffV2I3P3gpt2lzT2o9zgqeD7iqdEtnd4emuNxHyzjAOQj7Y6AQO5wbakMeWgUdZzr1b2DcYbE=
+  # GITHUB_BASIC: Used in the before_install hook to setup a netrc file so that `go get` isn't subject to non user rate limits
+  - secure: pkwBRqTdIF8I3wUXQLwgEdTpRg7RlRzDTMgE1NkNyWNRu+8+7f+IuoLIjJ0JSkA4RFPhAtWjGlCFAruqdHHVQ3/mYECCaHM2YptC30GozQJQoXEoVsDrLSwJOD3m3ijICUTaUk3A/UUsQ9qD4CHXvitf86B6dZuEzy656Yy6kTyM/ulVI4ZN84SS04RSuBG9o67QBaUZ5ptUcOxcSKp61GnhQQqe39FGG0jwxip9/MUhqvl4mYVnarepw8LvltQwi9U7aXyS2deUFjUgEpiukJ1jzIeeldjiEnvM3Ng0VzdOZIzngyfx+5fbGsR44fjekjMdIG22ccHHHXHdzloWaIDKaFldE/vZfjDXx/vxSpuWLierhfCkk25AOk/vMSBK1odVFKIOKdl+dVlSNUYDVQei3biA7yA+9Z+emyC2w0FxE1MSPl0yyG5glLZfrB/VM+X0e1UX1c6V8puMIAn4RtNve3kOwYk+NpoC4UoPvJ6gJAmLchpda4ozGwLE8Q8kYsWnP0w943dGEXA0D0hgoFO9+0PaacQQ1l1tqWB++iNjOmOzpw6qhppDNb2tZQ4quoHaGRDw8q1FNa+9zwSDBDGWFeMwSkwVGzKWLo1B1lJav6A8E+J8GseVpSCj+OTzVM635OUO2l+j1oIpqfjVm/FibyZrTlyDr3urw/MvQBk=
