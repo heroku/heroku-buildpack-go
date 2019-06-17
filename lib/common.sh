@@ -289,7 +289,7 @@ setGitCredHelper() {
                   ;;
                   *)
                     username="${t}"
-                    password="x-oauth-basic"
+                    password="${t}"
                   ;;
                 esac
                 echo username=${username}
