@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v117 (2019-06-17)
 * Add go1.12.6, expand go1.12 to go1.12.6, and default to go1.12.6
 * Add go1.11.11 and expand go1.11 to go1.11.11
 
