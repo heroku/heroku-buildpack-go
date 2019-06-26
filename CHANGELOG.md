@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.13beta1 and make it the default when go1.13 is specifiedq
 
 ## v117 (2019-06-17)
 * Add go1.12.6, expand go1.12 to go1.12.6, and default to go1.12.6
