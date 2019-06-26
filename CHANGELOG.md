@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.13beta1 and make it the default when go1.13 is specifiedq
 
 ## v118 (2019-06-21)
 * Add -r to xargs so that xargs doesn't run commands when there is no input.
