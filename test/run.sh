@@ -616,6 +616,14 @@ testGlideWithHgDep() {
     echo "!!!"
     return 0
   fi
+
+  echo "!!!"
+  echo "!!! Skipping this test as Glide uses bitbucket v1.0 API, which is no longer supported"
+  echo "!!! https://developer.atlassian.com/cloud/bitbucket/deprecation-notice-v1-apis/"
+  echo "!!! TODO: move test to go modules"
+  echo "!!!"
+  return 0
+
   fixture "glide-with-hg-dep"
 
   assertDetected
