@@ -1,14 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env zsh
 set -e
+
+IGNORE=($*)
 
 BUCKET="s3://heroku-golang-prod/"
 
-tools=(jq curl shasum s3cmd lpass)
+tools=(jq curl shasum aws lpass)
 for tool in ${tools[@]}; do
-  if ! which -s ${tool}; then
+  if ! which -s ${tool} >>&/dev/null; then
     continue
   fi
-  tools=( "${tools[@]/${tool}}" )
+  tools=(${tools#${tool}})
 done
 
 if [ ${#tools} -ne 0 ]; then
@@ -28,52 +30,95 @@ cd "${td}"
 
 echo "Getting bucket credentials"
 
-S3CMD="s3cmd $(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | "--access_key=\(.AccessKeyId) --secret_key=\(.SecretAccessKey)"')"
+export AWS_ACCESS_KEY_ID="$(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | .AccessKeyId')"
+export AWS_SECRET_ACCESS_KEY="$(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | .SecretAccessKey')"
 
 echo "Syncing contents of ${BUCKET} to $(pwd)."
-${S3CMD} sync --check-md5 ${BUCKET} ./
+aws s3 sync ${BUCKET} .
 
-FILES=($(ls))
+t=$(mktemp -d)
+pipe=${t}/comms
+trap "rm -f ${pipe}; pkill -P $$" EXIT
+trap "" SIGWINCH
 
-echo "Ensuring that we have the right versions of all files specified in files.json"
-for f in $(< "${jf}" jq -r 'keys[]'); do
+if [[ ! -p ${pipe} ]]; then
+  mkfifo ${pipe}
+fi
+
+ensureFile() {
+  local f="${1}"
+  local u=""
+
   if [ ! -e "${f}" ]; then
     u="$(< "${jf}" jq -r '."'${f}'".URL')"
-    echo "Downloading: ${u}"
-    curl -J -o "${f}" -L --retry 15 --retry-delay 2 $u
+    curl -s -J -o "${f}" -L --retry 15 --retry-delay 2 $u 2>&1
   fi
 
-  s="$(< "${jf}" jq -r '."'${f}'".SHA')"
-  if [ ${#s} -eq 40 ]; then
-    sf="$(shasum "${f}" | cut -d \  -f 1)"
+  local sk="$(< "${jf}" jq -r '."'${f}'".SHA' 2>&1)"
+  local sf=""
+  if [ ${#sk} -eq 40 ]; then
+    sf="$(shasum "${f}" 2>&1 | cut -d \  -f 1)"
   else
-    sf="$(shasum -a 256 "${f}" | cut -d \  -f 1)"
-  fi
-  if [ "${sf}" != "${s}" ]; then
-    echo "SHA of file '${f}' differs from known SHA"
-    echo "know SHA: ${s}"
-    echo "file SHA: ${sf}"
-    echo
-    echo "Please erase the file and run again"
-    echo "If this persists, please validate the known SHA"
-    exit 1
+    sf="$(shasum -a 256 "${f}" 2>&1 | cut -d \  -f 1)"
   fi
 
-  echo "VALID: ${f} SHA ${s}"
-  echo
+  echo "${f} ${sk} ${sf}"
+}
 
-  FILES=(${FILES[@]/${f}})
+FILES=($(ls))
+echo "Ensuring the correct versions of all files specified in files.json"
+
+# TODO: do it in batches to avoid an hitting ulimit process max
+for f in $(< "${jf}" jq -r 'keys[]'); do
+  ensureFile ${f} >>${pipe} &
 done
 
-if [ ${#FILES[@]} -gt 0 ]; then
+bad=0
+while read -r f sk sf; do
+  FILES=(${FILES#${f}})
+
+  if [[ ${IGNORE[(ie)$f]} -le ${#IGNORE} ]]; then
+    echo "Ignored file: ${f}"
+    continue
+  fi
+
+  if [[ "${sf}" != "${sk}" ]]; then
+    echo
+    echo "SHA of file '${f}' differs from known SHA"
+    echo "know SHA: ${sk}"
+    echo "file SHA: ${sf}"
+    let bad+=1
+  fi
+
+done<${pipe}
+
+if [[ ${bad} -gt 0 ]]; then
+  echo
+  echo "Please erase these file(s) and run again"
+  echo "If this persists, please validate the known SHA(s)"
+fi
+
+for f in ${FILES[@]}; do
+  if [[ ${IGNORE[(ie)$f]} -le ${#IGNORE} ]]; then
+    echo "Ignored file: ${f}"
+    FILES=(${FILES#${f}})
+  fi
+done
+
+if [[ ${#FILES[@]} -gt 0 ]]; then
+  echo
   echo "EXTRA FILES IN ${td}."
-  echo "Please delete these files and then run again"
+  echo "Please delete these files or add them to files.json, then run again"
+  echo "NOTE: You can ignore them by passing their names to this script"
   for f in ${FILES[@]}; do
-    echo -e "\t${cwd}/$f"
+    echo -e "\t${td}/$f"
   done
+fi
+
+if [ ${bad} -gt 0 -o ${#FILES[@]} -gt 0 ]; then
   exit 1
 fi
 
 echo "All files verified, syncing to s3"
 echo
-${S3CMD} sync -P --no-guess-mime-type --check-md5 --delete-removed --preserve --delete-after ./ ${BUCKET}
+aws s3 sync --delete . ${BUCKET}
