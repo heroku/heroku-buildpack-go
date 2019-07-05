@@ -22,6 +22,7 @@ GovendorVersion="$(<${DataJSON} jq -r '.Govendor.DefaultVersion')"
 GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
 PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
 MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
+BazaarVersion="$(<${DataJSON} jq -r '.BZR.DefaultVersion')"
 MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
 GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
 TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
@@ -142,6 +143,29 @@ ensureHG() {
     fi
 
     addToPATH "${hgPath}/bin"
+}
+
+ensureBZR() {
+    local bzrv="${1}"
+    local bzrvs=$(echo ${bzrv} | cut -d . -f 1,2)
+    local tbzrp=$(mktemp -d)
+    local bzrp="${cache}/bzr/${bzrv}"
+    if test -d "${bzrp}"
+    then
+        step "Using bzr v${bzrv}"
+    else
+        rm -rf "${cache}/bzr"
+        mkdir -p "${bzrp}"
+        start "Installing bzr ${bzrv}"
+        $CURL "https://launchpad.net/bzr/${bzrvs}/${bzrv}/+download/bzr-${bzrv}.tar.gz" | tar -zxf - --strip-components=1 -C ${tbzrp}
+        pushd "${tbzrp}" &> /dev/null
+        python setup.py install --force --home=${bzrp} &> /dev/null
+        popd &> /dev/null
+        finished
+    fi
+
+    PATH="${bzrp}/bin:${PATH}"
+    export PYTHONPATH="${bzrp}/lib/python:${PYTHONPATH}"
 }
 
 ensureGlide() {
@@ -480,6 +504,9 @@ setupProcfile() {
 
 case "${TOOL}" in
     gomodules)
+        ensureBZR "${BazaarVersion}"
+        ensureHG "${MercurialVersion}"
+
         cd ${build}
         step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}

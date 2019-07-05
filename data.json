@@ -87,6 +87,9 @@
   "HG": {
     "DefaultVersion": "3.9"
   },
+  "BZR": {
+    "DefaultVersion": "2.7.0"
+  },
   "MattesMigrate": {
     "DefaultVersion": "v3.0.0"
   },
