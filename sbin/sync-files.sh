@@ -29,9 +29,7 @@ mkdir -p "${cache}"
 cd "${cache}"
 
 echo "Getting bucket credentials"
-
-export AWS_ACCESS_KEY_ID="$(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | .AccessKeyId')"
-export AWS_SECRET_ACCESS_KEY="$(lpass show --sync=now --notes 9022891142845286058 | jq -r '.AccessKey | .SecretAccessKey')"
+source "${cwd}/sbin/aws.sh"
 
 echo "Syncing contents of ${BUCKET} to $(pwd)."
 args=()
@@ -90,8 +88,13 @@ while read -r file knownSHA fileSHA; do
   if [[ "${fileSHA}" != "${knownSHA}" ]]; then
     echo
     echo "SHA of file '${file}' differs from known SHA"
-    echo "know SHA: ${knownSHA}"
-    echo "file SHA: ${fileSHA}"
+    if [[ -z "${fileSHA}" ]]; then
+      echo "known SHA: "  # knownSHA was actually empty making what was read "$file $fileSHA"
+      echo "file SHA: ${knownSHA}"
+    else
+      echo "known SHA: ${knownSHA}"
+      echo "file SHA: ${fileSHA}"
+    fi
     let bad+=1
   fi
 
