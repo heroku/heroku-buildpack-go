@@ -130,6 +130,7 @@ fi
 echo "All files verified, syncing to s3"
 echo
 args=(--delete)
+args+=(--acl public-read)
 if [[ ${#IGNORE} -gt 0 ]]; then
   for file in ${IGNORE[@]}; do
     args+=(--exclude ${file})
