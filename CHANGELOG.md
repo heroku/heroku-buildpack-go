@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## v126 (2019-07-10)
+* Set the public bit on files uploaded by ./sbin/sync-files.sh so that the files are publicly available.
+
+## v125 (2019-07-10)
+* Rollback to v119
+
+## v124 (2019-07-10)
+* Rollback attempt
+
+## v123 (2019-07-10)
+* Rollback attempt
+
 ## v122 (2019-07-09)
 * Add go1.12.7, expand go1.12 to go1.12.7, and default to go1.12.7
 * Add go1.11.12 and expand go1.11 to go 1.11.12
