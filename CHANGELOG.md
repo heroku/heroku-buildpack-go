@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Download and install bzr when modules are in use.
 
 ## v126 (2019-07-10)
 * Set the public bit on files uploaded by ./sbin/sync-files.sh so that the files are publicly available.
