@@ -147,24 +147,21 @@ ensureHG() {
 
 ensureBZR() {
     local bzrv="${1}"
-    local bzrvs=$(echo ${bzrv} | cut -d . -f 1,2)
-    local tbzrp=$(mktemp -d)
+    local tmp="$(mktemp -d)"
     local bzrp="${cache}/bzr/${bzrv}"
-    if test -d "${bzrp}"
-    then
+    if [ -x "${bzrp}/bin/bzr" ]; then
         step "Using bzr v${bzrv}"
     else
         rm -rf "${cache}/bzr"
         mkdir -p "${bzrp}"
-        start "Installing bzr ${bzrv}"
-        $CURL "https://launchpad.net/bzr/${bzrvs}/${bzrv}/+download/bzr-${bzrv}.tar.gz" | tar -zxf - --strip-components=1 -C ${tbzrp}
-        pushd "${tbzrp}" &> /dev/null
-        python setup.py install --force --home=${bzrp} &> /dev/null
+        step "Installing bzr ${bzrv}"
+        ensureFile "bzr-${bzrv}.tar.gz" "${tmp}" "tar -C ${tmp} --strip-components=1 -zxf"
+        pushd "${tmp}" &> /dev/null
+            python setup.py install --force --home="${bzrp}" &> /dev/null
         popd &> /dev/null
-        finished
     fi
 
-    PATH="${bzrp}/bin:${PATH}"
+    addToPATH "${bzrp}/bin"
     export PYTHONPATH="${bzrp}/lib/python:${PYTHONPATH}"
 }
 
