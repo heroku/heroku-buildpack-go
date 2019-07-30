@@ -5,6 +5,7 @@
 * Add go1.12.12, expand go1.12 to go1.12.12, and default to go1.12.12
 * Add go1.13.2, use for go1.13
 * Add go1.12.11, expand go1.12 to go1.12.11, and default to go1.12.11
+* Remove hg and bzr installation as they are now part of the heroku-16 and heroku-18 build images.
 
 ## v131 (2019-10-15)
 * Bump golangci-lint to v1.20.0

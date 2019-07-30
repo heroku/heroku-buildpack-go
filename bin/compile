@@ -126,45 +126,6 @@ reportVer() {
     esac
 }
 
-ensureHG() {
-    local hgVersion="${1}"
-    local tmp="$(mktemp -d)"
-    local hgPath="${cache}/hg/${hgVersion}"
-    if [ -x "${hgPath}/bin/hg" ]; then
-        step "Using hg v${hgVersion}"
-    else
-        rm -rf "${cache}/hg"
-        mkdir -p "${hgPath}"
-        step "Installing hg ${hgVersion}"
-        ensureFile "mercurial-${hgVersion}.tar.gz" "${tmp}" "tar -C ${tmp} --strip-components=1 -zxf"
-        pushd "${tmp}" &> /dev/null
-            python setup.py install --force --home="${hgPath}" &> /dev/null
-        popd &> /dev/null
-    fi
-
-    addToPATH "${hgPath}/bin"
-}
-
-ensureBZR() {
-    local bzrv="${1}"
-    local tmp="$(mktemp -d)"
-    local bzrp="${cache}/bzr/${bzrv}"
-    if [ -x "${bzrp}/bin/bzr" ]; then
-        step "Using bzr v${bzrv}"
-    else
-        rm -rf "${cache}/bzr"
-        mkdir -p "${bzrp}"
-        step "Installing bzr ${bzrv}"
-        ensureFile "bzr-${bzrv}.tar.gz" "${tmp}" "tar -C ${tmp} --strip-components=1 -zxf"
-        pushd "${tmp}" &> /dev/null
-            python setup.py install --force --home="${bzrp}" &> /dev/null
-        popd &> /dev/null
-    fi
-
-    addToPATH "${bzrp}/bin"
-    export PYTHONPATH="${bzrp}/lib/python:${PYTHONPATH}"
-}
-
 ensureGlide() {
     local glideVersion="${1}"
     local gPath="${cache}/glide/${glideVersion}/bin"
@@ -501,9 +462,6 @@ setupProcfile() {
 
 case "${TOOL}" in
     gomodules)
-        ensureBZR "${BazaarVersion}"
-        ensureHG "${MercurialVersion}"
-
         cd ${build}
         step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
@@ -654,7 +612,6 @@ case "${TOOL}" in
     ;;
     glide)
         ensureGlide "${GlideVersion}"
-        ensureHG "${MercurialVersion}"
 
         # Do this before setupGOPATH as we need ${name} set first
         cd "${build}"
