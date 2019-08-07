@@ -1141,7 +1141,7 @@ testGodepLDSymbolGo14Value() {
   assertDetected
 
   compile
-  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture fixture ." #Nothing vendored
+  assertCaptured "Running: go install -v -tags heroku -ldflags "-X main.fixture fixture" ." #Nothing vendored
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "fixture"
