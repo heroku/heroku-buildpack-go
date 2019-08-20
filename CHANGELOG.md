@@ -3,6 +3,9 @@
 ## Unreleased
 * Download and install bzr when modules are in use.
 
+## v127 (2019-08-15)
+* Add go1.12.8, expand go1.12 to go1.12.8, and default to go1.12.8
+
 ## v126 (2019-07-10)
 * Set the public bit on files uploaded by ./sbin/sync-files.sh so that the files are publicly available.
 
