@@ -2,6 +2,9 @@
 
 ## Unreleased
 * Download and install bzr when modules are in use.
+* Add go1.12.9, expand go1.12 to go1.12.9, and default to go1.12.9
+* Add go1.11.13, expand go1.11 to go1.11.13
+* Add go1.13rc1, expand go1.13 to go1.13rc1
 
 ## v127 (2019-08-15)
 * Add go1.12.8, expand go1.12 to go1.12.8, and default to go1.12.8

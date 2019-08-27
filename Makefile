@@ -31,6 +31,7 @@ publish:
 docker: test-assets
 	$(eval TMP := $(shell sbin/copy true))
 	@echo "Running docker ($(IMAGE)) with /buildpack=$(TMP) ..."
+	@docker pull $(IMAGE)
 	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
 	@rm -rf $(TMP)
 
