@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v128 (2019-09-27)
 * Download and install bzr when modules are in use.
 * Add go1.12.9, expand go1.12 to go1.12.9, and default to go1.12.9
 * Add go1.11.13, expand go1.11 to go1.11.13
