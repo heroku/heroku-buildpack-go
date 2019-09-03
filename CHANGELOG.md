@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add go1.13rc2, use for go1.13
+* Add go1.13, use for go1.13
 
 ## v128 (2019-08-27)
 * Download and install bzr when modules are in use.
