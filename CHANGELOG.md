@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v129 (2019-09-05)
 * Add go1.13rc2, use for go1.13
 * Add go1.13, use for go1.13
 
