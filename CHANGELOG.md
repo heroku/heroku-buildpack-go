@@ -5,6 +5,7 @@
 ## v129 (2019-09-05)
 * Add go1.13rc2, use for go1.13
 * Add go1.13, use for go1.13
+* Bump Glide to 0.13.3
 
 ## v128 (2019-08-27)
 * Download and install bzr when modules are in use.
