@@ -73,7 +73,7 @@
     "DefaultVersion": "v0.5.2"
   },
   "Glide": {
-    "DefaultVersion": "v0.12.3"
+    "DefaultVersion": "v0.13.3"
   },
   "Govendor": {
     "DefaultVersion": "1.0.8"
@@ -105,7 +105,7 @@
       "dep-v0.5.2-linux-amd64",
       "errors-0.8.0.tar.gz",
       "gb-0.4.4.tar.gz",
-      "glide-v0.12.3-linux-amd64.tar.gz",
+      "glide-v0.13.3-linux-amd64.tar.gz",
       "go1.10.8.linux-amd64.tar.gz",
       "go1.11.13.linux-amd64.tar.gz",
       "go1.12.9.linux-amd64.tar.gz",
