@@ -40,6 +40,7 @@ else
   # When not using modules, $build is setup as the GOPATH by compile w/$GO_SETUP_GOPATH_IN_IMAGE
   export GOPATH="${build}"
   PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
+  export GO111MODULE=off
 fi
 
 # Install our vendored copy of github.com/apg/patter
