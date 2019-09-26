@@ -1,8 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
-* Add go1.13.1, use for go1.13 and default to go1.13.1
-* Add go1.12.10, expand go1.12 to go1.12.10
+* Add go1.13.1, use for go1.13
+* Add go1.12.10, expand go1.12 to go1.12.10, and default to go1.12.10
 
 ## v129 (2019-09-05)
 * Add go1.13rc2, use for go1.13
