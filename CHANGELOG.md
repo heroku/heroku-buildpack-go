@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Bump golangci-lint to v1.20.0
 
 ## v130 (2019-09-26)
 * Add go1.13.1, use for go1.13
