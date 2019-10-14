@@ -114,7 +114,7 @@
       "go1.7.6.linux-amd64.tar.gz",
       "go1.8.3.linux-amd64.tar.gz",
       "godep_linux_amd64",
-      "golangci-lint-1.16.0-linux-amd64.tar.gz",
+      "golangci-lint-1.20.0-linux-amd64.tar.gz",
       "govendor_linux_amd64",
       "jq-linux64",
       "mercurial-3.9.tar.gz",
