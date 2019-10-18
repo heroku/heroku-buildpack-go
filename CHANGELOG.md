@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Add go1.13.3, use for go1.13
+* Add go1.12.12, expand go1.12 to go1.12.12, and default to go1.12.12
 * Add go1.13.2, use for go1.13
 * Add go1.12.11, expand go1.12 to go1.12.11, and default to go1.12.11
 
