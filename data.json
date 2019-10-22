@@ -1,11 +1,11 @@
 {
   "Go": {
-    "DefaultVersion": "go1.12.11",
+    "DefaultVersion": "go1.12.12",
     "VersionExpansion": {
-      "go1.13": "go1.13.2",
+      "go1.13": "go1.13.3",
       "go1.13.0": "go1.13",
       "go1.12.0": "go1.12",
-      "go1.12": "go1.12.11",
+      "go1.12": "go1.12.12",
       "go1.11.0": "go1.11",
       "go1.11": "go1.11.13",
       "go1.10.0": "go1.10",
@@ -108,7 +108,7 @@
       "glide-v0.13.3-linux-amd64.tar.gz",
       "go1.10.8.linux-amd64.tar.gz",
       "go1.11.13.linux-amd64.tar.gz",
-      "go1.12.11.linux-amd64.tar.gz",
+      "go1.12.12.linux-amd64.tar.gz",
       "go1.4.3.linux-amd64.tar.gz",
       "go1.6.4.linux-amd64.tar.gz",
       "go1.7.6.linux-amd64.tar.gz",
