@@ -1,12 +1,14 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## 134 (2019-10-22)
 * Add go1.13.3, use for go1.13
 * Add go1.12.12, expand go1.12 to go1.12.12, and default to go1.12.12
 * Add go1.13.2, use for go1.13
 * Add go1.12.11, expand go1.12 to go1.12.11, and default to go1.12.11
 
-## v131 (2019-10-15)
+## v131 (2019-10-15) (and v132/v133)
 * Bump golangci-lint to v1.20.0
 
 ## v130 (2019-09-26)
