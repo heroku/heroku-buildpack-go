@@ -101,7 +101,6 @@
   },
   "test": {
     "assets": [
-      "bzr-2.7.0.tar.gz",
       "dep-v0.5.2-linux-amd64",
       "errors-0.8.0.tar.gz",
       "gb-0.4.4.tar.gz",

@@ -2,6 +2,13 @@
 # See README.md for info on running these tests.
 
 testModWithBZRDep() {
+  if [ "${IMAGE}" = "heroku/cedar:14" ]; then
+    echo "!!!"
+    echo "!!! Skipping this test on heroku/cedar:14"
+    echo "!!! (image doesn't contain bzr)"
+    echo "!!!"
+    return 0
+  fi
   fixture "mod-with-bzr-dep"
 
   assertDetected
