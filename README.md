@@ -377,31 +377,6 @@ the source code (one of `/.golangci.yml`, `/.golangci.toml`, or
 
 Use one of those configuration files to configure the golanglint-ci run.
 
-## Deploying
-
-[Make] & the [Heroku Toolbelt][toolbelt] are required to deploy.
-
-```console
-make publish # && follow the prompts
-```
-
-### New Go version
-
-[Make], [jq], [curl], [shasum], [s3cmd], & [LastPassCLI] are required to do this.
-
-1. Run `sbin/add-version <version>`, eg `sbin/add-version go1.11` to update
-   `files.json`.
-1. Update `data.json`, to update the `VersionExpansion` and, if bumping the
-   default version, `DefaultVersion` objects.
-1. run `make sync`.
-   This will prompt you for your lastpass credentials, which are used to pull
-   AWS S3 credentials from a lastpass note. These credentials are then used to
-   download everything from the s3 bucket, plus any missing files from their
-   source locations, verify their SHAS, and upload anything missing from the
-   bucket back to the s3 bucket. If a file doesn't verify this will error and it
-   needs to be corrected.
-1. Commit and push.
-
 [app-engine-build-constraints]: http://blog.golang.org/2013/01/the-app-engine-sdk-and-workspaces-gopath.html
 [build-constraint]: http://golang.org/pkg/go/build/
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
