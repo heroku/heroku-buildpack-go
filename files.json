@@ -239,6 +239,14 @@
     "SHA": "925a1a9d8b31c2425d7313fe73d3342288968a66e26cd8bf1b6b5656f4603fcb",
     "URL": "https://storage.googleapis.com/golang/go1.12.14.linux-amd64.tar.gz"
   },
+  "go1.12.15.linux-amd64.tar.gz": {
+    "SHA": "61068419f3d3fcd3cc415c352c4a93d6ae0e723ac18a22ac572b4904d78b5a4c",
+    "URL": "https://storage.googleapis.com/golang/go1.12.15.linux-amd64.tar.gz"
+  },
+  "go1.12.16.linux-amd64.tar.gz": {
+    "SHA": "bf3a85d75658144c06ce986ba05e07ef08af4320089b74b1d41de3b0f340ea7e",
+    "URL": "https://storage.googleapis.com/golang/go1.12.16.linux-amd64.tar.gz"
+  },
   "go1.12.2.linux-amd64.tar.gz": {
     "SHA": "f28c1fde8f293cc5c83ae8de76373cf76ae9306909564f54e0edcf140ce8fe3f",
     "URL": "https://storage.googleapis.com/golang/go1.12.2.linux-amd64.tar.gz"
@@ -307,6 +315,14 @@
     "SHA": "512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569",
     "URL": "https://storage.googleapis.com/golang/go1.13.5.linux-amd64.tar.gz"
   },
+  "go1.13.6.linux-amd64.tar.gz": {
+    "SHA": "a1bc06deb070155c4f67c579f896a45eeda5a8fa54f35ba233304074c4abbbbd",
+    "URL": "https://storage.googleapis.com/golang/go1.13.6.linux-amd64.tar.gz"
+  },
+  "go1.13.7.linux-amd64.tar.gz": {
+    "SHA": "b3dd4bd781a0271b33168e627f7f43886b4c5d1c794a4015abf34e99c6526ca3",
+    "URL": "https://storage.googleapis.com/golang/go1.13.7.linux-amd64.tar.gz"
+  },
   "go1.13.linux-amd64.tar.gz": {
     "SHA": "68a2297eb099d1a76097905a2ce334e3155004ec08cdea85f24527be3c48e856",
     "URL": "https://storage.googleapis.com/golang/go1.13.linux-amd64.tar.gz"
@@ -326,6 +342,10 @@
   "go1.14beta1.linux-amd64.tar.gz": {
     "SHA": "ebe68aa4219b673dbd060b8a6d9a339b6b6b0383772aa4349c8183f0a8f339e4",
     "URL": "https://storage.googleapis.com/golang/go1.14beta1.linux-amd64.tar.gz"
+  },
+  "go1.14rc1.linux-amd64.tar.gz": {
+    "SHA": "69398d41e5f6b87cdf3969aae665be4dfd3cc2ef36a61ab47a261f96130ed788",
+    "URL": "https://storage.googleapis.com/golang/go1.14rc1.linux-amd64.tar.gz"
   },
   "go1.2.1.linux-amd64.tar.gz": {
     "SHA": "d6e9623b8cf566599003dac6c402d03a62f48d98158bfcfc3b0c743b51ad4be6",
