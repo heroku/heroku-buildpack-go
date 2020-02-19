@@ -14,6 +14,7 @@
 * Add go1.13.5, use for go1.13
 * Add go1.12.14, expand go1.12 to go1.12.14, and default to go1.12.14
 * Add go1.14beta1 expand go1.14 to go1.14beta1
+* Remove duplicate deploy docs.
 
 ## v135 (2019-12-03)
 * Same as 134, which looks like a misfire.
