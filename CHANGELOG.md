@@ -2,6 +2,7 @@
 
 ## Unreleased
 * Update shunit2
+* sbin/sync-files.sh: verify checksums serially
 
 ## v138 (2020-03-13)
 * Add go1.13.8

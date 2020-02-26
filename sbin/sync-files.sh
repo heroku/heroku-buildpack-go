@@ -40,14 +40,6 @@ if [[ ${#IGNORE} -gt 0 ]]; then
 fi
 aws s3 sync ${args} ${BUCKET} .
 
-pipe=$(mktemp -d)/comms
-trap "rm -f ${pipe}; pkill -P $$" EXIT
-trap "" SIGWINCH
-
-if [[ ! -p ${pipe} ]]; then
-  mkfifo ${pipe}
-fi
-
 ensureFile() {
   local file="${1}"
   local url=""
@@ -71,13 +63,8 @@ ensureFile() {
 FILES=($(ls))
 echo "Ensuring the correct versions of all files specified in files.json"
 
-# TODO: do it in batches to avoid an hitting ulimit process max
-for file in $(< "${filesJSON}" jq -r 'keys[]'); do
-  ensureFile ${file} >>${pipe} &
-done
-
 bad=0
-while read -r file knownSHA fileSHA; do
+for file in $(< "${filesJSON}" jq -r 'keys[]'); do
   FILES=(${FILES#${file}})
 
   if [[ ${IGNORE[(ie)$file]} -le ${#IGNORE} ]]; then
@@ -85,20 +72,20 @@ while read -r file knownSHA fileSHA; do
     continue
   fi
 
-  if [[ "${fileSHA}" != "${knownSHA}" ]]; then
-    echo
-    echo "SHA of file '${file}' differs from known SHA"
-    if [[ -z "${fileSHA}" ]]; then
-      echo "known SHA: "  # knownSHA was actually empty making what was read "$file $fileSHA"
-      echo "file SHA: ${knownSHA}"
-    else
-      echo "known SHA: ${knownSHA}"
-      echo "file SHA: ${fileSHA}"
-    fi
+  ensureFile "$file" | read -r xfile knownSHA fileSHA
+
+  if [ -z "$knownSHA" -o -z "$fileSHA" ]; then
+    echo "  $file: known SHA ($knownSHA) or file SHA ($fileSHA) empty, check ${cache}/${file} and its entry in data.json"
     let bad+=1
+    continue
   fi
 
-done<${pipe}
+  if [[ "${fileSHA}" != "${knownSHA}" ]]; then
+    echo "  $file: got fileSHA ${fileSHA}, want ${knownSHA}"
+    let bad+=1
+    continue
+  fi
+done
 
 if [[ ${bad} -gt 0 ]]; then
   echo
