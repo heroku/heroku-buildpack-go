@@ -1,6 +1,10 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.13.8
+* Add go1.14
+* Expand go1.13 to go1.13.8
+* Expand go1.14 to go1.14
 
 ## v137 (2020-02-19)
 * Add go1.12.15 and go1.12.16
