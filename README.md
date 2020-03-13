@@ -306,7 +306,7 @@ heroku config:set GO_GIT_CRED__HTTPS__GITHUB__COM=FakePersonalAccessTokenHere
 ## Hacking on this Buildpack
 
 To change this buildpack, fork it on GitHub & push changes to your fork. Ensure
-that tests have been added to the `test/run` script and any corresponding fixtures to
+that tests have been added to `test/run.sh` and any corresponding fixtures to
 `test/fixtures/<fixture name>`.
 
 ### Tests
@@ -315,6 +315,12 @@ that tests have been added to the `test/run` script and any corresponding fixtur
 
 ```console
 make test
+```
+
+Run a specific test in `test/run.sh`:
+
+```console
+make BASH_COMMAND='test/run.sh -- testGBVendor' test
 ```
 
 ### Compiling a fixture locally
