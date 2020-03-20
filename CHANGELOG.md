@@ -3,6 +3,9 @@
 ## Unreleased
 * Update shunit2
 * sbin/sync-files.sh: verify checksums serially
+* Add go1.12.17, use for go1.12 and as the default
+* Add go1.13.9, use for go1.13
+* Add go1.14.1, use for go1.14
 
 ## v138 (2020-03-13)
 * Add go1.13.8
