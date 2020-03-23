@@ -58,7 +58,7 @@ testModProcfileCreation() {
   fixture "mod-cmd-web"
 
   assertDetected
-  
+
   compile
   assertModulesBoilerplateCaptured
   assertGoInstallCaptured
@@ -163,7 +163,7 @@ github.com/heroku/fixture/cmd/other"
 
   assertFile "fixture: bin/fixture
 other: bin/other" "Procfile"
-  
+
   assertCapturedSuccess
   assertInstalledFixtureBinary
   assertCompiledBinaryExists other
@@ -198,7 +198,7 @@ testModNoVersion() {
   assertModulesBoilerplateCaptured
   assertGoInstallCaptured
   assertGoInstallOnlyFixturePackageCaptured
- 
+
   assertCapturedSuccess
   assertInstalledFixtureBinary
 }
@@ -294,6 +294,37 @@ testModDeps() {
   compile
   assertModulesBoilerplateCaptured
   assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  # The other deps are downloaded/installed
+  assertCaptured "
+go: finding github.com/gorilla/mux v1.6.2
+go: finding github.com/gorilla/context v1.1.1
+go: downloading github.com/gorilla/mux v1.6.2
+go: extracting github.com/gorilla/mux v1.6.2
+github.com/gorilla/mux
+"
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+}
+
+# Ensure that a project works when:
+#
+# * no vendor directory is present
+# * Go release of 1.14 or greater is used (eg `// +heroku goVersion 1.14` in go.mod)
+# * Go language version of 1.14 or greater is used (eg `go 1.14` in go.mod)
+#
+# The use of language version 1.14 or greater in particular
+# activates new consistency checks between go.mod and the vendor
+# directory, described at https://golang.org/doc/go1.14#vendor.
+testModDeps114() {
+  fixture "mod-deps-114"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertCaptured "Installing go1.14"
   assertGoInstallOnlyFixturePackageCaptured
 
   # The other deps are downloaded/installed
