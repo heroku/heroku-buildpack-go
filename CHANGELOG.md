@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v139 (2020-03-23)
 * Update shunit2
 * sbin/sync-files.sh: verify checksums serially
 * Add go1.12.17, use for go1.12 and as the default
