@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Emit more metrics
 
 ## v139 (2020-03-23)
 * Update shunit2

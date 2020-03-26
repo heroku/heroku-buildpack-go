@@ -310,6 +310,7 @@ setGoVersionFromEnvironment() {
         warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
         warn "for future builds"
         warn ""
+        mcount "version.source.default"
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
 }
@@ -321,17 +322,33 @@ supportsGoModules() {
 }
 
 determineTool() {
+    ver=""
+    if [ -n "$GOVERSION" ]; then
+	ver="$GOVERSION"
+	mcount "version.source.goversion"
+    fi
+
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
         step ""
         info "Detected go modules via go.mod"
         step ""
-        ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
+
         name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goMOD})
         info "Detected Module Name: ${name}"
         step ""
+
+        if [ -z "$ver" ]; then
+            goMODVersion="$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})"
+            if [ -n "$goMODVersion" ]; then
+                ver="$goMODVersion"
+                mcount "version.source.gomod"
+            fi
+        fi
+
         warnGoVersionOverride
-        if [ -z "${ver}" ]; then
+        if [ -z "$ver" ]; then
+            mcount "version.source.default"
             ver=${DefaultGoVersion}
             warn "The go.mod file for this project does not specify a Go version"
             warn ""
@@ -363,10 +380,19 @@ determineTool() {
             err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
             exit 1
         fi
-        ver=${GOVERSION:-$(<${depTOML} tq '$.metadata.heroku["go-version"]')}
+
+        if [ -z "$ver" ]; then
+            depTOMLVersion="$(<${depTOML} tq '$.metadata.heroku["go-version"]')"
+            if [ -n "$depTOMLVersion" ]; then
+                ver="$depTOMLVersion"
+                mcount "version.source.deptoml"
+            fi
+        fi
+
         warnGoVersionOverride
         if [ -z "${ver}" ]; then
             ver=${DefaultGoVersion}
+            mcount "version.source.default"
             warn "The 'metadata.heroku[\"go-version\"]' field is not specified in 'Gopkg.toml'."
             warn ""
             warn "Defaulting to ${ver}"
@@ -382,7 +408,15 @@ determineTool() {
         exit 1
         fi
         name=$(<${godepsJSON} jq -r .ImportPath)
-        ver=${GOVERSION:-$(<${godepsJSON} jq -r .GoVersion)}
+
+        if [ -z "$ver" ]; then
+            godepsVersion="$(<${godepsJSON} jq -r .GoVersion)"
+            if [ -n "$godepsVersion" ]; then
+                ver="$godepsVersion"
+                mcount "version.source.godeps"
+            fi
+        fi
+
         warnGoVersionOverride
     elif [ -f "${vendorJSON}" ]; then
         TOOL="govendor"
@@ -401,9 +435,17 @@ determineTool() {
             err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
             exit 1
         fi
-        ver=${GOVERSION:-$(<${vendorJSON} jq -r .heroku.goVersion)}
+
+        if [ -z "$ver" ]; then
+            vendorVersion="$(<${vendorJSON} jq -r .heroku.goVersion)"
+            if [ -n "$vendorVersion" ]; then
+                ver="$vendorVersion"
+                mcount "version.source.vendorjson"
+            fi
+        fi
+
         warnGoVersionOverride
-        if [ "${ver}" =  "null" -o -z "${ver}" ]; then
+        if [ "${ver}" = "null" -o -z "${ver}" ]; then
             ver=${DefaultGoVersion}
             warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
             warn ""
