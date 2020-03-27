@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Clear cache on stack change
 
 ## v139 (2020-03-23)
 * Update shunit2

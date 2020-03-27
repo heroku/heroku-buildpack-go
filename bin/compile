@@ -13,6 +13,32 @@ source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
 source_stdlib
 
+cacheStackFile="$cache/go-stack"
+
+cacheStack() {
+    echo "$STACK" > "$cacheStackFile"
+}
+
+resetCache() {
+    if [ -d "$cache/go-path" ]; then
+        find "$cache/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
+    fi
+    rm -rf "${cache:?}"/*
+    cacheStack
+}
+
+cachedStack=""
+if [ -r "$cacheStackFile" ]; then
+    cachedStack="$(< "$cacheStackFile")"
+fi
+if [ "$cachedStack" != "$STACK" ]; then
+    if [ -e "$cacheStackFile" ]; then
+	step "Stack change detected, clearing old cache"
+    fi
+    resetCache
+fi
+cacheStack
+
 snapshotBinBefore
 
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
@@ -258,10 +284,7 @@ ensureGo() {
     else
         #For a go version change, we delete everything
         step "New Go Version, clearing old cache"
-        if [ -d "${cache}/go-path" ]; then
-            find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
-        fi
-        rm -rf ${cache}/*
+        resetCache
         case "${goVersion}" in
             devel*)
                 local bGoVersion="$(expandVer ${DefaultGoVersion})"
@@ -334,7 +357,7 @@ warnGoVersionOverride() {
         warn "Using \$GOVERSION override."
         warn "     \$GOVERSION = ${GOVERSION}"
         warn ""
-        warn "If this isn't what you want please run:'"
+        warn "If this isn't what you want please run:"
         warn "  heroku config:unset GOVERSION -a <app>"
         warn ""
     fi
@@ -345,7 +368,7 @@ warnPackageSpecOverride() {
         warn "Using \$GO_INSTALL_PACKAGE_SPEC override."
         warn "     \$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}"
         warn ""
-        warn "If this isn't what you want please run:'"
+        warn "If this isn't what you want please run:"
         warn "  heroku config:unset GO_INSTALL_PACKAGE_SPEC -a <app>"
         warn ""
     fi
@@ -707,4 +730,3 @@ echo "TOOL=${TOOL}" > "${t}"
 if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
-

@@ -58,7 +58,7 @@ testModProcfileCreation() {
   fixture "mod-cmd-web"
 
   assertDetected
-  
+
   compile
   assertModulesBoilerplateCaptured
   assertGoInstallCaptured
@@ -163,7 +163,7 @@ github.com/heroku/fixture/cmd/other"
 
   assertFile "fixture: bin/fixture
 other: bin/other" "Procfile"
-  
+
   assertCapturedSuccess
   assertInstalledFixtureBinary
   assertCompiledBinaryExists other
@@ -198,7 +198,7 @@ testModNoVersion() {
   assertModulesBoilerplateCaptured
   assertGoInstallCaptured
   assertGoInstallOnlyFixturePackageCaptured
- 
+
   assertCapturedSuccess
   assertInstalledFixtureBinary
 }
@@ -1365,6 +1365,75 @@ testGoCacheGoVersionLessThan110() {
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertDirDoesNotExist "${cache_dir}"
+}
+
+testClearCacheOnStackSet() {
+  fixture "mod-basic"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+  assertNotCaptured "Stack change detected"
+
+  STACK=new-stack compile
+  assertGoInstallCaptured
+  assertCapturedSuccess
+  assertCaptured "Stack change detected"
+}
+
+testClearCacheOnStackChange() {
+  fixture "mod-basic"
+
+  assertDetected
+
+  STACK=old-stack compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+  assertNotCaptured "Stack change detected"
+
+  STACK=new-stack compile
+  assertGoInstallCaptured
+  assertCapturedSuccess
+  assertCaptured "Stack change detected"
+}
+
+# Ensure caching of STACK and Go version don't
+# clobber each other. One way this could happen is
+# if changing tho Go version empties the cache without
+# re-caching the STACK value.
+testGoVersionChange() {
+  fixture "mod-basic"
+
+  assertDetected
+
+  STACK=the-stack compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+
+  env "GOVERSION" "go1.11.13"
+
+  STACK=the-stack compile
+  assertCaptured "Installing go1.11.13"
+  assertCapturedSuccess
+  assertCaptured "New Go Version, clearing old cache"
+  assertNotCaptured "Stack change detected"
+
+  STACK=the-stack compile
+  assertCaptured "Using go1.11.13"
+  assertCapturedSuccess
+  assertNotCaptured "New Go Version, clearing old cache"
+  assertNotCaptured "Stack change detected"
 }
 
 pushd $(dirname 0) >/dev/null
