@@ -1,4 +1,4 @@
-// +heroku goVersion 1.14
+// +heroku goVersion 1.14.2
 
 module github.com/heroku/fixture
 
