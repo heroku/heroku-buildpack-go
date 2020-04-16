@@ -8,6 +8,7 @@
 * Add go1.12.17, use for go1.12 and as the default
 * Add go1.13.9, use for go1.13
 * Add go1.14.1, use for go1.14
+* Only pass -mod=vendor to `go list` if a vendor directory is present (#394)
 
 ## v138 (2020-03-13)
 * Add go1.13.8
