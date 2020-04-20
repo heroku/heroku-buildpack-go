@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add Heroku-20 to the Travis test matrix
 
 ## v139 (2020-03-23)
 * Update shunit2

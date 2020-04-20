@@ -5,9 +5,7 @@ services:
 before_install:
 - echo -e "machine api.github.com\n  login $GITHUB_BASIC" > ~/.netrc
 install:
-- docker pull heroku/cedar:14
-- docker pull heroku/heroku:16-build
-- docker pull heroku/heroku:18-build
+- docker pull $IMAGE
 script:
 - make IMAGE=$IMAGE test
 env:
@@ -15,6 +13,7 @@ env:
   - IMAGE=heroku/cedar:14
   - IMAGE=heroku/heroku:16-build
   - IMAGE=heroku/heroku:18-build
+  - IMAGE=heroku/heroku:20-build
   global:
     # GITHUB_TOKEN: Used in a test and has/read write access to a private repo.
   - secure: bsre6S9nXZ6RgS+/L6I34yAZ3GwWG1W0d/3guP6nxGhuobttBlASu81GiFD5YvMv65xj5RpUEhbQBO58KIlDcTc8mHoqWgUeUnC2wHUHRHMTMa5NgkvI84PNBFo8WBSRYPq10W18FapZnQsmFYgZj84kLbHiUZIVN4tJNBlW3BxebH+xitslJhKWfsa7xVVowHgZEA9A+6aKKvgVY9hnBWRkt+jAONtQKXjVCywAbu7258UI6dLAZ0K64bJoE6qjXkDwYbx2QtdAOS2qbhp7EHlJA8SRnekAZIHkwSjaZHPlwKeMLQmhgqySc/yfFuzxr8u9TehcPYsvegdync0LXeyNE9udlHTdLIgnNnUAbXI43vOwM+TLlM+1PTDiBee3UYYoHy9D139RsF1xjlnGjdxjOdYsA4gX75AeUuvtgTDYs3YX607NiDx6plWM12Oo8N83hsuLIMxfcU0lhYPV0EVnCSwrJa0cIQp2/LSnYluQ2C7muBmY7YAsrm/ZZ9q4SMMdiB1c3vo9mFQt0eHFfd59apFQvYBzNnMNTXqUabuPxeeDH0kQq9TKB4kQTstTwh3jRHXIo8hLLN8ExqcO2KEPx55/H3HuIEffV2I3P3gpt2lzT2o9zgqeD7iqdEtnd4emuNxHyzjAOQj7Y6AQO5wbakMeWgUdZzr1b2DcYbE=
