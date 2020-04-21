@@ -324,7 +324,7 @@ testModDeps114() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.14"
+  assertCaptured "Installing go1.14.2"
   assertGoInstallOnlyFixturePackageCaptured
 
   # The other deps are downloaded/installed
