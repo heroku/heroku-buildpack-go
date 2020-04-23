@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Set GOPATH earlier when using modules
 
 ## v141 (2020-04-21)
 * Add Heroku-20 to the Travis test matrix

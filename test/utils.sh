@@ -108,10 +108,14 @@ compile() {
 }
 
 dotest() {
+  # On Heroku CI, test-compile and test are run in such a way that the
+  # provided BUILD_DIR is the same as HOME. Simulate that here to get
+  # better fidelity. For example, this ensures that the default GOPATH of
+  # $HOME/go doesn't cause issues.
   echo "* test-compile"
-  capture "${BUILDPACK_HOME}/bin/test-compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
+  HOME="${BUILD_DIR}" capture "${BUILDPACK_HOME}/bin/test-compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
   echo "* test"
-  continue_capture "${BUILDPACK_HOME}/bin/test" "${BUILD_DIR}" "${ENV_DIR}"
+  HOME="${BUILD_DIR}" continue_capture "${BUILDPACK_HOME}/bin/test" "${BUILD_DIR}" "${ENV_DIR}"
 }
 
 release() {
