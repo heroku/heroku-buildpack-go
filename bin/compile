@@ -465,6 +465,14 @@ case "${TOOL}" in
     gomodules)
         cd ${build}
 
+        export GOBIN="${build}/bin"
+        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
+            export GOPATH="${build}/.heroku/go-path"
+            mkdir -p $GOPATH # ensure that it's created
+        else
+            export GOPATH="${cache}/go-path"
+        fi
+
         # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
         # and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
         # when the desired language version is 1.14+ and vendoring should be used.
@@ -511,13 +519,6 @@ case "${TOOL}" in
         massagePkgSpecForVendor
 
         unset GIT_DIR # unset git dir or it will mess with goinstall
-        export GOBIN="${build}/bin"
-        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
-            export GOPATH="${build}/.heroku/go-path"
-            mkdir -p $GOPATH # ensure that it's created
-        else
-            export GOPATH="${cache}/go-path"
-        fi
         if [[ -f bin/go-pre-compile ]]; then
             step "Running bin/go-pre-compile hook"
             chmod a+x bin/go-pre-compile
