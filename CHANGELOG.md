@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.13.11, use for go1.13
+* Add go1.14.3, use for go1.14
 
 ## v142 (2020-04-27)
 * Set GOPATH earlier when using modules, which fixes issues when using Heroku CI
