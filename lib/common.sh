@@ -204,29 +204,15 @@ ensureInPath() {
 }
 
 loadEnvDir() {
-    local envFlags=()
-    envFlags+=("CGO_CFLAGS")
-    envFlags+=("CGO_CPPFLAGS")
-    envFlags+=("CGO_CXXFLAGS")
-    envFlags+=("CGO_LDFLAGS")
-    envFlags+=("GO_LINKER_SYMBOL")
-    envFlags+=("GO_LINKER_VALUE")
-    envFlags+=("GO15VENDOREXPERIMENT")
-    envFlags+=("GOVERSION")
-    envFlags+=("GO_INSTALL_PACKAGE_SPEC")
-    envFlags+=("GO_INSTALL_TOOLS_IN_IMAGE")
-    envFlags+=("GO_SETUP_GOPATH_IN_IMAGE")
-    envFlags+=("GO_SETUP_GOPATH_FOR_MODULE_CACHE")
-    envFlags+=("GO_TEST_SKIP_BENCHMARK")
-    envFlags+=("GLIDE_SKIP_INSTALL")
     local env_dir="${1}"
+    local denylist_regex='^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH|LANG|BUILD_DIR)$'
     if [ ! -z "${env_dir}" ]; then
         mkdir -p "${env_dir}"
         env_dir=$(cd "${env_dir}/" && pwd)
-        for key in ${envFlags[@]}; do
-            if [ -f "${env_dir}/${key}" ]; then
-                export "${key}=$(cat "${env_dir}/${key}" | sed -e "s:\${build_dir}:${build}:")"
-            fi
+        for e in $(ls $env_dir); do
+            echo "$e" | grep -qvE "$denylist_regex" &&
+            export "$e=$(cat $env_dir/$e)"
+        :
         done
     fi
 }
