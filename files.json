@@ -315,6 +315,10 @@
     "SHA": "9cacc6653563771b458c13056265aa0c21b8a23ca9408278484e4efde4160618",
     "URL": "https://storage.googleapis.com/golang/go1.13.12.linux-amd64.tar.gz"
   },
+  "go1.13.13.linux-amd64.tar.gz": {
+    "SHA": "0b8573c2335bebef53e819ab8d323456dc2b94838bebdbd8cc6623bb8a6d77b7",
+    "URL": "https://storage.googleapis.com/golang/go1.13.13.linux-amd64.tar.gz"
+  },
   "go1.13.2.linux-amd64.tar.gz": {
     "SHA": "293b41a6ccd735eebcfb4094b6931bfd187595555cecf3e4386e9e119220c0b7",
     "URL": "https://storage.googleapis.com/golang/go1.13.2.linux-amd64.tar.gz"
@@ -378,6 +382,10 @@
   "go1.14.4.linux-amd64.tar.gz": {
     "SHA": "aed845e4185a0b2a3c3d5e1d0a35491702c55889192bb9c30e67a3de6849c067",
     "URL": "https://storage.googleapis.com/golang/go1.14.4.linux-amd64.tar.gz"
+  },
+  "go1.14.5.linux-amd64.tar.gz": {
+    "SHA": "82a1b84f16858db03231eb201f90cce2a991078dda543879b87e738e2586854b",
+    "URL": "https://storage.googleapis.com/golang/go1.14.5.linux-amd64.tar.gz"
   },
   "go1.14.linux-amd64.tar.gz": {
     "SHA": "08df79b46b0adf498ea9f320a0f23d6ec59e9003660b4c9c1ce8e5e2c6f823ca",
