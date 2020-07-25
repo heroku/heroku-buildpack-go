@@ -376,8 +376,15 @@ setupGOPATH() {
 }
 
 installPkgs() {
-    step "Running: go install -v ${FLAGS[@]} ${pkgs}"
-    go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    if [ "${TOOL}" == "gomodules" ]; then
+        cd ${pkgs}
+        step "Running: go install -v ${FLAGS[@]} in '${pkgs}' path"
+        go install -v "${FLAGS[@]}" 2>&1
+        cd ${build}
+    else
+        step "Running: go install -v ${FLAGS[@]} ${pkgs}"
+        go install -v "${FLAGS[@]}" ${pkgs} 2>&1
+    fi
 }
 
 loadEnvDir "${env_dir}"
@@ -464,16 +471,6 @@ setupProcfile() {
 case "${TOOL}" in
     gomodules)
         export GOBIN="${build}/bin"
-        
-        build_bkp=${build}
-
-        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
-            export GOPATH="${build}/.heroku/go-path"
-            mkdir -p $GOPATH # ensure that it's created
-        else
-            export GOPATH="${cache}/go-path"
-        fi
-
         cd ${build}
 
         # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
