@@ -321,11 +321,11 @@ supportsGoModules() {
 }
 
 determineTool() {
-    if [ "${GO_SPEC_BUILD_DIR}X" != "X" ]; then
-        goMOD="${build}/${GO_SPEC_BUILD_DIR}/go.mod"
-        step "Overreading go.mod path: ${goMOD}"
+    if [ -z "${GO_SPEC_BUILD_DIR}" ]; then
+        step "GO_SPEC_BUILD_DIR isn't set using defaul: ${goMOD} "
     else
-        step "go.mod path not overreated: ${goMOD}"
+        goMOD="${build}/${GO_SPEC_BUILD_DIR}/go.mod"
+        step "Using new module path: ${goMOD}"
     fi
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
