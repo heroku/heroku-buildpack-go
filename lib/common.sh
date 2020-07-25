@@ -10,6 +10,10 @@ godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
 goMOD="${build}/go.mod"
+if [ "${GO_SPEC_BUILD_DIR}X" != "X" ]; then
+    goMOD="${build}/${GO_SPEC_BUILD_DIR}/go.mod"
+    step "Overreading go.mod path: ${goMOD}"
+fi
 
 steptxt="----->"
 GREEN='\033[1;32m'
