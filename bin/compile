@@ -387,7 +387,7 @@ trap clearGitCredHelper INT TERM EXIT
 
 FLAGS=(-tags heroku)
 
-if [ ! -z "${GO_SPEC_BUILD_DIR}"]; then
+if [ "${GO_SPEC_BUILD_DIR}X" != "X" ]; then
     export goMOD="${build}/${GO_SPEC_BUILD_DIR}/go.mod"
     step "Overreading go.mod path: ${goMOD}"
 fi
@@ -472,7 +472,7 @@ case "${TOOL}" in
         
         build_bkp=${build}
         
-        if [ ! -z "${GO_SPEC_BUILD_DIR}" ]; then
+        if [ "${GO_SPEC_BUILD_DIR}X" != "X" ]; then
             build="${build}/${GO_SPEC_BUILD_DIR}"
         fi
 
