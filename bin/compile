@@ -377,8 +377,9 @@ setupGOPATH() {
 
 installPkgs() {
     if [ "${TOOL}" == "gomodules" ]; then
-        cd ${pkgs}
-        step "Running: go install -v ${FLAGS[@]} in '${pkgs}' path"
+        pkg_dir=$( find . -name go.mod | grep -v vendor | xargs dirname )
+        step "Running: go install -v ${FLAGS[@]} in '${pkgs_dir}' path"
+        cd ${pkg_dir}
         go install -v "${FLAGS[@]}" 2>&1
         cd ${build}
     else
