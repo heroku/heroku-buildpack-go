@@ -387,11 +387,11 @@ trap clearGitCredHelper INT TERM EXIT
 
 FLAGS=(-tags heroku)
 
-determineTool
-
 if [ ! -z "${GO_SPEC_TOOL}"]; then
-    TOOL="${GO_SPEC_TOOL}"
+    export goMOD="${GO_SPEC_TOOL}"
 fi
+
+determineTool
 
 ver=$(expandVer $ver)
 
