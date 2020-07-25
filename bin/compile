@@ -469,6 +469,9 @@ case "${TOOL}" in
         
         if [ "${GO_SPEC_BUILD_DIR}X" != "X" ]; then
             build="${build}/${GO_SPEC_BUILD_DIR}"
+            step "Changing build path: ${build}"
+        else
+            step "Keeping build path: ${build}"
         fi
 
         if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
