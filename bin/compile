@@ -389,6 +389,10 @@ FLAGS=(-tags heroku)
 
 determineTool
 
+if [ ! -z "${GO_SPEC_TOOL}"]; then
+    TOOL="${GO_SPEC_TOOL}"
+fi
+
 ver=$(expandVer $ver)
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
@@ -463,15 +467,22 @@ setupProcfile() {
 
 case "${TOOL}" in
     gomodules)
-        cd ${build}
-
         export GOBIN="${build}/bin"
+        
+        build_bkp=${build}
+        
+        if [ ! -z "${GO_SPEC_BUILD_DIR}" ]; then
+            build="${GO_SPEC_BUILD_DIR}"
+        fi
+
         if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
             export GOPATH="${build}/.heroku/go-path"
             mkdir -p $GOPATH # ensure that it's created
         else
             export GOPATH="${cache}/go-path"
         fi
+
+        cd ${build}
 
         # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
         # and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
@@ -532,6 +543,7 @@ case "${TOOL}" in
             chmod a+x bin/go-post-compile
             bin/go-post-compile
         fi
+        build=${build_bkp}
     ;;
     dep)
         eval "$(setupGOPATH ${name})"
