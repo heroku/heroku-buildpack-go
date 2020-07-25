@@ -472,7 +472,7 @@ case "${TOOL}" in
         build_bkp=${build}
         
         if [ ! -z "${GO_SPEC_BUILD_DIR}" ]; then
-            build="${GO_SPEC_BUILD_DIR}"
+            build="${build}/${GO_SPEC_BUILD_DIR}"
         fi
 
         if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
