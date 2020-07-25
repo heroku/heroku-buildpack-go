@@ -322,7 +322,8 @@ supportsGoModules() {
 
 determineTool() {
     if [ -z "${GO_SPEC_BUILD_DIR}" ]; then
-        step "GO_SPEC_BUILD_DIR isn't set using defaul: ${goMOD} "
+        step "GO_SPEC_BUILD_DIR isn't set using defaul: ${goMOD}"
+        step "Current GO_SPEC_BUILD_DIR value: '${GO_SPEC_BUILD_DIR}'"
     else
         goMOD="${build}/${GO_SPEC_BUILD_DIR}/go.mod"
         step "Using new module path: ${goMOD}"

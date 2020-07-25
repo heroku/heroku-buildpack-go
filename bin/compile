@@ -469,6 +469,7 @@ case "${TOOL}" in
         
         if [ -z "${GO_SPEC_BUILD_DIR}" ]; then
             step "GO_SPEC_BUILD_DIR isn't set using default: ${build}"
+            step "Current GO_SPEC_BUILD_DIR value: '${GO_SPEC_BUILD_DIR}'"
         else
             build="${build}/${GO_SPEC_BUILD_DIR}"
             step "Using new build path: ${build}"
