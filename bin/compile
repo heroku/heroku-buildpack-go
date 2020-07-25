@@ -379,7 +379,7 @@ installPkgs() {
     if [ "${TOOL}" == "gomodules" ]; then
         info "Finding go.mod directory in build path: '${build}'"
         pkg_dir=$( find ${build} -name go.mod | grep -v vendor | xargs dirname )
-        step "Running: go install -v ${FLAGS[@]} in '${pkgs_dir}' path"
+        step "Running: go install -v ${FLAGS[@]} in '${pkg_dir}' path"
         cd ${pkg_dir}
         go install -v "${FLAGS[@]}" 2>&1
         cd ${build}
