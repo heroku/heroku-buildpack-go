@@ -466,14 +466,6 @@ case "${TOOL}" in
         export GOBIN="${build}/bin"
         
         build_bkp=${build}
-        
-        if [ -z "${GO_SPEC_BUILD_DIR}" ]; then
-            step "GO_SPEC_BUILD_DIR isn't set using default: ${build}"
-            step "Current GO_SPEC_BUILD_DIR value: '${GO_SPEC_BUILD_DIR}'"
-        else
-            build="${build}/${GO_SPEC_BUILD_DIR}"
-            step "Using new build path: ${build}"
-        fi
 
         if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
             export GOPATH="${build}/.heroku/go-path"

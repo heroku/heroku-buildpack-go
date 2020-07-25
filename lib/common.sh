@@ -9,7 +9,7 @@ depTOML="${build}/Gopkg.toml"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
-goMOD="${build}/go.mod"
+goMOD=$( find ${build} -name go.mod | grep -v vendor )
 
 steptxt="----->"
 GREEN='\033[1;32m'
@@ -321,13 +321,6 @@ supportsGoModules() {
 }
 
 determineTool() {
-    if [ -z "${GO_SPEC_BUILD_DIR}" ]; then
-        step "GO_SPEC_BUILD_DIR isn't set using defaul: ${goMOD}"
-        step "Current GO_SPEC_BUILD_DIR value: '${GO_SPEC_BUILD_DIR}'"
-    else
-        goMOD="${build}/${GO_SPEC_BUILD_DIR}/go.mod"
-        step "Using new module path: ${goMOD}"
-    fi
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
         step ""
