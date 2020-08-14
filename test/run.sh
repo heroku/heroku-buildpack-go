@@ -26,6 +26,9 @@ testModWithBZRDep() {
 testTestPackModulesVendoredGolangLintCI() {
   fixture "mod-deps-vendored-with-tests"
 
+  assertDetected
+
+  compile
   dotest
   assertCapturedSuccess
   assertCaptured "RUN   Test_BasicTest"
@@ -37,6 +40,9 @@ testTestPackModulesVendoredGolangLintCI() {
 testTestPackModulesGolangLintCI() {
   fixture "mod-deps-with-tests"
 
+  assertDetected
+
+  compile
   dotest
   assertCapturedSuccess
 
