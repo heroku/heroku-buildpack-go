@@ -2,6 +2,9 @@
 
 ## Unreleased
 * Switch `heroku-buildpack-go`'s default branch from `master` to `main`.
+* Add go1.13.15, use for go1.13
+* Add go1.14.7, use for go1.14
+* Add go1.15
 
 ## v144 (2020-07-17)
 * Add go1.13.13
