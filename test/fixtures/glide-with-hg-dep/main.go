@@ -1,9 +1,9 @@
 package main
 
 import "fmt"
-import "bitbucket.org/pkg/inflect"
+import "bitbucket.org/pkg/urlenc"
 
 func main() {
-	i := inflect.Rule{}
+	i := urlenc.Unmarshal
 	fmt.Println(i)
 }

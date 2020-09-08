@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Update glide-with-hg-dep test fixture to use a new dependency, bitbucket.org/pkg/inflect is gone
 
 ## v145 (2020-08-18)
 * Switch `heroku-buildpack-go`'s default branch from `master` to `main`.

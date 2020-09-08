@@ -679,7 +679,7 @@ testGlideWithHgDep() {
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
-  assertCaptured "github.com/heroku/fixture/vendor/bitbucket.org/pkg/inflect"
+  assertCaptured "github.com/heroku/fixture/vendor/bitbucket.org/pkg/urlenc"
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
