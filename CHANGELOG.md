@@ -2,6 +2,8 @@
 
 ## Unreleased
 * *GoModules* Private proxy support via `GOPROXY`, `GOPRIVATE`, and `GONOPROXY`
+* Add go1.14.9, use for go1.14
+* Add go1.15.2, use for go1.15
 
 ## v146 (2020-09-08)
 * Update glide-with-hg-dep test fixture to use a new dependency, bitbucket.org/pkg/inflect is gone
