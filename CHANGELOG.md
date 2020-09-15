@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v147 (2020-09-15)
 * *GoModules* Private proxy support via `GOPROXY`, `GOPRIVATE`, and `GONOPROXY`
 * Add go1.14.9, use for go1.14
 * Add go1.15.2, use for go1.15
