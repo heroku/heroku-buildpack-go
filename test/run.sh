@@ -286,6 +286,25 @@ testModBasicWithoutProcfile() {
   assertFile "web: bin/fixture" "Procfile"
 }
 
+testModPrivateProxy() {
+  local repo="${BUILDPACK_HOME}/test/fixtures/mod-private-proxy/repo"
+  fixture "mod-private-proxy/app"
+
+  env "GOPROXY" "file://$repo"
+  env "GOPRIVATE" "git.fury.io/*"
+  env "GONOPROXY" "none"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+}
+
 testModDeps() {
   fixture "mod-deps"
 
