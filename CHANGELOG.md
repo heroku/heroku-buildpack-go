@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.14.11, use for go1.14
+* Add go1.15.4, use for go1.15
 
 ## v148 (2020-10-19)
 * Add go1.14.10, use for go1.14
