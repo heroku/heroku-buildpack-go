@@ -9,7 +9,6 @@ script:
 - make IMAGE=$IMAGE test
 env:
   matrix:
-  - IMAGE=heroku/cedar:14
   - IMAGE=heroku/heroku:16-build
   - IMAGE=heroku/heroku:18-build
   - IMAGE=heroku/heroku:20-build
