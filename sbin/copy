@@ -31,6 +31,7 @@ ctt bin/test-compile
 ctt lib/common.sh
 ctt lib/common_tools.sh
 ctt lib/src/github.com/apg/patter/main.go
+ctt lib/src/github.com/apg/patter/go.mod
 ctt vendor/concurrency.sh
 ctt CHANGELOG.md
 ctt data.json
