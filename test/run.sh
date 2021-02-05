@@ -2,13 +2,6 @@
 # See README.md for info on running these tests.
 
 testModWithBZRDep() {
-  if [ "${IMAGE}" = "heroku/cedar:14" ]; then
-    echo "!!!"
-    echo "!!! Skipping this test on heroku/cedar:14"
-    echo "!!! (image doesn't contain bzr)"
-    echo "!!!"
-    return 0
-  fi
   fixture "mod-with-bzr-dep"
 
   assertDetected
@@ -682,14 +675,6 @@ testTestPackGBWithTests() {
 }
 
 testGlideWithHgDep() {
-    if [ "${IMAGE}" = "heroku/cedar:14" ]; then
-    echo "!!!"
-    echo "!!! Skipping this test on heroku/cedar:14"
-    echo "!!! See: https://www.mercurial-scm.org/wiki/SecureConnections (3.1)"
-    echo "!!!"
-    return 0
-  fi
-
   fixture "glide-with-hg-dep"
 
   assertDetected

@@ -1,5 +1,5 @@
 TMP := ''
-IMAGE := heroku/heroku:16-build
+IMAGE := heroku/heroku:20-build
 BASH_COMMAND := /bin/bash
 GO_BUCKET_URL := file:///buildpack/test/assets
 
