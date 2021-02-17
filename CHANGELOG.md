@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v152 (2021-02-17)
 * Drop cedar-14 from test matrix
 * Remove skipping of tests on cedar-14
 * Update Makefile's default IMAGE to heroku/heroku:20-build
