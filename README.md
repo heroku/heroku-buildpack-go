@@ -1,6 +1,6 @@
 # Heroku Buildpack for Go
 
-[![travis ci](https://travis-ci.com/heroku/heroku-buildpack-go.svg?branch=main)](https://travis-ci.com/heroku/heroku-buildpack-go)
+[![CircleCI](https://circleci.com/gh/heroku/heroku-buildpack-go.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildpack-go)
 
 ![Heroku Buildpack for Go](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
 

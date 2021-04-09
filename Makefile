@@ -1,7 +1,6 @@
 TMP := ''
 IMAGE := heroku/heroku:20-build
 BASH_COMMAND := /bin/bash
-GO_BUCKET_URL := file:///buildpack/test/assets
 
 .PHONY: test shell quick publish docker test-assets
 .DEFAULT: test
@@ -29,11 +28,9 @@ publish:
 	@bash sbin/publish.sh
 
 docker: test-assets
-	$(eval TMP := $(shell sbin/copy true))
-	@echo "Running docker ($(IMAGE)) with /buildpack=$(TMP) ..."
+	@echo "Running tests in docker using $(IMAGE)"
 	@docker pull $(IMAGE)
-	@docker run -v $(TMP):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "GO_BUCKET_URL=$(GO_BUCKET_URL)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
-	@rm -rf $(TMP)
+	@docker run -v $(PWD):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
 
 test-assets:
 	@echo "Setting up test assets"
