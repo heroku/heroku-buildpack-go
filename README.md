@@ -373,7 +373,7 @@ into the compiled executable.
 
 ## Testpack
 
-This buildpack supports the [testpack](testpack) API used by [Heroku CI](herokuci).
+This buildpack supports the [testpack] API used by [Heroku CI][herokuci].
 
 ### Golanglint-ci
 
