@@ -708,13 +708,9 @@
     "SHA": "4f0b1a01461f2a1892c8065989b8561a88a1c1f09e2a36f01042cd759ea1858c",
     "URL": "https://github.com/tools/godep/releases/download/v75/godep_linux_amd64"
   },
-  "golangci-lint-1.16.0-linux-amd64.tar.gz": {
-    "SHA": "5343fc3ffcbb9910925f4047ec3c9f2e9623dd56a72a17ac76fb2886abc0976b",
-    "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.16.0/golangci-lint-1.16.0-linux-amd64.tar.gz"
-  },
-  "golangci-lint-1.20.0-linux-amd64.tar.gz": {
-    "SHA": "5a638cba74fbfb6e11b9dce38e8caf3f18e998b6548118116d631ebcae3ebac5",
-    "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.20.0/golangci-lint-1.20.0-linux-amd64.tar.gz"
+  "golangci-lint-1.38.0-linux-amd64.tar.gz": {
+    "SHA": "97be8342ac9870bee003904bd8de25c0f3169c6b6238a013d6d6862efa5af992",
+    "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.38.0/golangci-lint-1.38.0-linux-amd64.tar.gz"
   },
   "govendor_linux_amd64": {
     "LocalName": "govendor",
