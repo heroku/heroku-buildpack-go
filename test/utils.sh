@@ -190,6 +190,10 @@ assertCapturedSuccess() {
   assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
 }
 
+assertCapturedExitSuccess() {
+  assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
+}
+
 # assertCapturedError [[expectedErrorCode] expectedErrorMsg]
 assertCapturedError() {
   if [ $# -gt 1 ]; then
