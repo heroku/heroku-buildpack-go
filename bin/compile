@@ -424,7 +424,7 @@ mcount "pkgmanagement.$TOOL"
 
 mainPackagesInModule() {
   # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
-  go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./... 2>/dev/null
+  go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
 }
 
 setupProcfile() {
