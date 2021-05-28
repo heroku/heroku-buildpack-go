@@ -9,7 +9,7 @@ depTOML="${build}/Gopkg.toml"
 godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
-goMOD="${build}/go.mod"
+goMOD=$( find ${build} -name go.mod | grep -v vendor )
 
 steptxt="----->"
 GREEN='\033[1;32m'
