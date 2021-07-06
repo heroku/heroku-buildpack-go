@@ -3,10 +3,10 @@ name = "Go"
 
   [publish.Ignore]
   files = [
+    ".circleci/",
     "test/",
     "sbin/",
     "file-cache/",
     ".gitignore",
-    ".travis.yml",
     "Makefile"
   ]

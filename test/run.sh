@@ -2,13 +2,6 @@
 # See README.md for info on running these tests.
 
 testModWithBZRDep() {
-  if [ "${IMAGE}" = "heroku/cedar:14" ]; then
-    echo "!!!"
-    echo "!!! Skipping this test on heroku/cedar:14"
-    echo "!!! (image doesn't contain bzr)"
-    echo "!!!"
-    return 0
-  fi
   fixture "mod-with-bzr-dep"
 
   assertDetected
@@ -36,6 +29,26 @@ testTestPackModulesVendoredGolangLintCI() {
 
 testTestPackModulesGolangLintCI() {
   fixture "mod-deps-with-tests"
+
+  dotest
+  assertCapturedSuccess
+
+  # The other deps are downloaded/installed
+  assertCaptured "
+go: finding github.com/gorilla/mux v1.6.2
+go: finding github.com/gorilla/context v1.1.1
+go: downloading github.com/gorilla/mux v1.6.2
+go: extracting github.com/gorilla/mux v1.6.2
+github.com/gorilla/mux
+"
+  assertCaptured "RUN   Test_BasicTest"
+  assertCaptured "PASS: Test_BasicTest"
+  assertCaptured "/.golangci.{yml,toml,json} detected"
+  assertCaptured "Running: golangci-lint -v --build-tags heroku run"
+}
+
+testTestPackModulesGolangLintCI116() {
+  fixture "mod-deps-with-tests-116"
 
   dotest
   assertCapturedSuccess
@@ -271,6 +284,34 @@ testModBasic() {
   assertInstalledFixtureBinary
 }
 
+testModBasicGo115() {
+  fixture "mod-basic-go115"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertCaptured "Installing go1.15"
+  assertGoInstallOnlyFixturePackageCaptured
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+}
+
+testModBasicGo116() {
+  fixture "mod-basic-go116"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertCaptured "Installing go1.16"
+  assertGoInstallOnlyFixturePackageCaptured
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
+}
+
 testModBasicWithoutProcfile() {
   fixture "mod-basic-wo-procfile"
 
@@ -284,6 +325,25 @@ testModBasicWithoutProcfile() {
   assertCapturedSuccess
   assertInstalledFixtureBinary
   assertFile "web: bin/fixture" "Procfile"
+}
+
+testModPrivateProxy() {
+  local repo="${BUILDPACK_HOME}/test/fixtures/mod-private-proxy/repo"
+  fixture "mod-private-proxy/app"
+
+  env "GOPROXY" "file://$repo"
+  env "GOPRIVATE" "git.fury.io/*"
+  env "GONOPROXY" "none"
+
+  assertDetected
+
+  compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
+
+  assertCapturedSuccess
+  assertInstalledFixtureBinary
 }
 
 testModDeps() {
@@ -663,14 +723,6 @@ testTestPackGBWithTests() {
 }
 
 testGlideWithHgDep() {
-    if [ "${IMAGE}" = "heroku/cedar:14" ]; then
-    echo "!!!"
-    echo "!!! Skipping this test on heroku/cedar:14"
-    echo "!!! See: https://www.mercurial-scm.org/wiki/SecureConnections (3.1)"
-    echo "!!!"
-    return 0
-  fi
-
   fixture "glide-with-hg-dep"
 
   assertDetected
@@ -679,7 +731,7 @@ testGlideWithHgDep() {
   assertCaptured "Installing go"
   assertCaptured "Installing glide"
   assertCaptured "Fetching any unsaved dependencies (glide install)"
-  assertCaptured "github.com/heroku/fixture/vendor/bitbucket.org/pkg/inflect"
+  assertCaptured "github.com/heroku/fixture/vendor/bitbucket.org/pkg/urlenc"
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess

@@ -1,6 +1,0 @@
-repo: 384c8ec3ade621d8deb0126f2b0762b60f930435
-node: 8961c3750a47b8c0b3e118d52513b97adf85a7e8
-branch: default
-latesttag: go.r60
-latesttagdistance: 12
-changessincelatesttag: 12

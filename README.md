@@ -1,6 +1,6 @@
 # Heroku Buildpack for Go
 
-[![travis ci](https://travis-ci.com/heroku/heroku-buildpack-go.svg?branch=master)](https://travis-ci.com/heroku/heroku-buildpack-go)
+[![CircleCI](https://circleci.com/gh/heroku/heroku-buildpack-go.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildpack-go)
 
 ![Heroku Buildpack for Go](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
 
@@ -27,7 +27,7 @@ $ heroku create
 Creating polar-waters-4785...
 ...
 
-$ git push heroku master
+$ git push heroku main
 ...
 -----> Go app detected
 -----> Installing go1.11... done
@@ -238,7 +238,7 @@ installed. If you need the buildpack to skip the `glide install` you can set
 
 ```console
 heroku config:set GLIDE_SKIP_INSTALL=true
-git push heroku master
+git push heroku main
 ```
 
 Installation defaults to `.`. This can be overridden by setting the
@@ -247,7 +247,7 @@ go tool chain to install. Example:
 
 ```console
 heroku config:set GO_INSTALL_PACKAGE_SPEC=./...
-git push heroku master
+git push heroku main
 ```
 
 ## Usage with other vendoring systems
@@ -373,7 +373,7 @@ into the compiled executable.
 
 ## Testpack
 
-This buildpack supports the [testpack](testpack) API used by [Heroku CI](herokuci).
+This buildpack supports the [testpack] API used by [Heroku CI][herokuci].
 
 ### Golanglint-ci
 
@@ -388,7 +388,7 @@ Use one of those configuration files to configure the golanglint-ci run.
 [buildpack]: http://devcenter.heroku.com/articles/buildpacks
 [cgo]: http://golang.org/cmd/cgo/
 [curl]: https://curl.haxx.se/
-[DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/master/data.json#L4
+[DefaultVersion]: https://github.com/heroku/heroku-buildpack-go/blob/main/data.json#L4
 [dep]: https://github.com/golang/dep
 [docker]: https://www.docker.com/
 [gb]: https://getgb.io/

@@ -1,0 +1,26 @@
+version: 2.1
+
+jobs:
+  test-heroku:
+    parameters:
+      stack-version:
+        type: enum
+        enum: ["18", "20"]
+    docker:
+      - image: heroku/heroku:<< parameters.stack-version >>-build
+    steps:
+      - checkout
+      - run:
+          name: Fetch test assets
+          command: make test-assets
+      - run:
+          name: Run shunit2 tests
+          command: test/run.sh
+
+workflows:
+  ci:
+    jobs:
+      - test-heroku:
+          matrix:
+            parameters:
+              stack-version: ["18", "20"]

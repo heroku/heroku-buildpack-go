@@ -1,0 +1,6 @@
+run:
+  deadline: 10m
+  tests: true
+linters:
+  enable-all: true
+  fast: true

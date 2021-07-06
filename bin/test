@@ -44,7 +44,7 @@ else
 fi
 
 # Install our vendored copy of github.com/apg/patter
-GOPATH="${testpack}/lib" GOBIN="${build}/bin" go install github.com/apg/patter
+(cd "${testpack}/lib/src/github.com/apg/patter" && GOPATH="${testpack}/lib" GOBIN="${build}/bin" go install .)
 
 output=$(mktemp)
 
