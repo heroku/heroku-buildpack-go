@@ -2,7 +2,7 @@
 
 set -e
 
-BASEURL="https://storage.googleapis.com/golang"
+BASEURL="https://dl.google.com/go"
 V="$1"
 
 if [ -z "$V" ]; then
@@ -10,7 +10,7 @@ if [ -z "$V" ]; then
     exit 1
 fi
 
-tgz_fn="$V.linux-amd64.tar.gz"
+tgz_fn="go$V.linux-amd64.tar.gz"
 tgz_url="$BASEURL/$tgz_fn"
 sha256_url="$tgz_url.sha256"
 
