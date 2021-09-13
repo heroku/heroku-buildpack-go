@@ -1,7 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
-
+* Stop suppressing error output from `go list`
 
 ## v156 (2021-10-11)
 * Add go1.16.9, use for go1.16
