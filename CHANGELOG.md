@@ -3,8 +3,10 @@
 ## Unreleased
 * Add go1.16.9, use for go1.16
 * Add go1.17.2, use for go1.17
-* Add go1.16.8
-* Add go1.17.1
+
+## v155 (2021-09-13)
+* Add go1.16.8, use for go1.16
+* Add go1.17.1, use for go1.17
 
 ## v154 (2021-08-18)
 * Add go1.17
