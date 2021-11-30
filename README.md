@@ -214,7 +214,7 @@ spec of `./...` to install.
 }
 ```
 
-A tool like jq or a text editor can be used to inject these variables into
+A tool like [jq] or a text editor can be used to inject these variables into
 `vendor/vendor.json`.
 
 ## glide specifics
@@ -320,7 +320,7 @@ that tests have been added to `test/run.sh` and any corresponding fixtures to
 
 ### Tests
 
-[Make] & [docker] are required to run tests.
+[Make], [jq] & [docker] are required to run tests.
 
 ```console
 make test
@@ -409,6 +409,7 @@ Use one of those configuration files to configure the golanglint-ci run.
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [govendor]: https://github.com/kardianos/govendor
 [herokuci]: https://devcenter.heroku.com/articles/heroku-ci
+[jq]: https://github.com/stedolan/jq
 [LastPassCLI]: https://github.com/lastpass/lastpass-cli
 [make]: https://www.gnu.org/software/make/
 [Procfile]: https://devcenter.heroku.com/articles/procfile

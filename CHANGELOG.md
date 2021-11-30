@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Stop suppressing error output from `go list`
 * Document how to install additional tools with go modules
 
 ## v159 (2021-11-30)
