@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Document how to install additional tools with go modules
 
 ## v159 (2021-11-30)
 * Republish v157 (with missing binaries)
