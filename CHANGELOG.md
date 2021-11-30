@@ -1,7 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
-
+* Add go1.16.10, use for go1.16
+* Add go1.17.3, use for go1.17
 
 ## v156 (2021-10-11)
 * Add go1.16.9, use for go1.16
