@@ -94,6 +94,15 @@ If the file `bin/go-pre-compile` or `bin/go-post-compile` exists and is
 executable then it will be executed either before compilation (go-pre-compile)
 of the repo, or after compilation (go-post-compile).
 
+These hooks can be used to install additional tools, such as `github.com/golang-migrate/migrate`:
+
+```bash
+#!/bin/bash
+set -e
+
+go install -tags 'postgres' github.com/golang-migrate/migrate/v4/cmd/migrate@v4.15.1
+```
+
 Because the buildpack installs compiled executables to `bin`, the
 `go-post-compile` hook can be written in go if it's installed by the specified
 `<packagespec>` (see above).
