@@ -3,6 +3,10 @@
 ## Unreleased
 * Stop suppressing error output from `go list`
 * Document how to install additional tools with go modules
+* Add go1.17.5, use for go1.17
+* Add go1.17.4
+* Add go1.16.12, use for go1.16
+* Add go1.16.11
 
 ## v159 (2021-11-30)
 * Republish v157 (with missing binaries)
