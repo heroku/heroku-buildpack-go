@@ -4,6 +4,28 @@
 * Stop suppressing error output from `go list`
 * Document how to install additional tools with go modules
 
+## v161 (2022-03-15)
+* Add go1.15.11
+* Add go1.15.12
+* Add go1.15.13
+* Add go1.15.14
+* Add go1.15.15
+* Add go1.16.11
+* Add go1.16.12
+* Add go1.16.13
+* Add go1.16.14
+* Add go1.16.15
+* Add go1.17.4
+* Add go1.17.5
+* Add go1.17.6
+* Add go1.17.7
+* Add go1.17.8
+* Add go1.18
+* go1.18 defaults to 1.18
+* go1.17 defaults to 1.17.8
+* go1.16 defaults to 1.16.15
+* go1.15 defaults to 1.15.15
+
 ## v159 (2021-11-30)
 * Republish v157 (with missing binaries)
 
