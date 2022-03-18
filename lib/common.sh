@@ -10,6 +10,7 @@ godepsJSON="${build}/Godeps/Godeps.json"
 vendorJSON="${build}/vendor/vendor.json"
 glideYAML="${build}/glide.yaml"
 goMOD="${build}/go.mod"
+goWork="${build}/go.work"
 
 steptxt="----->"
 GREEN='\033[1;32m'
@@ -355,6 +356,25 @@ determineTool() {
             err "Then commit and push again."
             exit 1
         fi
+    elif [ -f "${goWork}" ]; then
+        TOOL="goworkspaces"
+        step ""
+        info "Detected go modules via go.work"
+        step ""
+        ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goWork})}
+        name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goWork})
+        info "Detected Module Name: ${name}"
+        step ""
+        warnGoVersionOverride
+        if [ -z "${ver}" ]; then
+            ver=${DefaultGoVersion}
+            warn "The go.work file for this project does not specify a Go version"
+            warn ""
+            warn "Defaulting to ${ver}"
+            warn ""
+            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
+            warn ""
+        fi
     elif [ -f "${depTOML}" ]; then
         TOOL="dep"
         ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
@@ -422,7 +442,7 @@ determineTool() {
         TOOL="gb"
         setGoVersionFromEnvironment
     else
-        err "Go modules, dep, Godep, GB or govendor are required. For instructions:"
+        err "Go modules, workspaces, dep, Godep, GB or govendor are required. For instructions:"
         err "https://devcenter.heroku.com/articles/go-support"
         exit 1
     fi

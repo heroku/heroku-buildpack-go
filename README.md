@@ -88,6 +88,10 @@ greater than zero, `go install` is invoked with `-mod=vendor`, causing the build
 to skip downloading and checking of dependencies. This results in only the
 dependencies from the top level `vendor` directory being used.
 
+### Go workspaces specifics
+When using [workspaces](https://go.dev/doc/tutorial/workspaces), this buildpack will search for `go.work` file.
+Everything else applies the same as when using modules
+
 ### Pre/Post Compile Hooks
 
 If the file `bin/go-pre-compile` or `bin/go-post-compile` exists and is

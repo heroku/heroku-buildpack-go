@@ -42,6 +42,11 @@ handleDefaultPkgSpec() {
                 warn "// +heroku install ./cmd/..."
                 warn ""
             ;;
+            goworkspaces)
+                warn "To install a different package spec add a comment in the following form to your \`go.work\` file:"
+                warn "// +heroku install ./cmd/..."
+                warn ""
+            ;;
             dep)
                 warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
                 warn ""
@@ -483,6 +488,77 @@ case "${TOOL}" in
 
         step "Determining packages to install"
         pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
+        if [ -z "${pkgs}" ]; then
+            pkgs=$(mainPackagesInModule)
+            if [ -z "${pkgs}" ]; then
+                warn ""
+                warn "No main packages found in module ${name}"
+                warn ""
+                warn "Unsure what package(s) to install, defaulting to '.'"
+                warn ""
+                pkgs="default"
+                mcount "pkginstall.detect-failed"
+            else
+                info ""
+                info "Detected the following main packages to install:"
+                for pkg in ${pkgs}; do
+                    info "\t\t${pkg}"
+                done
+                info ""
+                mcount "pkginstall.auto"
+            fi
+        else
+            if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
+                mcount "pkginstall.go_install_package_spec"
+            else
+                mcount "pkginstall.heroku_install"
+            fi
+        fi
+
+        if [[ "${pkgs}" =~ "..." ]]; then
+            mcount "package_spec.contains.dot_dot_dot"
+        fi
+
+        warnPackageSpecOverride
+        handleDefaultPkgSpec
+        massagePkgSpecForVendor
+
+        unset GIT_DIR # unset git dir or it will mess with goinstall
+        if [[ -f bin/go-pre-compile ]]; then
+            step "Running bin/go-pre-compile hook"
+            chmod a+x bin/go-pre-compile
+            bin/go-pre-compile
+        fi
+
+        installPkgs
+
+        if [[ -f bin/go-post-compile ]]; then
+            step "Running bin/go-post-compile hook"
+            chmod a+x bin/go-post-compile
+            bin/go-post-compile
+        fi
+    ;;
+    goworkspaces)
+        cd ${build}
+
+        export GOBIN="${build}/bin"
+        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
+            export GOPATH="${build}/.heroku/go-path"
+            mkdir -p $GOPATH # ensure that it's created
+        else
+            export GOPATH="${cache}/go-path"
+        fi
+
+        # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
+        # and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
+        # when the desired language version is 1.14+ and vendoring should be used.
+        # https://golang.org/doc/go1.14#vendor
+        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
+            FLAGS+=(-mod=vendor)
+        fi
+
+        step "Determining packages to install"
+        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goWork})}
         if [ -z "${pkgs}" ]; then
             pkgs=$(mainPackagesInModule)
             if [ -z "${pkgs}" ]; then
