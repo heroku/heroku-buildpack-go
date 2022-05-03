@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add Heroku-22 to the Circle CI test matrix.
 
 ## v161 (2022-03-15)
 * Add go1.15.11

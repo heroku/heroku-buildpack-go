@@ -5,7 +5,7 @@ jobs:
     parameters:
       stack-version:
         type: enum
-        enum: ["18", "20"]
+        enum: ["18", "20", "22"]
     docker:
       - image: heroku/heroku:<< parameters.stack-version >>-build
     steps:
@@ -23,4 +23,4 @@ workflows:
       - test-heroku:
           matrix:
             parameters:
-              stack-version: ["18", "20"]
+              stack-version: ["18", "20", "22"]
