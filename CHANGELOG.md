@@ -1,6 +1,12 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.17.9
+* Add go1.17.10
+* Add go1.18.1
+* Add go1.18.2
+* go1.17 defaults to 1.17.10
+* go1.18 defaults to 1.18.2
 * Add Heroku-22 to the Circle CI test matrix.
 
 ## v161 (2022-03-15)
