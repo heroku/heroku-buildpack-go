@@ -420,3 +420,4 @@ Use one of those configuration files to configure the golanglint-ci run.
 [testpack]: https://devcenter.heroku.com/articles/testpack-api
 [toolbelt]: https://devcenter.heroku.com/articles/heroku-cli
 [vendor.json]: https://github.com/kardianos/vendor-spec
+
