@@ -367,7 +367,7 @@ testModPrivateProxy() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "1.15.15"
+  assertGoInstallCaptured "go1.15.15"
   assertGoInstallOnlyFixturePackageCaptured
 
   assertCapturedExitSuccess
