@@ -1,6 +1,9 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Use the go version in `go.mod` if no `+heroku` comment is found (#378/#411)
+
+## v162 (2022-03-23)
 * Add go1.17.9
 * Add go1.17.10
 * Add go1.18.1
@@ -8,7 +11,6 @@
 * go1.17 defaults to 1.17.10
 * go1.18 defaults to 1.18.2
 * Add Heroku-22 to the Circle CI test matrix.
-* Use the go version in go.mod if no +heroku comment is found (#378)
 
 ## v161 (2022-03-15)
 * Add go1.15.11
