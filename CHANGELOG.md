@@ -1,6 +1,9 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Use the go version in `go.mod` if no `+heroku` comment is found (#378/#411)
+
+## v162 (2022-03-23)
 * Add go1.17.9
 * Add go1.17.10
 * Add go1.18.1
@@ -52,7 +55,6 @@
 ## v155 (2021-09-13)
 * Add go1.16.8, use for go1.16
 * Add go1.17.1, use for go1.17
-* Use the go version in go.mod if no +heroku comment is found (#378)
 
 ## v154 (2021-08-18)
 * Add go1.17
