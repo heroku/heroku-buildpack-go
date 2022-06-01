@@ -8,6 +8,7 @@
 * go1.17 defaults to 1.17.10
 * go1.18 defaults to 1.18.2
 * Add Heroku-22 to the Circle CI test matrix.
+* Use the go version in go.mod if no +heroku comment is found (#378)
 
 ## v161 (2022-03-15)
 * Add go1.15.11
@@ -52,7 +53,6 @@
 ## v155 (2021-09-13)
 * Add go1.16.8, use for go1.16
 * Add go1.17.1, use for go1.17
-* Use the go version in go.mod if no +heroku comment is found (#378)
 
 ## v154 (2021-08-18)
 * Add go1.17
