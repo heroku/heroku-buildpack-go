@@ -3,7 +3,7 @@
     "DefaultVersion": "go1.12.17",
     "VersionExpansion": {
       "go1.18.0": "go1.18",
-      "go1.18": "go1.18.2",
+      "go1.18": "go1.18.3",
       "go1.17.0": "go1.17",
       "go1.17": "go1.17.10",
       "go1.16.0": "go1.16",
@@ -124,7 +124,7 @@
       "go1.16rc1.linux-amd64.tar.gz",
       "go1.16.15.linux-amd64.tar.gz",
       "go1.17.10.linux-amd64.tar.gz",
-      "go1.18.2.linux-amd64.tar.gz",
+      "go1.18.3.linux-amd64.tar.gz",
       "go1.4.3.linux-amd64.tar.gz",
       "go1.6.4.linux-amd64.tar.gz",
       "go1.7.6.linux-amd64.tar.gz",
