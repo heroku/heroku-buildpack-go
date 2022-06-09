@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v163 (2022-06-09)
 * Use the go version in `go.mod` if no `+heroku` comment is found (#378/#411)
 * Add go1.18.3
 * go1.18 defaults to 1.18.3
