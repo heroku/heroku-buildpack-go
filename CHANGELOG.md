@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Switch to the recommended regional S3 domain instead of the global one
 
 ## v163 (2022-06-09)
 * Use the go version in `go.mod` if no `+heroku` comment is found (#378/#411)
