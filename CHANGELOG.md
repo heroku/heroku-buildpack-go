@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v164 (2022-06-14)
 * Adjust curl retry and connection timeout handling
 * Switch to the recommended regional S3 domain instead of the global one
 
