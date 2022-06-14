@@ -40,7 +40,7 @@ for f in $(< "${df}" jq -r '.test.assets[]'); do
         else
             url=$(< "${jf}" jq -r '."'${f}'".URL')
             echo "Fetching ${url}"
-            curl -s -L --retry 15 --retry-delay 2 -o "${f}" "${url}"
+            curl -sS -L --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5 -o "${f}" "${url}"
         fi
     fi
     if ! shaMatchesKnown "${jf}" "${f}"; then

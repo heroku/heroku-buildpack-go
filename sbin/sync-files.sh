@@ -46,7 +46,7 @@ ensureFile() {
 
   if [ ! -e "${file}" ]; then
     url="$(< "${filesJSON}" jq -r '."'${file}'".URL')"
-    curl -s -J -o "${file}" -L --retry 15 --retry-delay 2 ${url} 2>&1
+    curl -sS -J -o "${file}" -L --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5 ${url} 2>&1
   fi
 
   local knownSHA="$(< "${filesJSON}" jq -r '."'${file}'".SHA' 2>&1)"
