@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v166 (2022-06-15)
+* Re-release of the changes in v164.
+
+## v165 (2022-06-14)
+* Temporary rollback of the v164 release.
+
 ## v164 (2022-06-14)
 * Adjust curl retry and connection timeout handling
 * Switch to the recommended regional S3 domain instead of the global one
