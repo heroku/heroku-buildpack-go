@@ -2,6 +2,10 @@
 
 ## Unreleased
 * Add go1.19
+* Add go1.19.1
+* Add go1.18.6
+* go1.18 defaults to 1.18.6
+* go1.19 defaults to 1.19.1
 
 ## v166 (2022-06-15)
 * Re-release of the changes in v164.
