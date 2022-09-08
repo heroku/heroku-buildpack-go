@@ -1,6 +1,7 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+* Add go1.19
 
 ## v166 (2022-06-15)
 * Re-release of the changes in v164.
