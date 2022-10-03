@@ -4,15 +4,22 @@ on:
   pull_request:
     types: [opened, reopened, edited, labeled, unlabeled, synchronize]
 
+permissions:
+  contents: read
+
 jobs:
-  check:
-    runs-on: ubuntu-latest
+  check-changelog:
+    runs-on: ubuntu-22.04
     if: |
       !contains(github.event.pull_request.body, '[skip changelog]') &&
       !contains(github.event.pull_request.body, '[changelog skip]') &&
       !contains(github.event.pull_request.body, '[skip ci]') &&
-      !contains(github.event.pull_request.labels.*.name, 'skip changelog')
+      !contains(github.event.pull_request.labels.*.name, 'skip changelog') &&
+      !contains(github.event.pull_request.labels.*.name, 'dependencies')
     steps:
-      - uses: actions/checkout@v1
+      - name: Checkout
+        uses: actions/checkout@v3
       - name: Check that CHANGELOG is touched
-        run: git diff remotes/origin/${{ github.base_ref }} --name-only | grep CHANGELOG.md
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth 1 && \
+          git diff remotes/origin/${{ github.base_ref }} --name-only | grep CHANGELOG.md
