@@ -1,6 +1,6 @@
 # Heroku Buildpack for Go
 
-[![CircleCI](https://circleci.com/gh/heroku/heroku-buildpack-go.svg?style=svg)](https://circleci.com/gh/heroku/heroku-buildpack-go)
+[![CI](https://github.com/heroku/heroku-buildpack-go/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-buildpack-go/actions/workflows/ci.yml)
 
 ![Heroku Buildpack for Go](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
 

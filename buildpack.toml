@@ -3,7 +3,7 @@ name = "Go"
 
   [publish.Ignore]
   files = [
-    ".circleci/",
+    ".github/",
     "test/",
     "sbin/",
     "file-cache/",
