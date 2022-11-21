@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v169 (2022-11-09)
 * Add go1.19.2, and go1.19.3
 * Add go1.18.4, go1.18.5, go1.18.7, and go1.18.8
 * Add go1.17.11, go1.17.12, and go1.17.13
