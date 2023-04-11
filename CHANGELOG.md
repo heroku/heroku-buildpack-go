@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+### v173 (2023-04-11)
+* Add go1.20.3
+* Add go1.19.8
+* go1.20 defaults to go1.20.3
+* go1.19 defaults to go1.19.8
+
 ### v172 (2023-03-23)
 * Add go1.20.1 and go1.20.2
 * Add go1.19.6 and go1.19.7
