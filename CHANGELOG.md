@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Drop support for the heroku-18 stack
+
 ## v174 (2023-05-09)
 * Add go1.20.4
 * Add go1.19.9
