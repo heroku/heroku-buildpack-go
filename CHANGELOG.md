@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+* Add go1.20.5
+* Add go1.19.10
+* go1.20 defaults to go1.20.5
+* go1.19 defaults to go1.19.10
 * Drop support for the heroku-18 stack
 
 ## v174 (2023-05-09)
