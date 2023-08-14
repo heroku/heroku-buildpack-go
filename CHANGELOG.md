@@ -3,8 +3,8 @@
 ## Unreleased
 
 ## v178 (2023-08-14)
-* Add go1.21
-* Use go1.21 for go1.21.0
+* Add go1.21.0
+* Use go1.21.0 for go1.21
 
 ## v177 (2023-08-07)
 * Add go1.20.7
