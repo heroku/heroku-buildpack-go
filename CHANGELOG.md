@@ -1,6 +1,8 @@
 # Go Buildpack Changelog
 
 ## Unreleased
+
+## v182 (2023-11-13)
 * Add go1.20.11
 * Add go1.21.4
 * go1.20 defaults to go1.20.11
