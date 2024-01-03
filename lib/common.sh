@@ -16,7 +16,7 @@ GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
 RED='\033[1;31m'
 NC='\033[0m' # No Color
-CURL="curl -s -L --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5" # retry for up to 30 seconds
+CURL="curl --silent --show-error --location --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5" # retry for up to 30 seconds
 
 if [ -z "${GO_BUCKET_URL}" ]; then
     BucketURL="https://heroku-golang-prod.s3.us-east-1.amazonaws.com"
@@ -330,7 +330,7 @@ determineTool() {
         info "Detected go modules via go.mod"
         step ""
         ver=${GOVERSION:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' ${goMOD})}
-        ver=${ver:-$(awk '{ if ($1 == "go" ) { print "go" $2; exit } }' ${goMOD})} 
+        ver=${ver:-$(awk '{ if ($1 == "go" ) { print "go" $2; exit } }' ${goMOD})}
         name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goMOD})
         info "Detected Module Name: ${name}"
         step ""
