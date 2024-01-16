@@ -3,6 +3,10 @@
 ## Unreleased
 
 - Added `--show-error` flag to all curl commands
+- Add go1.20.13
+- Add go1.21.6
+- go1.20 defaults to go1.20.13
+- go1.21 defaults to go1.21.5
 
 ## v183 (2024-01-02)
 * Add go1.20.12
