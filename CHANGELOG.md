@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Add go1.22rc1, go1.22rc2
 
 ## [v184] - 2024-01-16
 
