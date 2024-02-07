@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Use go1.20.14 as the default
 
 ## [v187] - 2024-02-08
 
