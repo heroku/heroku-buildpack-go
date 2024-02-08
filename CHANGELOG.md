@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Add go1.22.0
+* Use go1.22.0 for go1.22
 
 ## [v185] - 2024-02-06
 
