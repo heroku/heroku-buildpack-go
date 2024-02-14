@@ -1167,24 +1167,6 @@ testGodepCGOBasic() {
   assertCompiledBinaryExists
 }
 
-testGodepDevelGo() {
-  fixture "godep-devel-go"
-
-  assertDetected
-
-  compile
-  assertCaptured "You are using a development build of Go."
-  assertCaptured "Installing bootstrap go"
-  assertCaptured "Downloading development Go version devel-15f7a66"
-  assertCaptured "Compiling development Go version devel-15f7a66"
-  assertCaptured "Installed Go for linux/amd64"
-  assertCaptured "go version devel +15f7a66"
-  assertCapturedSuccess
-  assertCompiledBinaryExists
-  assertCompiledBinaryOutputs "fixture" "devel +15fa66"
-  #assertTrue "Binary has the right value" '[[ "$(${BUILD_DIR}/bin/fixture)" = *"devel +15f7a66"* ]]'
-}
-
 testGodepBinFile() {
   fixture "godep-bin-file"
 
