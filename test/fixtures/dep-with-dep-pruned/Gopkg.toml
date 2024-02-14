@@ -1,6 +1,7 @@
 [metadata.heroku]
+  go-version = "go1.12"
   root-package = "github.com/heroku/fixture"
-  
+
 # Gopkg.toml example
 #
 # Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
