@@ -760,6 +760,8 @@ testTestPackGovendorWithTests() {
 testTestPackGlideWithTests() {
   fixture "glide-with-tests"
 
+  env "GOVERSION" "go1.12"
+
   dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
@@ -771,6 +773,8 @@ testTestPackGlideWithTests() {
 
 testTestPackGodepWithTests() {
   fixture "godep-with-tests"
+
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
