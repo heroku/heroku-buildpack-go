@@ -798,6 +798,8 @@ testTestPackGBWithTests() {
 testGlideWithHgDep() {
   fixture "glide-with-hg-dep"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -898,6 +900,7 @@ testGlideMassageVendor() {
   fixture "glide-massage-vendor"
 
   env "GO_INSTALL_PACKAGE_SPEC" ". github.com/mattes/migrate"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -938,6 +941,8 @@ testGlideMassageVendor() {
 testGlideWithOutDeps() {
   fixture "glide-wo-deps"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -953,6 +958,8 @@ testGlideWithOutDeps() {
 testGlideWithDeps() {
   fixture "glide-with-deps"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -967,6 +974,8 @@ testGlideWithDeps() {
 
 testGlideBasic() {
   fixture "glide-basic"
+
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -984,6 +993,7 @@ testGlideBasicWithTools() {
   fixture "glide-basic"
 
   env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -1002,6 +1012,7 @@ testGlideBasicInGOPATH() {
   fixture "glide-basic"
 
   env "GO_SETUP_GOPATH_IN_IMAGE" "true"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
