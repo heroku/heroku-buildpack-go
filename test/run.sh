@@ -734,6 +734,7 @@ testTestPackGBWithTestsSkipBenchmark() {
   fixture "gb-with-tests"
 
   env "GO_TEST_SKIP_BENCHMARK" "nope"
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
@@ -782,6 +783,8 @@ testTestPackGodepWithTests() {
 
 testTestPackGBWithTests() {
   fixture "gb-with-tests"
+
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
@@ -1221,6 +1224,8 @@ testGodepMalformed() {
 testGBVendor() {
   fixture "gb-vendor"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -1235,6 +1240,8 @@ testGBVendor() {
 
 testGBBasic() {
   fixture "gb-basic"
+
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -1252,10 +1259,12 @@ testGBBasicWithTools() {
   fixture "gb-basic"
 
   env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
   compile
+
   assertCaptured "Installing go"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
