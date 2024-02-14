@@ -2,7 +2,8 @@
 
 ## [Unreleased]
 
-* Use go1.20.14 as the default
+* Defaults to go1.20.14 when Go version is not specified
+* Defaults to go1.20.14 when bootstrapping Go development releases
 
 ## [v187] - 2024-02-08
 
