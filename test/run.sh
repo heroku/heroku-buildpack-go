@@ -706,6 +706,7 @@ testTestPackGlideWithTestsSkipBenchmark() {
   fixture "glide-with-tests"
 
   env "GO_TEST_SKIP_BENCHMARK" "nope"
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
