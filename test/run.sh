@@ -8,7 +8,7 @@ testModWithBZRDep() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertGoInstallOnlyFixturePackageCaptured
 
   assertCapturedExitSuccess
@@ -74,7 +74,7 @@ testModProcfileCreation() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/web
 github.com/heroku/fixture/cmd/other"
 
@@ -128,7 +128,7 @@ testModWithQuotesModule() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertGoInstallOnlyFixturePackageCaptured
 
   assertCapturedSuccess
@@ -162,7 +162,7 @@ testModcmdDetection() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertCaptured "Detected the following main packages to install:
 github.com/heroku/fixture/cmd/fixture
 github.com/heroku/fixture/cmd/other"
