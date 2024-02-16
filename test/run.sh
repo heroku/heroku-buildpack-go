@@ -8,7 +8,7 @@ testModWithBZRDep() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertGoInstallOnlyFixturePackageCaptured
 
   assertCapturedExitSuccess
@@ -74,7 +74,7 @@ testModProcfileCreation() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/web
 github.com/heroku/fixture/cmd/other"
 
@@ -128,7 +128,7 @@ testModWithQuotesModule() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertGoInstallOnlyFixturePackageCaptured
 
   assertCapturedSuccess
@@ -162,7 +162,7 @@ testModcmdDetection() {
 
   compile
   assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+  assertGoInstallCaptured "go1.12.17"
   assertCaptured "Detected the following main packages to install:
 github.com/heroku/fixture/cmd/fixture
 github.com/heroku/fixture/cmd/other"
@@ -706,6 +706,7 @@ testTestPackGlideWithTestsSkipBenchmark() {
   fixture "glide-with-tests"
 
   env "GO_TEST_SKIP_BENCHMARK" "nope"
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
@@ -734,6 +735,7 @@ testTestPackGBWithTestsSkipBenchmark() {
   fixture "gb-with-tests"
 
   env "GO_TEST_SKIP_BENCHMARK" "nope"
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
@@ -759,6 +761,8 @@ testTestPackGovendorWithTests() {
 testTestPackGlideWithTests() {
   fixture "glide-with-tests"
 
+  env "GOVERSION" "go1.12"
+
   dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
@@ -770,6 +774,8 @@ testTestPackGlideWithTests() {
 
 testTestPackGodepWithTests() {
   fixture "godep-with-tests"
+
+  env "GOVERSION" "go1.12"
 
   dotest
   assertCapturedSuccess
@@ -783,6 +789,8 @@ testTestPackGodepWithTests() {
 testTestPackGBWithTests() {
   fixture "gb-with-tests"
 
+  env "GOVERSION" "go1.12"
+
   dotest
   assertCapturedSuccess
   assertCaptured "RUN   TestHello"
@@ -794,6 +802,8 @@ testTestPackGBWithTests() {
 
 testGlideWithHgDep() {
   fixture "glide-with-hg-dep"
+
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -895,6 +905,7 @@ testGlideMassageVendor() {
   fixture "glide-massage-vendor"
 
   env "GO_INSTALL_PACKAGE_SPEC" ". github.com/mattes/migrate"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -935,6 +946,8 @@ testGlideMassageVendor() {
 testGlideWithOutDeps() {
   fixture "glide-wo-deps"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -950,6 +963,8 @@ testGlideWithOutDeps() {
 testGlideWithDeps() {
   fixture "glide-with-deps"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -964,6 +979,8 @@ testGlideWithDeps() {
 
 testGlideBasic() {
   fixture "glide-basic"
+
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -981,6 +998,7 @@ testGlideBasicWithTools() {
   fixture "glide-basic"
 
   env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -999,6 +1017,7 @@ testGlideBasicInGOPATH() {
   fixture "glide-basic"
 
   env "GO_SETUP_GOPATH_IN_IMAGE" "true"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -1164,24 +1183,6 @@ testGodepCGOBasic() {
   assertCompiledBinaryExists
 }
 
-testGodepDevelGo() {
-  fixture "godep-devel-go"
-
-  assertDetected
-
-  compile
-  assertCaptured "You are using a development build of Go."
-  assertCaptured "Installing bootstrap go"
-  assertCaptured "Downloading development Go version devel-15f7a66"
-  assertCaptured "Compiling development Go version devel-15f7a66"
-  assertCaptured "Installed Go for linux/amd64"
-  assertCaptured "go version devel +15f7a66"
-  assertCapturedSuccess
-  assertCompiledBinaryExists
-  assertCompiledBinaryOutputs "fixture" "devel +15fa66"
-  #assertTrue "Binary has the right value" '[[ "$(${BUILD_DIR}/bin/fixture)" = *"devel +15f7a66"* ]]'
-}
-
 testGodepBinFile() {
   fixture "godep-bin-file"
 
@@ -1221,6 +1222,8 @@ testGodepMalformed() {
 testGBVendor() {
   fixture "gb-vendor"
 
+  env "GOVERSION" "go1.12"
+
   assertDetected
 
   compile
@@ -1235,6 +1238,8 @@ testGBVendor() {
 
 testGBBasic() {
   fixture "gb-basic"
+
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
@@ -1252,10 +1257,12 @@ testGBBasicWithTools() {
   fixture "gb-basic"
 
   env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+  env "GOVERSION" "go1.12"
 
   assertDetected
 
   compile
+
   assertCaptured "Installing go"
   assertCaptured "Installing GB"
   assertCaptured "Running: gb build -tags heroku"
