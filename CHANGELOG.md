@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v188] - 2024-02-28
+
 * Defaults to go1.20.14 when Go version is not specified
 * Defaults to go1.20.14 when bootstrapping Go development releases
 
@@ -946,7 +949,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v187...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v188...main
+[v188]: https://github.com/heroku/heroku-buildpack-go/compare/v187...v188
 [v187]: https://github.com/heroku/heroku-buildpack-go/compare/v186...v187
 [v186]: https://github.com/heroku/heroku-buildpack-go/compare/v185...v186
 [v185]: https://github.com/heroku/heroku-buildpack-go/compare/v184...v185
