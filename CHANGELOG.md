@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Add go1.22.1
+* Add go1.21.8
+* go1.22 defaults to go1.22.1
+* go1.21 defaults to go1.21.8
 
 ## [v188] - 2024-02-28
 
