@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v190] - 2024-04-05
+
+* Add go1.22.2
+* Add go1.21.9
+* go1.22 defaults to go1.22.2
+* go1.21 defaults to go1.21.9
 
 ## [v189] - 2024-03-06
 
