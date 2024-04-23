@@ -18,6 +18,7 @@ jobs:
         stack-version: ["20", "22", "24"]
     container:
       image: heroku/heroku:${{ matrix.stack-version }}-build
+      options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
