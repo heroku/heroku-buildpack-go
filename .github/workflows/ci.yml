@@ -15,9 +15,10 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        stack-version: ["20", "22"]
+        stack-version: ["20", "22", "24"]
     container:
       image: heroku/heroku:${{ matrix.stack-version }}-build
+      options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v4
