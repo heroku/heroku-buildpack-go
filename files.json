@@ -1,8 +1,4 @@
 {
-  "bzr-2.7.0.tar.gz": {
-    "SHA": "0d451227b705a0dd21d8408353fe7e44d3a5069e6c4c26e5f146f1314b8fdab3",
-    "URL": "https://launchpad.net/bzr/2.7/2.7.0/+download/bzr-2.7.0.tar.gz"
-  },
   "dep-linux-amd64": {
     "Comment": "This is here for backwards compat. Remove after a while.",
     "LocalName": "dep",
