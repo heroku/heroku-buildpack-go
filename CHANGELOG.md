@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Drop support for bzr dependencies
+
 ## [v190] - 2024-04-05
 
 * Add go1.22.2

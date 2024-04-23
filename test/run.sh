@@ -1,21 +1,6 @@
 #!/usr/bin/env bash
 # See README.md for info on running these tests.
 
-testModWithBZRDep() {
-  fixture "mod-with-bzr-dep"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "go1.12.17"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
-  assertFile "web: bin/fixture" "Procfile"
-}
-
 testTestPackModulesVendoredGolangLintCI() {
   fixture "mod-deps-vendored-with-tests"
 
