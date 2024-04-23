@@ -2,7 +2,8 @@
 
 ## [Unreleased]
 
-* Drop support for bzr dependencies
+* Drop support for installing bzr-hosted dependencies directly; bzr-hosted
+  dependencies may still be installed via `GOPROXY`
 
 ## [v190] - 2024-04-05
 
