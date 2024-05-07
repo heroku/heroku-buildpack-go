@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Add go1.22.3
+* Add go1.21.10
+* go1.22 defaults to go1.22.3
+* go1.21 defaults to go1.21.10
 * Add support for heroku-24
 * Drop support for installing bzr-hosted dependencies directly; bzr-hosted
 
