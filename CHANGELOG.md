@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Source GOFLAGS from the environment
+
 ## [v192] - 2024-06-04
 
 * Add go1.22.4

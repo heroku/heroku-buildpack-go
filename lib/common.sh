@@ -212,6 +212,7 @@ loadEnvDir() {
     envFlags+=("GO_LINKER_SYMBOL")
     envFlags+=("GO_LINKER_VALUE")
     envFlags+=("GO15VENDOREXPERIMENT")
+    envFlags+=("GOFLAGS")
     envFlags+=("GOPROXY")
     envFlags+=("GOPRIVATE")
     envFlags+=("GONOPROXY")
