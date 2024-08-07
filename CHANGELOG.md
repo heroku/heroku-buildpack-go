@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+* Add go1.22.6
+* Add go1.21.13
+* go1.22 defaults to go1.22.6
+* go1.21 defaults to go1.21.13
+
 ## [v193] - 2024-07-15
 
 * Source GOFLAGS from the environment
