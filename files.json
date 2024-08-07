@@ -823,6 +823,10 @@
     "SHA": "121ab58632787e18ae0caa8ae285b581f9470d0f6b3defde9e1600e211f583c5",
     "URL": "https://dl.google.com/go/go1.21.12.linux-amd64.tar.gz"
   },
+  "go1.21.13.linux-amd64.tar.gz": {
+    "SHA": "502fc16d5910562461e6a6631fb6377de2322aad7304bf2bcd23500ba9dab4a7",
+    "URL": "https://dl.google.com/go/go1.21.13.linux-amd64.tar.gz"
+  },
   "go1.21.2.linux-amd64.tar.gz": {
     "SHA": "f5414a770e5e11c6e9674d4cd4dd1f4f630e176d1828d3427ea8ca4211eee90d",
     "URL": "https://dl.google.com/go/go1.21.2.linux-amd64.tar.gz"
@@ -878,6 +882,10 @@
   "go1.22.5.linux-amd64.tar.gz": {
     "SHA": "904b924d435eaea086515bc63235b192ea441bd8c9b198c507e85009e6e4c7f0",
     "URL": "https://dl.google.com/go/go1.22.5.linux-amd64.tar.gz"
+  },
+  "go1.22.6.linux-amd64.tar.gz": {
+    "SHA": "999805bed7d9039ec3da1a53bfbcafc13e367da52aa823cb60b68ba22d44c616",
+    "URL": "https://dl.google.com/go/go1.22.6.linux-amd64.tar.gz"
   },
   "go1.22rc1.linux-amd64.tar.gz": {
     "SHA": "fbe9d0585b9322d44008f6baf78b391b22f64294338c6ce2b9eb6040d6373c52",
