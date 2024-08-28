@@ -352,6 +352,14 @@ warnPackageSpecOverride() {
     fi
 }
 
+warnDeprecatedTool() {
+    local tool=$1
+    warn "This application is using ${tool}, but ${tool} is no longer maintained."
+    warn "${tool} support on Heroku is deprecated and will be removed on March 1, 2025."
+    warn "Please migrate to Go modules. Learn more about Go modules on Heroku here: https://devcenter.heroku.com/articles/go-modules."
+}
+
+
 # Sets up GOPATH (and posibly other GO* env vars) and returns the location of
 # the source code as $src. The output of this function is meant to be eval'd'
 setupGOPATH() {
@@ -706,6 +714,11 @@ fi
 
 if needConcurrency ${ver}; then
     cp $buildpack/vendor/concurrency.sh $build/.profile.d/
+fi
+
+# dep, gb, glide, godep, govendor are all unmaintained.
+if [ "${TOOL}" != "gomodules" ]; then
+    warnDeprecatedTool "$TOOL"
 fi
 
 t="${build}/.heroku/go"
