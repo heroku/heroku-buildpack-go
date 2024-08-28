@@ -359,7 +359,6 @@ warnDeprecatedTool() {
     warn "Please migrate to Go modules. Learn more about Go modules on Heroku here: https://devcenter.heroku.com/articles/go-modules."
 }
 
-
 # Sets up GOPATH (and posibly other GO* env vars) and returns the location of
 # the source code as $src. The output of this function is meant to be eval'd'
 setupGOPATH() {
