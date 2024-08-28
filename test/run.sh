@@ -1382,6 +1382,7 @@ testGovendorBasic() {
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
   assertCaptured "This application is using govendor, but govendor is no longer maintained."
+  
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
