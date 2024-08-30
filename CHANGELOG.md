@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Add support for wwwauth[] git credential arguments
 
 ## [v195] - 2024-08-13
 
