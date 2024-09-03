@@ -270,6 +270,9 @@ setGitCredHelper() {
                     password)
                         password="${value}"
                     ;;
+                    wwwauth[])
+                        :
+                    ;;
                     *)
                         echo "Unsupported key: ${key}=${value}" >&2
                         exit 1

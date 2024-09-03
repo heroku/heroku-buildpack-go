@@ -2,7 +2,11 @@
 
 ## [Unreleased]
 
-* Deprecate support for unmaintained dependency managers: `dep`, `gb`, `glide`, `godep` and `govendor`. Support for these dependency managers will be removed on March 1, 2025. Apps using these dependency managers should migrate to Go modules as soon as possible. Learn more about using Go modules on Heroku [here](https://devcenter.heroku.com/articles/go-modules).
+* Deprecate support for unmaintained dependency managers: `dep`, `gb`, `glide`, `godep` and `govendor`.  
+  Support for these dependency managers will be removed on March 1, 2025.
+  Apps using these dependency managers should migrate to Go modules as soon as possible. 
+  Learn more about using Go modules on Heroku [here](https://devcenter.heroku.com/articles/go-modules).
+* Add support for wwwauth[] git credential arguments
 
 ## [v195] - 2024-08-13
 
