@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v196] - 2024-09-03
+
 * Deprecate support for unmaintained dependency managers: `dep`, `gb`, `glide`, `godep` and `govendor`.  
   Support for these dependency managers will be removed on March 1, 2025.
   Apps using these dependency managers should migrate to Go modules as soon as possible. 
@@ -1004,7 +1007,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v195...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v196...main
+[v196]: https://github.com/heroku/heroku-buildpack-go/compare/v195...v196
 [v195]: https://github.com/heroku/heroku-buildpack-go/compare/v194...v195
 [v194]: https://github.com/heroku/heroku-buildpack-go/compare/v193...v194
 [v191]: https://github.com/heroku/heroku-buildpack-go/compare/v190...v191
