@@ -635,6 +635,8 @@ testDepGoVersion() {
   assertCaptured "Fetching any unsaved dependencies (dep ensure)"
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture"
+  assertCaptured "This application is using dep, but dep is no longer maintained."
+
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
@@ -867,6 +869,8 @@ testGodepBasicGo14WithGOVERSIONOverride() {
   compile
   assertCaptured "Installing go1.6"
   assertCaptured "Using \$GOVERSION override."
+  assertCaptured "This application is using godep, but godep is no longer maintained."
+
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
@@ -975,6 +979,8 @@ testGlideBasic() {
   assertCaptured "Fetching any unsaved dependencies (glide install)"
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "github.com/heroku/fixture"
+  assertCaptured "This application is using glide, but glide is no longer maintained."
+
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
@@ -1234,6 +1240,8 @@ testGBBasic() {
   assertCaptured "Running: gb build -tags heroku"
   assertCaptured "cmd/fixture"
   assertCaptured "Post Compile Cleanup"
+  assertCaptured "This application is using gb, but gb is no longer maintained."
+
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
@@ -1373,6 +1381,8 @@ testGovendorBasic() {
   assertCaptured "Running: go install -v -tags heroku ."
   assertCaptured "Installing package '.' (default)"
   assertCaptured "github.com/heroku/fixture"
+  assertCaptured "This application is using govendor, but govendor is no longer maintained."
+  
   assertCapturedSuccess
   assertCompiledBinaryExists
 }
