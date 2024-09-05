@@ -2,12 +2,18 @@
 
 ## [Unreleased]
 
+## [v197] - 2024-09-05
+
+* Add go1.23.1
+* Add go1.22.7
+* go1.23 defaults to 1.23.1
+* go1.22 defaults to 1.22.7
 
 ## [v196] - 2024-09-03
 
-* Deprecate support for unmaintained dependency managers: `dep`, `gb`, `glide`, `godep` and `govendor`.  
+* Deprecate support for unmaintained dependency managers: `dep`, `gb`, `glide`, `godep` and `govendor`.
   Support for these dependency managers will be removed on March 1, 2025.
-  Apps using these dependency managers should migrate to Go modules as soon as possible. 
+  Apps using these dependency managers should migrate to Go modules as soon as possible.
   Learn more about using Go modules on Heroku [here](https://devcenter.heroku.com/articles/go-modules).
 * Add support for wwwauth[] git credential arguments
 
