@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v197] - 2024-09-05
+
 * Add go1.23.1
 * Add go1.22.7
 * go1.23 defaults to 1.23.1
