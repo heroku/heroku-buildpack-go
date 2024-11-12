@@ -2,13 +2,13 @@
 
 ## [Unreleased]
 
+* go1.23 defaults to 1.23.3
+* go1.22 defaults to 1.22.9
 
 ## [v199] - 2024-11-11
 
 * Add go1.23.3
 * Add go1.22.9
-* go1.23 defaults to 1.23.3
-* go1.22 defaults to 1.22.9
 
 ## [v198] - 2024-10-01
 
