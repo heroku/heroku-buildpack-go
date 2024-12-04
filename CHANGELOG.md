@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Add go1.23.4
+* Add go1.22.10
+* go1.23 defaults to 1.23.4
+* go1.22 defaults to 1.22.10
 
 ## [v200] - 2024-11-12
 
