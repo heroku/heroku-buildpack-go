@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v201] - 2024-12-06
+
 * Add go1.23.4
 * Add go1.22.10
 * go1.23 defaults to 1.23.4
@@ -1035,7 +1038,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v200...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v201...main
+[v201]: https://github.com/heroku/heroku-buildpack-go/compare/v200...v201
 [v200]: https://github.com/heroku/heroku-buildpack-go/compare/v199...v200
 [v199]: https://github.com/heroku/heroku-buildpack-go/compare/v198...v199
 [v198]: https://github.com/heroku/heroku-buildpack-go/compare/v197...v198
