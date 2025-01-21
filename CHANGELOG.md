@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Add go1.23.5
+* Add go1.22.11
+* go1.23 defaults to 1.23.5
+* go1.22 defaults to 1.22.11
 
 ## [v201] - 2024-12-06
 
@@ -245,7 +249,7 @@
 * Adjust curl retry and connection timeout handling
 * Switch to the recommended regional S3 domain instead of the global one
 
-## [v163] - 2022-06-09), v167 (published by mistake 2022-09-08
+## [v163] - 2022-06-09, [v167] (published by mistake 2022-09-08)
 
 * Use the go version in `go.mod` if no `+heroku` comment is found (#378/#411)
 * Add go1.18.3
