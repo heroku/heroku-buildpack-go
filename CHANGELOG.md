@@ -6,7 +6,7 @@
 
 * Add go1.24.1
 * Add go1.23.7
-* go1.22 defaults to 1.24.1
+* go1.24 defaults to 1.24.1
 * go1.23 defaults to 1.23.7
 
 ## [v204] - 2025-02-12
