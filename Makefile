@@ -1,5 +1,5 @@
 TMP := ''
-IMAGE := heroku/heroku:20-build
+IMAGE := heroku/heroku:24-build
 BASH_COMMAND := /bin/bash
 
 .PHONY: test shell quick publish docker test-assets
@@ -27,10 +27,11 @@ testpack: docker
 publish:
 	@bash sbin/publish.sh
 
+# TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 docker: test-assets
 	@echo "Running tests in docker using $(IMAGE)"
 	@docker pull $(IMAGE)
-	@docker run -v $(PWD):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "IMAGE=$(IMAGE)" $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
+	@docker run -v $(PWD):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "IMAGE=$(IMAGE)" --user root --platform linux/amd64 $(IMAGE) bash -c "cd /buildpack; $(BASH_COMMAND)"
 
 test-assets:
 	@echo "Setting up test assets"

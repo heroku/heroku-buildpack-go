@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Stop testing against the Heroku-20 stack.
+
 ## [v207] - 2025-05-14
 
 * Add go1.24.3
