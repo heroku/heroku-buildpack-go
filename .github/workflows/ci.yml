@@ -12,10 +12,10 @@ permissions:
 
 jobs:
   integration-test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        stack-version: ["20", "22", "24"]
+        stack-version: ["22", "24"]
     container:
       image: heroku/heroku:${{ matrix.stack-version }}-build
       options: --user root
