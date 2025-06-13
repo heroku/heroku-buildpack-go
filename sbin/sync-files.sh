@@ -5,7 +5,7 @@ IGNORE=($*)
 
 BUCKET="s3://heroku-golang-prod/"
 
-tools=(jq curl shasum aws lpass)
+tools=(jq curl shasum aws op)
 for tool in ${tools[@]}; do
   if ! which -s ${tool} >>&/dev/null; then
     continue
