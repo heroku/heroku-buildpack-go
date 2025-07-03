@@ -2,7 +2,3 @@
 #ECCN:Open Source
 #GUSINFO:Languages,Heroku Go Platform
 * @heroku/languages
-
-# However, request review from the repository maintainer instead for files that are
-# updated by release automation, to reduce team review request noise.
-CHANGELOG.md @joshwlewis
