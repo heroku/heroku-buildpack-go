@@ -108,7 +108,7 @@
 * Add go1.22.5
 * Add go1.21.12
 * go1.22 defaults to go1.22.5
-* go1.21 defaults to go1.22.12
+* go1.21 defaults to go1.21.12
 
 ## [v192] - 2024-06-04
 
