@@ -9,6 +9,12 @@
 * go1.24 defaults to 1.24.5
 * go1.23 defaults to 1.23.11
 * Stop testing against the Heroku-20 stack.
+* Add go1.25rc3
+* Add go1.24.6
+* Add go1.23.12
+* go1.25 defaults to 1.25rc3
+* go1.24 defaults to 1.24.6
+* go1.23 defaults to 1.23.12
 
 ## [v208] - 2025-06-17
 
