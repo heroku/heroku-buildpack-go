@@ -7,7 +7,6 @@
 * Add go1.25rc3
 * Add go1.24.6
 * Add go1.23.12
-* go1.25 defaults to 1.25rc3
 * go1.24 defaults to 1.24.6
 * go1.23 defaults to 1.23.12
 
