@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+* Add go1.25.0
+* go1.25 defaults to 1.25.0
+
 ## [v210] - 2025-08-08
 
 * Add go1.25rc3
