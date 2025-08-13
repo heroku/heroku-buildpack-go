@@ -1101,7 +1101,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v209...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v210...main
+[v210]: https://github.com/heroku/heroku-buildpack-go/compare/v209...v210
 [v209]: https://github.com/heroku/heroku-buildpack-go/compare/v208...v209
 [v208]: https://github.com/heroku/heroku-buildpack-go/compare/v207...v208
 [v207]: https://github.com/heroku/heroku-buildpack-go/compare/v206...v207
