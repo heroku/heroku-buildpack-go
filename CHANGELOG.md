@@ -4,6 +4,7 @@
 
 * Add go1.25.0
 * go1.25 defaults to 1.25.0
+* Default to go1.24 if no version is specified
 
 ## [v210] - 2025-08-08
 
