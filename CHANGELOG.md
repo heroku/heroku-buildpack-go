@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Add detection failure error output
 
 ## [v212] - 2025-09-08
 
