@@ -3,6 +3,9 @@
 set -e
 
 build=$(cd "$1/" && pwd)
+buildpack=$(cd "$(dirname $0)/.." && pwd)
+
+source "${buildpack}/lib/common.sh"
 
 if test -f "${build}/go.mod" || #go modules
    test -f "${build}/Gopkg.lock" || #dep
@@ -13,5 +16,34 @@ if test -f "${build}/go.mod" || #go modules
 then
   echo Go
 else
+  {
+    cat <<EOF
+Error: Your app is configured to use the Go buildpack,
+but we couldn't find a go.mod file.
+
+A Go app on Heroku must have a 'go.mod' file in the root
+directory of its source code.
+
+Currently the root directory of your app contains:
+
+$(ls -1A --indicator-style=slash "${build}" || true)
+
+If your app already has a go.mod file, check that it:
+
+1. Is in the top level directory (not a subdirectory).
+2. Has the correct spelling (the filenames are case-sensitive).
+3. Isn't listed in '.gitignore' or '.slugignore'.
+4. Has been added to Git using 'git add --all' and committed.
+
+To create a go.mod file, run 'go mod init <module-name>' in your
+project directory.
+
+For help with using Go on Heroku, see:
+https://devcenter.heroku.com/articles/getting-started-with-go
+https://devcenter.heroku.com/articles/go-support
+EOF
+  } | while IFS= read -r line; do
+    err "${line}"
+  done
   exit 1
 fi
