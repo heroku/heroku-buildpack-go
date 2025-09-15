@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v213] - 2025-09-15
+
 * Add detection failure error output
 
 ## [v212] - 2025-09-08
@@ -1113,7 +1116,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v212...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v213...main
+[v213]: https://github.com/heroku/heroku-buildpack-go/compare/v212...v213
 [v212]: https://github.com/heroku/heroku-buildpack-go/compare/v211...v212
 [v211]: https://github.com/heroku/heroku-buildpack-go/compare/v210...v211
 [v210]: https://github.com/heroku/heroku-buildpack-go/compare/v209...v210
