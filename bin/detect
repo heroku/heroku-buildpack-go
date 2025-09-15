@@ -33,7 +33,7 @@ If your app already has a go.mod file, check that it:
 1. Is in the top level directory (not a subdirectory).
 2. Has the correct spelling (the filenames are case-sensitive).
 3. Isn't listed in '.gitignore' or '.slugignore'.
-4. Has been added to Git using 'git add --all' and committed.
+4. Has been added to Git using 'git add go.mod' and committed.
 
 To create a go.mod file, run 'go mod init <module-name>' in your
 project directory.
