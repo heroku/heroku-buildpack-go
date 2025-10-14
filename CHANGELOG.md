@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+* Add go1.24.9
+* Add go1.25.3
+* go1.24 defaults to 1.24.9
+* go1.25 defaults to 1.25.3
 
 ## [v214] - 2025-10-08
 
