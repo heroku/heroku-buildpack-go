@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/heroku/heroku-buildpack-go/actions/workflows/ci.yml/badge.svg)](https://github.com/heroku/heroku-buildpack-go/actions/workflows/ci.yml)
 
-![Heroku Buildpack for Go](https://cloud.githubusercontent.com/assets/51578/15877053/53506724-2cdf-11e6-878c-e2ef60ba741f.png)
+![Heroku Buildpack for Go](https://raw.githubusercontent.com/heroku/buildpacks/refs/heads/main/assets/images/buildpack-banner-go.png)
 
 This is the official [Heroku buildpack][buildpack] for [Go][go].
 
