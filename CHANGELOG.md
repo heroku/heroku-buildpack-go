@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Fix broken download URLs for old Go releases
 
 ## [v216] - 2025-11-06
 
