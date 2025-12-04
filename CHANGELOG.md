@@ -3,6 +3,10 @@
 ## [Unreleased]
 
 * Fix broken download URLs for old Go releases
+* Add go1.24.11
+* Add go1.25.5
+* go1.24 defaults to 1.24.11
+* go1.25 defaults to 1.25.5
 
 ## [v216] - 2025-11-06
 
