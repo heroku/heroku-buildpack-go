@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+* Add go1.26rc1
+* go1.26 defaults to 1.26rc1
 
 ## [v217] - 2025-12-04
 
