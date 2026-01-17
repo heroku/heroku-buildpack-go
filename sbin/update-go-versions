@@ -30,6 +30,18 @@ for version in "${VERSION_ARRAY[@]}"; do
     jq --arg major_minor "go${major_minor}" --arg version "go${version}" --arg tarball "$tarball" '
         .Go.VersionExpansion[$major_minor] as $old |
         .Go.VersionExpansion[$major_minor] = $version |
+        # Sort by descending Go version
+        .Go.VersionExpansion = (
+            .Go.VersionExpansion | to_entries |
+            sort_by(
+                .key |
+                ltrimstr("go") |
+                split(".") |
+                map(tonumber? // 0)
+            ) |
+            reverse |
+            from_entries
+        ) |
         if $old and $old != "" then
             .test.assets = (.test.assets | map(select(. != ($old + ".linux-amd64.tar.gz"))) + [$tarball] | sort)
         else
