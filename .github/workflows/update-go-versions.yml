@@ -45,7 +45,8 @@ jobs:
           committer: ${{ vars.LINGUIST_GH_APP_USERNAME }} <${{ vars.LINGUIST_GH_APP_EMAIL }}>
           author: ${{ vars.LINGUIST_GH_APP_USERNAME }} <${{ vars.LINGUIST_GH_APP_EMAIL }}>
           branch: update-go-versions-${{ github.run_id }}
-          body: ${{ inputs.versions && format('This PR adds support for the following Go versions: {0}', inputs.versions) || 'This PR adds support for the latest stable Go versions fetched from go.dev.' }}
+          body: |
+            ${{ inputs.versions && format('This PR adds support for the following Go versions: {0}', inputs.versions) || 'This PR adds support for the latest stable Go versions fetched from go.dev.' }}
 
       - name: Configure PR for auto-merge
         if: steps.pr.outputs.pull-request-operation == 'created'
