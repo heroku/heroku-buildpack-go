@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       versions:
-        description: 'Comma-separated list of Go versions to add (e.g., 1.24.12,1.25.6)'
-        required: true
+        description: 'Comma-separated list of Go versions to add (e.g., 1.24.12,1.25.6). Leave empty to auto-detect latest stable versions.'
+        required: false
         type: string
 
 # Disable all GITHUB_TOKEN permissions, since the GitHub App token is used instead.
@@ -38,12 +38,12 @@ jobs:
         uses: peter-evans/create-pull-request@98357b18bf14b5342f975ff684046ec3b2a07725 # v8.0.0
         with:
           token: ${{ steps.generate-token.outputs.token }}
-          title: "Add Go versions ${{ inputs.versions }}"
-          commit-message: Add Go versions ${{ inputs.versions }}
+          title: ${{ inputs.versions && format('Add Go versions {0}', inputs.versions) || 'Add latest stable Go versions' }}
+          commit-message: ${{ inputs.versions && format('Add Go versions {0}', inputs.versions) || 'Add latest stable Go versions' }}
           committer: ${{ vars.LINGUIST_GH_APP_USERNAME }} <${{ vars.LINGUIST_GH_APP_EMAIL }}>
           author: ${{ vars.LINGUIST_GH_APP_USERNAME }} <${{ vars.LINGUIST_GH_APP_EMAIL }}>
           branch: update-go-versions-${{ github.run_id }}
-          body: This PR adds support for the following Go versions: ${{ inputs.versions }}
+          body: ${{ inputs.versions && format('This PR adds support for the following Go versions: {0}', inputs.versions) || 'This PR adds support for the latest stable Go versions fetched from go.dev.' }}
 
       - name: Configure PR for auto-merge
         if: steps.pr.outputs.pull-request-operation == 'created'

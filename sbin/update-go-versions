@@ -2,14 +2,33 @@
 
 set -e
 
-if [ -z "$1" ]; then
-    echo "Usage: $0 <comma-separated-versions>"
-    echo "Example: $0 1.24.12,1.25.6"
-    exit 1
-fi
-
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
-IFS=',' read -ra VERSION_ARRAY <<< "$1"
+
+if [ -z "$1" ]; then
+    echo "Usage: $0 [comma-separated-versions]"
+    echo ""
+    echo "Examples:"
+    echo "  $0 1.24.12,1.25.6    # Add specific versions"
+    echo "  $0                   # Auto-detect and add latest stable versions"
+    echo ""
+    echo "No versions specified, fetching latest stable versions from go.dev..."
+
+    # Fetch latest stable versions from go.dev
+    latest_versions=$(curl -s 'https://go.dev/dl/?mode=json&include=stable' | \
+        jq -r '.[].version | sub("^go"; "")')
+
+    if [ -z "$latest_versions" ]; then
+        echo "Error: Failed to fetch latest versions from go.dev"
+        exit 1
+    fi
+
+    # Convert newline-separated versions to comma-separated
+    versions_arg=$(echo "$latest_versions" | tr '\n' ',' | sed 's/,$//')
+    echo "Found latest stable versions: $versions_arg"
+    IFS=',' read -ra VERSION_ARRAY <<< "$versions_arg"
+else
+    IFS=',' read -ra VERSION_ARRAY <<< "$1"
+fi
 
 TEMP_CHANGELOG=$(mktemp)
 awk '/## \[Unreleased\]/{print; print ""; exit} {print}' CHANGELOG.md > "$TEMP_CHANGELOG"
