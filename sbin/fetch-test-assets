@@ -32,6 +32,25 @@ shaMatchesKnown() {
     fi
 }
 
+checkMirror() {
+    local filename="${1}"
+    local mirror_url="https://heroku-golang-prod.s3.us-east-1.amazonaws.com/${filename}"
+    local mirror_headers
+    
+    if ! mirror_headers=$(curl -sI -L --fail "${mirror_url}"); then
+        echo "Error: File missing from mirror: ${mirror_url}"
+        return 1
+    fi
+
+    local mirror_size=$(echo "${mirror_headers}" | grep -i content-length | awk '{print $2}' | tr -d '\r')
+    local local_size=$(wc -c < "${filename}" | tr -d ' ')
+
+    if [ "${local_size}" -ne "${mirror_size}" ]; then
+        echo "Error: Mirror size mismatch for ${filename} (Local: ${local_size}, Mirror: ${mirror_size})"
+        return 1
+    fi
+}
+
 for f in $(< "${df}" jq -r '.test.assets[]'); do
     if [ ! -e "${f}" ]; then
         if [ -e "${fc}/${f}" ]; then
@@ -43,6 +62,11 @@ for f in $(< "${df}" jq -r '.test.assets[]'); do
             curl -sS -L --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5 -o "${f}" "${url}"
         fi
     fi
+
+    if ! checkMirror "${f}"; then
+        exit 1
+    fi
+
     if ! shaMatchesKnown "${jf}" "${f}"; then
         echo "Invalid SHA for $f"
         exit 1
