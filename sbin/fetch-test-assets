@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Fetch the filles listed in data.json/test/assets (where each filename
+# Fetch the files listed in data.json/test/assets (where each filename
 # references a unique filename in files.json) to test/assets.
 #
 # This is so that `make test` can use a local bucket url (file:///test/assets).
