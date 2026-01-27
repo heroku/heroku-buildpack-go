@@ -4,7 +4,7 @@ set -e
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-if [ -z "$1" ]; then
+if [ -z "${1:-}" ]; then
     echo "Usage: $0 [comma-separated-versions]"
     echo ""
     echo "Examples:"
