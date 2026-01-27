@@ -1,0 +1,76 @@
+#!/bin/bash
+
+set -euo pipefail
+
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+if [ -z "${1:-}" ]; then
+    echo "Usage: $0 [comma-separated-versions]"
+    echo ""
+    echo "Examples:"
+    echo "  $0 1.24.12,1.25.6    # Add specific versions"
+    echo "  $0                   # Auto-detect and add latest stable versions"
+    echo ""
+    echo "No versions specified, fetching latest stable versions from go.dev..."
+
+    # Fetch latest stable versions from go.dev
+    latest_versions=$(curl -sf 'https://go.dev/dl/?mode=json&include=stable' | \
+        jq -r '.[].version | sub("^go"; "")')
+
+    if [ -z "$latest_versions" ]; then
+        echo "Error: Failed to fetch latest versions from go.dev"
+        exit 1
+    fi
+
+    # Convert newline-separated versions to comma-separated
+    versions_arg=$(echo "$latest_versions" | tr '\n' ',' | sed 's/,$//')
+    echo "Found latest stable versions: $versions_arg"
+    IFS=',' read -ra VERSION_ARRAY <<< "$versions_arg"
+else
+    IFS=',' read -ra VERSION_ARRAY <<< "$1"
+fi
+
+TEMP_CHANGELOG=$(mktemp)
+awk '/## \[Unreleased\]/{print; print ""; exit} {print}' CHANGELOG.md > "$TEMP_CHANGELOG"
+
+for version in "${VERSION_ARRAY[@]}"; do
+    tarball="go${version}.linux-amd64.tar.gz"
+
+    if jq -e --arg key "$tarball" 'has($key)' files.json > /dev/null 2>&1; then
+        echo "Version $version already exists, skipping"
+        continue
+    fi
+
+    sbin/add-version "$version"
+    echo "* Add go${version}" >> "$TEMP_CHANGELOG"
+
+    major_minor=$(echo "$version" | cut -d. -f1,2)
+
+    jq --arg major_minor "go${major_minor}" --arg version "go${version}" --arg tarball "$tarball" '
+        .Go.VersionExpansion[$major_minor] as $old |
+        .Go.VersionExpansion[$major_minor] = $version |
+        # Sort by descending Go version
+        .Go.VersionExpansion = (
+            .Go.VersionExpansion | to_entries |
+            sort_by(
+                .key |
+                ltrimstr("go") |
+                split(".") |
+                map(tonumber? // 0)
+            ) |
+            reverse |
+            from_entries
+        ) |
+        if $old and $old != "" then
+            .test.assets = (.test.assets | map(select(. != ($old + ".linux-amd64.tar.gz"))) + [$tarball] | sort)
+        else
+            .test.assets = (.test.assets + [$tarball] | sort)
+        end
+    ' data.json > data.json.tmp
+    mv data.json.tmp data.json
+    echo "* go${major_minor} defaults to ${version}" >> "$TEMP_CHANGELOG"
+done
+
+awk '/## \[Unreleased\]/{flag=1; next} flag{if(flag==1 && NF==0){flag=2; next}} flag==2' CHANGELOG.md >> "$TEMP_CHANGELOG" 
+
+mv "$TEMP_CHANGELOG" CHANGELOG.md
