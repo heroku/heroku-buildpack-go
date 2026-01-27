@@ -47,6 +47,7 @@
       "go1.2": "go1.2.2",
       "go1.1.0": "go1.1",
       "go1.1": "go1.1.2",
+      "go1.26rc2": "go1.26rc2",
       "go1.0": "go1",
       "go1": "go1.0.3"
     },
@@ -138,6 +139,7 @@
       "go1.23.12.linux-amd64.tar.gz",
       "go1.24.12.linux-amd64.tar.gz",
       "go1.25.6.linux-amd64.tar.gz",
+      "go1.26rc2.linux-amd64.tar.gz",
       "go1.4.3.linux-amd64.tar.gz",
       "go1.6.4.linux-amd64.tar.gz",
       "go1.7.6.linux-amd64.tar.gz",
