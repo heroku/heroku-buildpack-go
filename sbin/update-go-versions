@@ -14,7 +14,15 @@ if [ -z "${1:-}" ]; then
     echo "No versions specified, fetching latest stable versions from go.dev..."
 
     # Fetch latest stable versions from go.dev
-    latest_versions=$(curl -sf 'https://go.dev/dl/?mode=json&include=stable' | \
+    latest_versions=$(curl \
+        --no-progress-meter \
+        --fail \
+        --connect-timeout 3 \
+        --max-time 60 \
+        --retry 5 \
+        --retry-max-time 60 \
+        --retry-connrefused \
+        'https://go.dev/dl/?mode=json&include=stable' | \
         jq -r '.[].version | sub("^go"; "")')
 
     if [ -z "$latest_versions" ]; then
