@@ -4,6 +4,7 @@
 
 * Add go1.26.0
 * go1.26 defaults to 1.26.0
+* Default to go1.25 if no version is specified
 
 ## [v219] - 2026-02-04
 
