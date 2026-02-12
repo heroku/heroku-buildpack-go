@@ -348,6 +348,12 @@ make run FIXTURE=test/fixtures/mod-basic-go125 STACK=heroku-22
 
 This will run the buildpack's detect, compile, and release scripts against the specified fixture, simulating a complete buildpack execution.
 
+Similarly, to test the buildpack's [testpack](#testpack) implementation:
+
+```console
+make run-ci [FIXTURE=<fixture>] [STACK=<stack>]
+```
+
 ## Using with cgo
 
 The buildpack supports building with C dependencies via [cgo][cgo]. You can set
