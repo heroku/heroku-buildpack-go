@@ -337,13 +337,13 @@ make test TEST=testGBVendor
 [Make] & [docker] are required to compile a fixture.
 
 ```console
-make FIXTURE=<fixture name> run
+make run
 ```
 
-You can also specify a custom stack (defaults to `heroku-24`):
+You can also specify a custom fixture (defaults to `test/fixtures/mod-basic-go126`) and stack (defaults to `heroku-24`):
 
 ```console
-make FIXTURE=<fixture name> STACK=heroku-22 run
+make run FIXTURE=test/fixtures/mod-basic-go125 STACK=heroku-22
 ```
 
 This will run the buildpack's detect, compile, and release scripts against the

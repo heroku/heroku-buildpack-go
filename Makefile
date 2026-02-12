@@ -1,6 +1,6 @@
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
-FIXTURE ?= mod-basic-go126
+FIXTURE ?= test/fixtures/mod-basic-go126
 
 .PHONY: test publish test-assets run run-ci
 .DEFAULT: test
@@ -25,7 +25,7 @@ test: test-assets
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
 	cp -r /src/{bin,lib,vendor,files.json,data.json} /tmp/buildpack; \
-	cp -r /src/test/fixtures/$(FIXTURE) /tmp/build_1; \
+	cp -r /src/$(FIXTURE) /tmp/build_1; \
 	cd /tmp/buildpack; \
 	unset $$(printenv | cut -d '=' -f 1 | grep -vE "^(HOME|LANG|PATH|STACK)$$");
 endef
@@ -39,7 +39,7 @@ run:
 			echo -e "\n~ Compile:" && ./bin/compile /tmp/build_1 /tmp/cache /tmp/env; \
 			echo -e "\n~ Release:" && ./bin/release /tmp/build_1; \
 			rm -rf /app/* /tmp/build_1; \
-			cp -r /src/test/fixtures/$(FIXTURE) /tmp/build_2; \
+			cp -r /src/$(FIXTURE) /tmp/build_2; \
 			echo -e "\n~ Recompile:" && ./bin/compile /tmp/build_2 /tmp/cache /tmp/env; \
 			echo -e "\nBuild successful!"; \
 		'
