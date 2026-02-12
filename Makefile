@@ -9,7 +9,6 @@ STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 DOCKER_FLAGS := --rm --platform linux/amd64 -v $(PWD):/src:ro
 
 .DEFAULT: test
-.NOTPARALLEL: test-assets
 
 sync:
 	./sbin/sync-files.sh
