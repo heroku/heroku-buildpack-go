@@ -329,7 +329,7 @@ make test
 Run a specific test in `test/run.sh`:
 
 ```console
-make BASH_COMMAND='test/run.sh -- testGBVendor' test
+make test TEST=testGBVendor
 ```
 
 ### Compiling a fixture locally
@@ -337,11 +337,22 @@ make BASH_COMMAND='test/run.sh -- testGBVendor' test
 [Make] & [docker] are required to compile a fixture.
 
 ```console
-make FIXTURE=<fixture name> compile
+make run
 ```
 
-You will then be dropped into a bash prompt in the container that the fixture
-was compiled in.
+You can also specify a custom fixture (defaults to `test/fixtures/mod-basic-go126`) and stack (defaults to `heroku-24`):
+
+```console
+make run FIXTURE=test/fixtures/mod-basic-go125 STACK=heroku-22
+```
+
+This will run the buildpack's detect, compile, and release scripts against the specified fixture, simulating a complete buildpack execution.
+
+Similarly, to test the buildpack's [testpack](#testpack) implementation:
+
+```console
+make run-ci [FIXTURE=<fixture>] [STACK=<stack>]
+```
 
 ## Using with cgo
 
