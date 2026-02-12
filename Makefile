@@ -1,4 +1,3 @@
-TMP := ''
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 
