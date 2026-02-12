@@ -13,7 +13,7 @@ test: test-assets
 	@docker run $(DOCKER_FLAGS) "$(STACK_IMAGE_TAG)" \
 		bash -euo pipefail -O dotglob -c '\
 			cd /src; \
-			test/run.sh $(if "$(TEST)",-- "$(TEST)"); \
+			test/run.sh $(if $(TEST),-- "$(TEST)"); \
 			echo -e "\nTest run was successful!"; \
 		'
 	@echo
