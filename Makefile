@@ -1,10 +1,13 @@
+.PHONY: test test-assets run run-ci publish
+
 STACK ?= heroku-24
-STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 FIXTURE ?= test/fixtures/mod-basic-go126
+
+# Converts a stack name of `heroku-NN` to its build Docker image tag of `heroku/heroku:NN-build`.
+STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 DOCKER_FLAGS := --rm --platform linux/amd64 -v $(PWD):/src:ro
 
-.PHONY: test publish test-assets run run-ci
 .DEFAULT: test
 .NOTPARALLEL: test-assets
 
