@@ -1,7 +1,7 @@
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 FIXTURE ?= test/fixtures/mod-basic-go126
-DOCKER_FLAGS := --rm --platform linux/amd64
+DOCKER_FLAGS := --rm --platform linux/amd64 -v $(PWD):/src:ro
 
 .PHONY: test publish test-assets run run-ci
 .DEFAULT: test
@@ -21,7 +21,7 @@ test-assets:
 test: test-assets
 	@echo "Running tests in docker using $(STACK_IMAGE_TAG)"
 	@docker pull $(STACK_IMAGE_TAG)
-	@docker run -v $(PWD):/buildpack:ro $(DOCKER_FLAGS) --user root $(STACK_IMAGE_TAG) bash -c "cd /buildpack; test/run.sh $(if $(TEST),-- $(TEST))"
+	@docker run $(DOCKER_FLAGS) --user root $(STACK_IMAGE_TAG) bash -c "cd /src; test/run.sh $(if $(TEST),-- $(TEST))"
 
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
@@ -33,7 +33,7 @@ endef
 
 run:
 	@echo "Running buildpack using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
-	@docker run -v $(PWD):/src:ro $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
+	@docker run $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
 		bash -euo pipefail -O dotglob -c '\
 			$(SETUP_BUILDPACK_ENV) \
 			echo -en "\n~ Detect: " && ./bin/detect /tmp/build_1; \
@@ -48,7 +48,7 @@ run:
 
 run-ci:
 	@echo "Running buildpack CI scripts using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
-	@docker run -v $(PWD):/src:ro $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
+	@docker run $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
 		bash -euo pipefail -O dotglob -c '\
 			$(SETUP_BUILDPACK_ENV) \
 			echo -e "\n~ Detect: " && ./bin/detect /tmp/build_1; \
