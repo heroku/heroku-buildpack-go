@@ -3,7 +3,7 @@ STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 BASH_COMMAND := /bin/bash
 
-.PHONY: test shell quick publish docker test-assets
+.PHONY: test shell quick publish docker test-assets run
 .DEFAULT: test
 .NOTPARALLEL: docker test-assets
 
@@ -37,3 +37,22 @@ docker: test-assets
 test-assets:
 	@echo "Setting up test assets"
 	@sbin/fetch-test-assets
+
+run:
+	@echo "Running buildpack using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
+	@docker run --rm -v $(PWD):/src:ro --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
+		bash -euo pipefail -O dotglob -c '\
+			mkdir /tmp/buildpack /tmp/cache /tmp/env; \
+			cp -r /src/{bin,lib,vendor,files.json,data.json} /tmp/buildpack; \
+			cp -r /src/test/fixtures/$(FIXTURE) /tmp/build_1; \
+			cd /tmp/buildpack; \
+			unset $$(printenv | cut -d '=' -f 1 | grep -vE "^(HOME|LANG|PATH|STACK)$$"); \
+			echo -en "\n~ Detect: " && ./bin/detect /tmp/build_1; \
+			echo -e "\n~ Compile:" && ./bin/compile /tmp/build_1 /tmp/cache /tmp/env; \
+			echo -e "\n~ Release:" && ./bin/release /tmp/build_1; \
+			rm -rf /app/* /tmp/build_1; \
+			cp -r /src/test/fixtures/$(FIXTURE) /tmp/build_2; \
+			echo -e "\n~ Recompile:" && ./bin/compile /tmp/build_2 /tmp/cache /tmp/env; \
+			echo -e "\nBuild successful!"; \
+		'
+	@echo
