@@ -346,8 +346,7 @@ You can also specify a custom fixture (defaults to `test/fixtures/mod-basic-go12
 make run FIXTURE=test/fixtures/mod-basic-go125 STACK=heroku-22
 ```
 
-This will run the buildpack's detect, compile, and release scripts against the
-specified fixture, simulating a complete buildpack execution.
+This will run the buildpack's detect, compile, and release scripts against the specified fixture, simulating a complete buildpack execution.
 
 ## Using with cgo
 
