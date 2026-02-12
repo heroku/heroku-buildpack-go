@@ -12,6 +12,10 @@ sync:
 publish:
 	@bash sbin/publish.sh
 
+test-assets:
+	@echo "Setting up test assets"
+	@sbin/fetch-test-assets
+
 test: BASH_COMMAND := test/run.sh
 test: docker
 
@@ -29,10 +33,6 @@ docker: test-assets
 	@echo "Running tests in docker using $(STACK_IMAGE_TAG)"
 	@docker pull $(STACK_IMAGE_TAG)
 	@docker run -v $(PWD):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "IMAGE=$(STACK_IMAGE_TAG)" --user root --platform linux/amd64 $(STACK_IMAGE_TAG) bash -c "cd /buildpack; $(BASH_COMMAND)"
-
-test-assets:
-	@echo "Setting up test assets"
-	@sbin/fetch-test-assets
 
 run:
 	@echo "Running buildpack using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
