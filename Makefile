@@ -17,9 +17,11 @@ test-assets:
 
 test: BASH_COMMAND := test/run.sh
 shell: BASH_COMMAND := /bin/bash
-quick: BASH_COMMAND := test/quick.sh; bash
 
-test shell quick: docker
+test shell: docker
+
+quick: FIXTURE ?= govendor-basic
+quick: run
 
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 docker: test-assets
