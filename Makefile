@@ -1,6 +1,6 @@
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
-FIXTURE ?= govendor-basic
+FIXTURE ?= mod-basic-go126
 
 .PHONY: test publish test-assets run run-ci
 .DEFAULT: test
