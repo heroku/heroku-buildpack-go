@@ -9,6 +9,9 @@ STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 sync:
 	./sbin/sync-files.sh
 
+publish:
+	@bash sbin/publish.sh
+
 test: BASH_COMMAND := test/run.sh
 test: docker
 
@@ -20,9 +23,6 @@ quick: docker
 
 testpack: BASH_COMMAND := test/quick.sh dotest $(FIXTURE) $(ENV); bash
 testpack: docker
-
-publish:
-	@bash sbin/publish.sh
 
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 docker: test-assets
