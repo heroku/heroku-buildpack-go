@@ -1,6 +1,7 @@
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 FIXTURE ?= test/fixtures/mod-basic-go126
+# TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 DOCKER_FLAGS := --rm --platform linux/amd64 -v $(PWD):/src:ro
 
 .PHONY: test publish test-assets run run-ci
@@ -17,7 +18,6 @@ test-assets:
 	@echo "Setting up test assets"
 	@sbin/fetch-test-assets
 
-# TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 test: test-assets
 	@echo "Running tests using: STACK=$(STACK) TEST=$(TEST)"
 	@docker run $(DOCKER_FLAGS) "$(STACK_IMAGE_TAG)" \
