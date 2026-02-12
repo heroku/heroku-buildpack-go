@@ -18,10 +18,6 @@ shell: docker
 quick: BASH_COMMAND := test/quick.sh; bash
 quick: docker
 
-# make FIXTURE=<fixture name> ENV=<FOO=BAR> compile
-compile: BASH_COMMAND := test/quick.sh compile $(FIXTURE) $(ENV); bash
-compile: docker
-
 testpack: BASH_COMMAND := test/quick.sh dotest $(FIXTURE) $(ENV); bash
 testpack: docker
 

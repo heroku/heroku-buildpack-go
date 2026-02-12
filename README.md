@@ -337,11 +337,17 @@ make BASH_COMMAND='test/run.sh -- testGBVendor' test
 [Make] & [docker] are required to compile a fixture.
 
 ```console
-make FIXTURE=<fixture name> compile
+make FIXTURE=<fixture name> run
 ```
 
-You will then be dropped into a bash prompt in the container that the fixture
-was compiled in.
+You can also specify a custom stack (defaults to `heroku-24`):
+
+```console
+make FIXTURE=<fixture name> STACK=heroku-22 run
+```
+
+This will run the buildpack's detect, compile, and release scripts against the
+specified fixture, simulating a complete buildpack execution.
 
 ## Using with cgo
 
