@@ -2,7 +2,7 @@ STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 FIXTURE ?= govendor-basic
 
-.PHONY: test shell quick publish docker test-assets run run-ci
+.PHONY: test shell publish docker test-assets run run-ci
 .DEFAULT: test
 .NOTPARALLEL: docker test-assets
 
@@ -20,8 +20,6 @@ test: BASH_COMMAND := test/run.sh
 shell: BASH_COMMAND := /bin/bash
 
 test shell: docker
-
-quick: run
 
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 docker: test-assets
