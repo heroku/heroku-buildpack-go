@@ -2,7 +2,7 @@ TMP := ''
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 
-.PHONY: test shell quick publish docker test-assets run
+.PHONY: test shell quick publish docker test-assets run run-ci
 .DEFAULT: test
 .NOTPARALLEL: docker test-assets
 
@@ -19,9 +19,8 @@ test-assets:
 test: BASH_COMMAND := test/run.sh
 shell: BASH_COMMAND := /bin/bash
 quick: BASH_COMMAND := test/quick.sh; bash
-testpack: BASH_COMMAND := test/quick.sh dotest $(FIXTURE) $(ENV); bash
 
-test shell quick testpack: docker
+test shell quick: docker
 
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 docker: test-assets
@@ -45,5 +44,21 @@ run:
 			cp -r /src/test/fixtures/$(FIXTURE) /tmp/build_2; \
 			echo -e "\n~ Recompile:" && ./bin/compile /tmp/build_2 /tmp/cache /tmp/env; \
 			echo -e "\nBuild successful!"; \
+		'
+	@echo
+
+run-ci:
+	@echo "Running buildpack CI scripts using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
+	@docker run --rm -v $(PWD):/src:ro --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
+		bash -euo pipefail -O dotglob -c '\
+			mkdir /tmp/buildpack /tmp/cache /tmp/env; \
+			cp -r /src/{bin,lib,vendor,files.json,data.json} /tmp/buildpack; \
+			cp -r /src/test/fixtures/$(FIXTURE) /tmp/build_1; \
+			cd /tmp/buildpack; \
+			unset $$(printenv | cut -d '=' -f 1 | grep -vE "^(HOME|LANG|PATH|STACK)$$"); \
+			echo -e "\n~ Detect: " && ./bin/detect /tmp/build_1; \
+			echo -e "\n~ Test Compile:" && ./bin/test-compile /tmp/build_1 /tmp/cache /tmp/env; \
+			echo -e "\n~ Test:" && ./bin/test /tmp/build_1 /tmp/cache /tmp/env; \
+			echo -e "\nTest compilation and execution successful!"; \
 		'
 	@echo
