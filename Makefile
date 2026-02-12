@@ -1,4 +1,4 @@
-.PHONY: test test-assets run run-ci publish
+.PHONY: test test-assets run run-ci sync publish
 
 STACK ?= heroku-24
 FIXTURE ?= test/fixtures/mod-basic-go126
