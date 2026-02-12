@@ -21,3 +21,11 @@ jobs:
         uses: actions/checkout@v6
       - name: Run tests
         run: make test STACK=${{ matrix.stack }}
+
+  container-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Run buildpack using default app fixture
+        run: make run
