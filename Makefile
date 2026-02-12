@@ -20,7 +20,13 @@ test-assets:
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 test: test-assets
 	@echo "Running tests using: STACK=$(STACK) TEST=$(TEST)"
-	@docker run $(DOCKER_FLAGS) $(STACK_IMAGE_TAG) bash -c "cd /src; test/run.sh $(if $(TEST),-- $(TEST))"
+	@docker run $(DOCKER_FLAGS) "$(STACK_IMAGE_TAG)" \
+		bash -euo pipefail -O dotglob -c '\
+			cd /src; \
+			test/run.sh $(if "$(TEST)",-- "$(TEST)"); \
+			echo -e "\nTest run was successful!"; \
+		'
+	@echo
 
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
