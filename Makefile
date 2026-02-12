@@ -1,5 +1,6 @@
 TMP := ''
-STACK_IMAGE_TAG := heroku/heroku:24-build
+STACK ?= heroku-24
+STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 BASH_COMMAND := /bin/bash
 
 .PHONY: test shell quick publish docker test-assets
