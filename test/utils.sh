@@ -29,6 +29,10 @@ setUp() {
 }
 
 tearDown() {
+  if [ -d "${BUILD_DIR}" ]; then
+    # Go modules are read-only by default; give ourselves write permission to delete it first
+    chmod -R +w "${BUILD_DIR}"
+  fi
   rm -rf ${OUTPUT_DIR}
 }
 

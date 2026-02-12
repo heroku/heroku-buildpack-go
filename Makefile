@@ -21,7 +21,7 @@ test-assets:
 test: test-assets
 	@echo "Running tests in docker using $(STACK_IMAGE_TAG)"
 	@docker pull $(STACK_IMAGE_TAG)
-	@docker run $(DOCKER_FLAGS) --user root $(STACK_IMAGE_TAG) bash -c "cd /src; test/run.sh $(if $(TEST),-- $(TEST))"
+	@docker run $(DOCKER_FLAGS) $(STACK_IMAGE_TAG) bash -c "cd /src; test/run.sh $(if $(TEST),-- $(TEST))"
 
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
