@@ -329,7 +329,7 @@ make test
 Run a specific test in `test/run.sh`:
 
 ```console
-make BASH_COMMAND='test/run.sh -- testGBVendor' test
+make test TEST=testGBVendor
 ```
 
 ### Compiling a fixture locally
