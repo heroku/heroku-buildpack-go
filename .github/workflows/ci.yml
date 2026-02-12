@@ -29,3 +29,5 @@ jobs:
         uses: actions/checkout@v6
       - name: Run buildpack using default app fixture
         run: make run
+      - name: Run buildpack testpack script using legacy fixture
+        run: make run-ci FIXTURE=test/fixtures/govendor-basic
