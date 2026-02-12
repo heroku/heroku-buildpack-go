@@ -1,7 +1,6 @@
 TMP := ''
 STACK ?= heroku-24
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
-BASH_COMMAND := /bin/bash
 
 .PHONY: test shell quick publish docker test-assets run
 .DEFAULT: test
@@ -13,6 +12,7 @@ sync:
 test: BASH_COMMAND := test/run.sh
 test: docker
 
+shell: BASH_COMMAND := /bin/bash
 shell: docker
 
 quick: BASH_COMMAND := test/quick.sh; bash
