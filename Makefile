@@ -20,7 +20,7 @@ test-assets:
 test: test-assets
 	@echo "Running tests in docker using $(STACK_IMAGE_TAG)"
 	@docker pull $(STACK_IMAGE_TAG)
-	@docker run -v $(PWD):/buildpack:ro --rm -it -e "GITLAB_TOKEN=$(GITLAB_TOKEN)" -e "GITHUB_TOKEN=$(GITHUB_TOKEN)" -e "IMAGE=$(STACK_IMAGE_TAG)" --user root --platform linux/amd64 $(STACK_IMAGE_TAG) bash -c "cd /buildpack; test/run.sh $(if $(TEST),-- $(TEST))"
+	@docker run -v $(PWD):/buildpack:ro --rm -it --user root --platform linux/amd64 $(STACK_IMAGE_TAG) bash -c "cd /buildpack; test/run.sh $(if $(TEST),-- $(TEST))"
 
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
