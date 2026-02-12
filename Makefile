@@ -23,7 +23,7 @@ test-assets:
 	@sbin/fetch-test-assets
 
 sync:
-	./sbin/sync-files.sh
+	@sbin/sync-files.sh
 
 publish:
 	@bash sbin/publish.sh
