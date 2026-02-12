@@ -15,14 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        stack-version: ["22", "24"]
-    container:
-      image: heroku/heroku:${{ matrix.stack-version }}-build
-      options: --user root
+        stack: ["heroku-22", "heroku-24"]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Fetch test assets
-        run: make test-assets
-      - name: Run shunit2 tests
-        run: test/run.sh
+      - name: Run tests
+        run: make test STACK=${{ matrix.stack }}
