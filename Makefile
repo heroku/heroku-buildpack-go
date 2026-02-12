@@ -33,7 +33,7 @@ endef
 
 run:
 	@echo "Running buildpack using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
-	@docker run $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
+	@docker run $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" "$(STACK_IMAGE_TAG)" \
 		bash -euo pipefail -O dotglob -c '\
 			$(SETUP_BUILDPACK_ENV) \
 			echo -en "\n~ Detect: " && ./bin/detect /tmp/build_1; \
@@ -48,7 +48,7 @@ run:
 
 run-ci:
 	@echo "Running buildpack CI scripts using: STACK=$(STACK) FIXTURE=$(FIXTURE)"
-	@docker run $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" -e "STACK=$(STACK)" "$(STACK_IMAGE_TAG)" \
+	@docker run $(DOCKER_FLAGS) --tmpfs /app:mode=1777 -e "HOME=/app" "$(STACK_IMAGE_TAG)" \
 		bash -euo pipefail -O dotglob -c '\
 			$(SETUP_BUILDPACK_ENV) \
 			echo -e "\n~ Detect: " && ./bin/detect /tmp/build_1; \
