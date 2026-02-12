@@ -8,16 +8,6 @@ STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
 # TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
 DOCKER_FLAGS := --rm --platform linux/amd64 -v $(PWD):/src:ro
 
-sync:
-	./sbin/sync-files.sh
-
-publish:
-	@bash sbin/publish.sh
-
-test-assets:
-	@echo "Setting up test assets"
-	@sbin/fetch-test-assets
-
 test: test-assets
 	@echo "Running tests using: STACK=$(STACK) TEST=$(TEST)"
 	@docker run $(DOCKER_FLAGS) "$(STACK_IMAGE_TAG)" \
@@ -27,6 +17,16 @@ test: test-assets
 			echo -e "\nTest run was successful!"; \
 		'
 	@echo
+
+test-assets:
+	@echo "Setting up test assets"
+	@sbin/fetch-test-assets
+
+sync:
+	./sbin/sync-files.sh
+
+publish:
+	@bash sbin/publish.sh
 
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
