@@ -17,6 +17,14 @@ source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
 source_stdlib
 
+# Set CACHE_DIR (used by build_data)
+CACHE_DIR="${cache_root}"
+source "${buildpack}/lib/build_data.sh"
+# Initialise the build data store used to track state across builds (for cache invalidation
+# and messaging when build configuration changes) and also so that `bin/report` can generate
+# a build report that will be consumed by the build system for observability.
+build_data::setup
+
 snapshotBinBefore
 
 # Clean up old cache files if migrating from old cache structure.
