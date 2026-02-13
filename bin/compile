@@ -19,6 +19,28 @@ source_stdlib
 
 snapshotBinBefore
 
+# Clean up old cache files if migrating from old cache structure.
+# We detect this legacy structure by looking for 'go-path' in the root.
+# TODO: Remove following migration/after a few months
+if [ -d "${cache_root}/go-path" ] && [ ! -d "${cache}/go-path" ]; then
+    step "Clearing old build cache artifacts"
+
+    # Remove artifacts that were previously stored in the cache root
+    rm -rf "${cache_root}"/go[0-9]* \
+           "${cache_root}"/devel-* \
+           "${cache_root}/go-path" \
+           "${cache_root}/go-build-cache" \
+           "${cache_root}/glide" \
+           "${cache_root}/gb" \
+           "${cache_root}/dep" \
+           "${cache_root}/godep" \
+           "${cache_root}/govendor" \
+           "${cache_root}/.tq" \
+           "${cache_root}/.jq" \
+           "${cache_root}/github.com/golang-migrate" \
+           "${cache_root}/github.com/mattes" 2>/dev/null || true
+fi
+
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
 GlideVersion="$(<${DataJSON} jq -r '.Glide.DefaultVersion')"
