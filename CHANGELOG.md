@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Fix bug where Go version changes deleted the shared buildpack build cache
 
 ## [v220] - 2026-02-10
 
