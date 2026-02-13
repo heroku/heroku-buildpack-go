@@ -7,7 +7,9 @@ set -eo pipefail
 
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
+cache_root=$(cd "$2/" && pwd)
+cache="${cache_root}/.heroku/go"
+mkdir -p "${cache}"
 env_dir="${3}"
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 
@@ -257,7 +259,7 @@ ensureGo() {
     if [ -d "${goPath}" ]; then
         step "Using ${goVersion}"
     else
-        #For a go version change, we delete everything
+        #For a go version change, we delete everything in our namespace
         step "New Go Version, clearing old cache"
         if [ -d "${cache}/go-path" ]; then
             find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
