@@ -2,6 +2,8 @@
 
 STACK ?= heroku-24
 FIXTURE ?= test/fixtures/mod-basic-go126
+# Allow overriding the exit code in CI, so we can test bin/report works for failing builds.
+COMPILE_FAILURE_EXIT_CODE ?= 1
 
 # Converts a stack name of `heroku-NN` to its build Docker image tag of `heroku/heroku:NN-build`.
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
@@ -42,7 +44,9 @@ run:
 		bash -euo pipefail -O dotglob -c '\
 			$(SETUP_BUILDPACK_ENV) \
 			echo -en "\n~ Detect: " && ./bin/detect /tmp/build_1; \
-			echo -e "\n~ Compile:" && ./bin/compile /tmp/build_1 /tmp/cache /tmp/env; \
+			echo -e "\n~ Compile:" && { ./bin/compile /tmp/build_1 /tmp/cache /tmp/env || COMPILE_FAILED=1; }; \
+			echo -e "\n~ Report:" && ./bin/report /tmp/build_1 /tmp/cache /tmp/env; \
+			[[ "$${COMPILE_FAILED:-}" == "1" ]] && exit $(COMPILE_FAILURE_EXIT_CODE); \
 			echo -e "\n~ Release:" && ./bin/release /tmp/build_1; \
 			rm -rf /app/* /tmp/build_1; \
 			cp -r /src/$(FIXTURE) /tmp/build_2; \
