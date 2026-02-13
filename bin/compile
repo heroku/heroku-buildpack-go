@@ -428,7 +428,20 @@ FLAGS=(-tags heroku)
 
 determineTool
 
+# Track the requested Go version before expansion
+requested_go_version="${ver}"
+build_data::set_string "go_version_requested" "${requested_go_version}"
+build_data::set_string "go_version_origin" "${go_version_origin}"
+
 ver=$(expandVer $ver)
+build_data::set_string "go_full_version" "${ver}"
+
+# Track whether the version was pinned (fully specified)
+if [ "${requested_go_version}" = "${ver}" ]; then
+    build_data::set_raw "go_version_pinned" "true"
+else
+    build_data::set_raw "go_version_pinned" "false"
+fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
