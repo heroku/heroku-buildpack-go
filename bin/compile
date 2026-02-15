@@ -21,7 +21,6 @@ snapshotBinBefore
 
 # Clean up old cache files if migrating from old cache structure.
 # We detect this legacy structure by looking for 'go-path' in the root.
-# TODO: Remove following migration/after a few months
 if [ -d "${cache_root}/go-path" ] && [ ! -d "${cache}/go-path" ]; then
     step "Clearing old build cache artifacts"
 
