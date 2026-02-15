@@ -428,14 +428,10 @@ FLAGS=(-tags heroku)
 
 determineTool
 
-# Track the package management tool detected
-build_data::set_string "go_tool" "${TOOL}"
-
-# Track the requested Go version before expansion
+# Track the requested version before expansion (for pinned check)
 requested_go_version="${ver}"
-build_data::set_string "go_version_requested" "${requested_go_version}"
-build_data::set_string "go_version_origin" "${go_version_origin}"
 
+# Expand the version and track the resolved version
 ver=$(expandVer $ver)
 build_data::set_string "go_full_version" "${ver}"
 

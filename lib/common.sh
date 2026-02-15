@@ -322,6 +322,9 @@ setGoVersionFromEnvironment() {
         go_version_origin="GOVERSION"
     fi
     ver=${GOVERSION:-$DefaultGoVersion}
+
+    build_data::set_string "go_version_origin" "${go_version_origin}"
+    build_data::set_string "go_version_requested" "${ver}"
 }
 
 supportsGoModules() {
@@ -335,10 +338,14 @@ determineTool() {
     if [ -n "${GOVERSION}" ]; then
         ver="${GOVERSION}"
         go_version_origin="GOVERSION"
+        build_data::set_string "go_version_origin" "${go_version_origin}"
+        build_data::set_string "go_version_requested" "${ver}"
     fi
 
     if [ -f "${goMOD}" ]; then
         TOOL="gomodules"
+        build_data::set_string "go_tool" "${TOOL}"
+
         step ""
         info "Detected go modules via go.mod"
         step ""
@@ -357,6 +364,8 @@ determineTool() {
                     go_version_origin="default"
                 fi
             fi
+            build_data::set_string "go_version_origin" "${go_version_origin}"
+            build_data::set_string "go_version_requested" "${ver}"
         fi
 
         name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goMOD})
@@ -386,6 +395,8 @@ determineTool() {
         fi
     elif [ -f "${depTOML}" ]; then
         TOOL="dep"
+        build_data::set_string "go_tool" "${TOOL}"
+
         ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
         name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
         if [ -z "${name}" ]; then
@@ -405,6 +416,8 @@ determineTool() {
                 ver=${DefaultGoVersion}
                 go_version_origin="default"
             fi
+            build_data::set_string "go_version_origin" "${go_version_origin}"
+            build_data::set_string "go_version_requested" "${ver}"
         fi
 
         warnGoVersionOverride
@@ -419,6 +432,8 @@ determineTool() {
         fi
     elif [ -f "${godepsJSON}" ]; then
         TOOL="godep"
+        build_data::set_string "go_tool" "${TOOL}"
+
         step "Checking Godeps/Godeps.json file."
         if ! jq -r . < "${godepsJSON}" > /dev/null; then
             err "Bad Godeps/Godeps.json file"
@@ -430,11 +445,15 @@ determineTool() {
         if [ -z "${ver}" ]; then
             ver=$(<${godepsJSON} jq -r .GoVersion)
             go_version_origin="Godeps/Godeps.json"
+            build_data::set_string "go_version_origin" "${go_version_origin}"
+            build_data::set_string "go_version_requested" "${ver}"
         fi
 
         warnGoVersionOverride
     elif [ -f "${vendorJSON}" ]; then
         TOOL="govendor"
+        build_data::set_string "go_tool" "${TOOL}"
+
         step "Checking vendor/vendor.json file."
         if ! jq -r . < "${vendorJSON}" > /dev/null; then
             err "Bad vendor/vendor.json file"
@@ -460,6 +479,8 @@ determineTool() {
             else
                 go_version_origin="vendor/vendor.json"
             fi
+            build_data::set_string "go_version_origin" "${go_version_origin}"
+            build_data::set_string "go_version_requested" "${ver}"
         fi
 
         warnGoVersionOverride
@@ -474,9 +495,11 @@ determineTool() {
         fi
     elif [ -f "${glideYAML}" ]; then
         TOOL="glide"
+        build_data::set_string "go_tool" "${TOOL}"
         setGoVersionFromEnvironment
     elif [ -d "$build/src" -a -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]; then
         TOOL="gb"
+        build_data::set_string "go_tool" "${TOOL}"
         setGoVersionFromEnvironment
     else
         err "Go modules, dep, Godep, GB or govendor are required. For instructions:"
