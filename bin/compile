@@ -421,7 +421,7 @@ requested_go_version="${ver}"
 
 # Expand the version and track the resolved version
 ver=$(expandVer $ver)
-build_data::set_string "go_full_version" "${ver}"
+build_data::set_string "go_version" "${ver}"
 
 # Track whether the version was pinned (fully specified)
 if [ "${requested_go_version}" = "${ver}" ]; then
