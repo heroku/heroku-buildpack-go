@@ -1554,7 +1554,7 @@ testGodepPackageSpec() {
 }
 
 testGoCacheGoVersionGreaterThanOrEqualTo110() {
-  local cache_dir="${CACHE_DIR}/go-build-cache"
+  local cache_dir="${CACHE_DIR}/.heroku/go/go-build-cache"
 
   fixture "dep-go-1-10"
 
@@ -1574,7 +1574,7 @@ testGoCacheGoVersionGreaterThanOrEqualTo110() {
 }
 
 testGoCacheGoVersionLessThan110() {
-  local cache_dir="${CACHE_DIR}/go-build-cache"
+  local cache_dir="${CACHE_DIR}/.heroku/go/go-build-cache"
 
   fixture "dep-go-version"
 
