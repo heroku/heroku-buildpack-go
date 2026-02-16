@@ -7,7 +7,9 @@ set -eo pipefail
 
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
+cache_root=$(cd "$2/" && pwd)
+cache="${cache_root}/.heroku/go"
+mkdir -p "${cache}"
 env_dir="${3}"
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 
@@ -16,6 +18,27 @@ source "${buildpack}/lib/common_tools.sh"
 source_stdlib
 
 snapshotBinBefore
+
+# Clean up old cache files if migrating from old cache structure.
+# We detect this legacy structure by looking for 'go-path' in the root.
+if [ -d "${cache_root}/go-path" ] && [ ! -d "${cache}/go-path" ]; then
+    step "Clearing old build cache artifacts"
+
+    # Remove artifacts that were previously stored in the cache root
+    rm -rf "${cache_root}"/go[0-9]* \
+           "${cache_root}"/devel-* \
+           "${cache_root}/go-path" \
+           "${cache_root}/go-build-cache" \
+           "${cache_root}/glide" \
+           "${cache_root}/gb" \
+           "${cache_root}/dep" \
+           "${cache_root}/godep" \
+           "${cache_root}/govendor" \
+           "${cache_root}/.tq" \
+           "${cache_root}/.jq" \
+           "${cache_root}/github.com/golang-migrate" \
+           "${cache_root}/github.com/mattes" 2>/dev/null || true
+fi
 
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
@@ -257,7 +280,7 @@ ensureGo() {
     if [ -d "${goPath}" ]; then
         step "Using ${goVersion}"
     else
-        #For a go version change, we delete everything
+        #For a go version change, we delete everything in our namespace
         step "New Go Version, clearing old cache"
         if [ -d "${cache}/go-path" ]; then
             find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
