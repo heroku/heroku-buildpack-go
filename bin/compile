@@ -455,7 +455,9 @@ fi
 
 reportVer "${ver}"
 
+go_install_start_time=$(build_data::current_unix_realtime)
 ensureGo "${ver}"
+build_data::set_duration "go_install_duration" "${go_install_start_time}"
 
 mkdir -p "${build}/bin"
 
