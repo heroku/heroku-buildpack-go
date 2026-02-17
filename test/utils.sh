@@ -5,8 +5,7 @@
 oneTimeSetUp() {
    TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
    BUILDPACK_HOME=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
-   # jq isn't in the docker image, so need to do this the hard way
-   DEFAULT_GO_VERSION=$(head < $BUILDPACK_HOME/data.json | grep DefaultVersion | cut -d : -f 2 | cut -d , -f 1 | sed -e s:\"::g -e s:\ ::g)
+   DEFAULT_GO_VERSION="$(<"${BUILDPACK_HOME}/data.json" jq -r '.Go.DefaultVersion')"
    export GO_BUCKET_URL="file://${BUILDPACK_HOME}/test/assets"
 }
 
