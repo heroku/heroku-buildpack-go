@@ -14,7 +14,6 @@ env_dir="${3}"
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${buildpack}/lib/common.sh"
-source "${buildpack}/lib/common_tools.sh"
 
 # Used by buildpack-stdlib
 BPLOG_PREFIX="buildpack.go"
