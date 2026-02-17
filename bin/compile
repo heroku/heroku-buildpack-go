@@ -20,6 +20,9 @@ source_stdlib
 # Set CACHE_DIR (used by build_data)
 CACHE_DIR="${cache_root}"
 source "${buildpack}/lib/build_data.sh"
+
+compile_start_time=$(build_data::current_unix_realtime)
+
 # Initialise the build data store used to track state across builds (for cache invalidation
 # and messaging when build configuration changes) and also so that `bin/report` can generate
 # a build report that will be consumed by the build system for observability.
@@ -758,3 +761,5 @@ echo "TOOL=${TOOL}" > "${t}"
 if [ "${TOOL}" != "gb" ]; then
     echo "NAME=${name}" >> "${t}"
 fi
+
+build_data::set_duration "total_duration" "${compile_start_time}"
