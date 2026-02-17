@@ -17,6 +17,14 @@ source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
 source_stdlib
 
+# Set CACHE_DIR (used by build_data)
+CACHE_DIR="${cache_root}"
+source "${buildpack}/lib/build_data.sh"
+# Initialise the build data store used to track state across builds (for cache invalidation
+# and messaging when build configuration changes) and also so that `bin/report` can generate
+# a build report that will be consumed by the build system for observability.
+build_data::setup
+
 snapshotBinBefore
 
 # Clean up old cache files if migrating from old cache structure.
@@ -341,18 +349,6 @@ ensureGo() {
     fi
 }
 
-setGoVersionFromEnvironment() {
-    if [ -z "${GOVERSION}" ]; then
-        warn ""
-        warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
-        warn ""
-        warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
-        warn "for future builds"
-        warn ""
-    fi
-    ver=${GOVERSION:-$DefaultGoVersion}
-}
-
 warnGoVersionOverride() {
     if [ ! -z "${GOVERSION}" ]; then
         warn "Using \$GOVERSION override."
@@ -420,7 +416,19 @@ FLAGS=(-tags heroku)
 
 determineTool
 
+# Track the requested version before expansion (for pinned check)
+requested_go_version="${ver}"
+
+# Expand the version and track the resolved version
 ver=$(expandVer $ver)
+build_data::set_string "go_version" "${ver}"
+
+# Track whether the version was pinned (fully specified)
+if [ "${requested_go_version}" = "${ver}" ]; then
+    build_data::set_raw "go_version_pinned" "true"
+else
+    build_data::set_raw "go_version_pinned" "false"
+fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then

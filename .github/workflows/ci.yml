@@ -27,7 +27,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      # Test both the local development `make run` workflow and that `bin/report` completes successfully
+      # for both passing and failing builds (since `bin/report` can't easily be tested via Hatchet tests).
       - name: Run buildpack using default app fixture
         run: make run
+      - name: Run buildpack using an app fixture that's expected to fail
+        run: make run FIXTURE=test/fixtures/godep-bin-file COMPILE_FAILURE_EXIT_CODE=0
       - name: Run buildpack testpack script using legacy fixture
         run: make run-ci FIXTURE=test/fixtures/govendor-basic
