@@ -5,6 +5,7 @@
 
 ## [v222] - 2026-02-17
 
+* Implemented the `bin/report` build report API
 
 ## [v221] - 2026-02-16
 
