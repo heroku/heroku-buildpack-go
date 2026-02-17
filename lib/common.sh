@@ -97,20 +97,13 @@ finished() {
 
 determinLocalFileName() {
     local fileName="${1}"
-    local localName="jq"
-    if [ "${fileName}" != "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
-        localName="$(<"${FilesJSON}" jq -r '."'${fileName}'".LocalName | if . == null then "'${fileName}'" else . end')"
-    fi
+    local localName="$(<"${FilesJSON}" jq -r '."'${fileName}'".LocalName | if . == null then "'${fileName}'" else . end')"
     echo "${localName}"
 }
 
 knownFile() {
     local fileName="${1}"
-    if [ "${fileName}" = "jq-linux64" ]; then #jq is special cased here because we can't jq until we have jq
-        true
-    else
-        <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null
-    fi
+    <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null
 }
 
 downloadFile() {
