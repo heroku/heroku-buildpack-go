@@ -3,6 +3,9 @@
 ## [Unreleased]
 
 
+## [v222] - 2026-02-17
+
+
 ## [v221] - 2026-02-16
 
 * Fix bug where Go version changes deleted the shared buildpack build cache
@@ -1167,7 +1170,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v221...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v222...main
+[v222]: https://github.com/heroku/heroku-buildpack-go/compare/v221...v222
 [v221]: https://github.com/heroku/heroku-buildpack-go/compare/v220...v221
 [v220]: https://github.com/heroku/heroku-buildpack-go/compare/v219...v220
 [v219]: https://github.com/heroku/heroku-buildpack-go/compare/v218...v219
