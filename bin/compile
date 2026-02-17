@@ -505,6 +505,8 @@ setupProcfile() {
     info ""
 }
 
+dependencies_install_start_time=$(build_data::current_unix_realtime)
+
 case "${TOOL}" in
     gomodules)
         cd ${build}
@@ -702,6 +704,8 @@ esac
 
 installGolangMigrateIfWanted
 installMattesMigrateIfWanted
+
+build_data::set_duration "dependencies_install_duration" "${dependencies_install_start_time}"
 
 _newOrUpdatedBinFiles=$(binDiff)
 info ""
