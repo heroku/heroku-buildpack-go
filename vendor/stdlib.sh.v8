@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# From:
+# https://raw.githubusercontent.com/heroku/buildpack-stdlib/v8/stdlib.sh
+
 # Buildpack defaults
 # ---------------
 
