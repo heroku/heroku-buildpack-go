@@ -1296,7 +1296,7 @@
   },
   "stdlib.sh.v8": {
     "SHA": "48b1c663ceda9e93a42fa2ed610fbdd12f9801abd55c317990b30ec75dc3d715",
-    "URL": "https://lang-common.s3.us-east-1.amazonaws.com/buildpack-stdlib/v8/stdlib.sh"
+    "URL": "https://raw.githubusercontent.com/heroku/buildpack-stdlib/v8/stdlib.sh"
   },
   "tq-v0.4-linux-amd64": {
     "LocalName": "tq",

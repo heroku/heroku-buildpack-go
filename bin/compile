@@ -15,7 +15,10 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${buildpack}/lib/common.sh"
 source "${buildpack}/lib/common_tools.sh"
-source_stdlib
+
+# Used by buildpack-stdlib
+BPLOG_PREFIX="buildpack.go"
+source "${buildpack}/vendor/buildpack-stdlib_v8.sh"
 
 # Set CACHE_DIR (used by build_data)
 CACHE_DIR="${cache_root}"

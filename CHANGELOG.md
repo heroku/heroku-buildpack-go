@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Vendor buildpack-stdlib instead of fetching from S3
 
 ## [v222] - 2026-02-17
 
