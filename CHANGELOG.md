@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Changed S3 bucket URL to AWS' dual-stack (IPv6 compatible) endpoint
 
 ## [v223] - 2026-02-18
 

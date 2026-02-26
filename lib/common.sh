@@ -19,7 +19,7 @@ NC='\033[0m' # No Color
 CURL="curl --silent --show-error --location --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5" # retry for up to 30 seconds
 
 if [ -z "${GO_BUCKET_URL}" ]; then
-    BucketURL="https://heroku-golang-prod.s3.us-east-1.amazonaws.com"
+    BucketURL="https://heroku-golang-prod.s3.dualstack.us-east-1.amazonaws.com"
 else
     BucketURL="${GO_BUCKET_URL}"
 fi
