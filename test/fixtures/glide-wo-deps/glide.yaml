@@ -1,3 +1,0 @@
-package: github.com/heroku/fixture
-import:
-- package: github.com/heroku/slog
