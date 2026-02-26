@@ -24,8 +24,8 @@ test-assets:
 	@echo "Setting up test assets"
 	@sbin/fetch-test-assets
 
-# Legacy tool files still exist in S3 but have been removed from files.json.
-# Pass them as ignore arguments so sync-files.sh doesn't fail on the mismatch.
+# Files that still exist in S3 but have been removed from files.json.
+# Passed as ignore arguments so sync-files.sh doesn't fail on the mismatch.
 SYNC_IGNORE := \
 	dep-linux-amd64 \
 	dep-v0.3.1-linux-amd64 \
@@ -40,6 +40,77 @@ SYNC_IGNORE := \
 	gb-0.4.4.tar.gz \
 	glide-v0.12.3-linux-amd64.tar.gz \
 	glide-v0.13.3-linux-amd64.tar.gz \
+	go.go1.linux-amd64.tar.gz \
+	go1.0.1.linux-amd64.tar.gz \
+	go1.0.2.linux-amd64.tar.gz \
+	go1.0.3.linux-amd64.tar.gz \
+	go1.1.1.linux-amd64.tar.gz \
+	go1.1.2.linux-amd64.tar.gz \
+	go1.1.linux-amd64.tar.gz \
+	go1.10.1.linux-amd64.tar.gz \
+	go1.10.2.linux-amd64.tar.gz \
+	go1.10.3.linux-amd64.tar.gz \
+	go1.10.4.linux-amd64.tar.gz \
+	go1.10.5.linux-amd64.tar.gz \
+	go1.10.6.linux-amd64.tar.gz \
+	go1.10.7.linux-amd64.tar.gz \
+	go1.10.8.linux-amd64.tar.gz \
+	go1.10.linux-amd64.tar.gz \
+	go1.10beta1.linux-amd64.tar.gz \
+	go1.10beta2.linux-amd64.tar.gz \
+	go1.10rc1.linux-amd64.tar.gz \
+	go1.10rc2.linux-amd64.tar.gz \
+	go1.2.1.linux-amd64.tar.gz \
+	go1.2.2.linux-amd64.tar.gz \
+	go1.2.linux-amd64.tar.gz \
+	go1.3.1.linux-amd64.tar.gz \
+	go1.3.2.linux-amd64.tar.gz \
+	go1.3.3.linux-amd64.tar.gz \
+	go1.3.linux-amd64.tar.gz \
+	go1.4.1.linux-amd64.tar.gz \
+	go1.4.2.linux-amd64.tar.gz \
+	go1.4.3.linux-amd64.tar.gz \
+	go1.4.linux-amd64.tar.gz \
+	go1.5.1.linux-amd64.tar.gz \
+	go1.5.2.linux-amd64.tar.gz \
+	go1.5.3.linux-amd64.tar.gz \
+	go1.5.4.linux-amd64.tar.gz \
+	go1.5.linux-amd64.tar.gz \
+	go1.6.1.linux-amd64.tar.gz \
+	go1.6.2.linux-amd64.tar.gz \
+	go1.6.3.linux-amd64.tar.gz \
+	go1.6.4.linux-amd64.tar.gz \
+	go1.6.linux-amd64.tar.gz \
+	go1.7.1.linux-amd64.tar.gz \
+	go1.7.3.linux-amd64.tar.gz \
+	go1.7.4.linux-amd64.tar.gz \
+	go1.7.5.linux-amd64.tar.gz \
+	go1.7.6.linux-amd64.tar.gz \
+	go1.7.linux-amd64.tar.gz \
+	go1.8.1.linux-amd64.tar.gz \
+	go1.8.2.linux-amd64.tar.gz \
+	go1.8.3.linux-amd64.tar.gz \
+	go1.8.4.linux-amd64.tar.gz \
+	go1.8.5.linux-amd64.tar.gz \
+	go1.8.7.linux-amd64.tar.gz \
+	go1.8.linux-amd64.tar.gz \
+	go1.8beta1.linux-amd64.tar.gz \
+	go1.8beta2.linux-amd64.tar.gz \
+	go1.8rc1.linux-amd64.tar.gz \
+	go1.8rc2.linux-amd64.tar.gz \
+	go1.8rc3.linux-amd64.tar.gz \
+	go1.9.1.linux-amd64.tar.gz \
+	go1.9.2.linux-amd64.tar.gz \
+	go1.9.3.linux-amd64.tar.gz \
+	go1.9.4.linux-amd64.tar.gz \
+	go1.9.5.linux-amd64.tar.gz \
+	go1.9.6.linux-amd64.tar.gz \
+	go1.9.7.linux-amd64.tar.gz \
+	go1.9.linux-amd64.tar.gz \
+	go1.9beta1.linux-amd64.tar.gz \
+	go1.9beta2.linux-amd64.tar.gz \
+	go1.9rc1.linux-amd64.tar.gz \
+	go1.9rc2.linux-amd64.tar.gz \
 	godep_linux_amd64 \
 	govendor_linux_amd64 \
 	mercurial-3.9.tar.gz \
