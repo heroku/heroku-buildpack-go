@@ -1,6 +1,0 @@
-hash: cabc3059eebba3dcf1fd791f71793f719af570cf5304c0f07c6020f99aca36b1
-updated: 2020-09-08T09:47:18.198337-03:00
-imports:
-- name: bitbucket.org/pkg/urlenc
-  version: becdd4de69aa7e02f77b079a92874b8914e1c225
-testImports: []
