@@ -916,34 +916,36 @@ testGodepCmds() {
   assertCompiledBinaryOutputs "other" "other"
 }
 
-testGodepCmdsOverride() {
-  fixture "godep-cmd"
+testModPackageSpecOverride() {
+  fixture "mod-cmd"
 
   env "GO_INSTALL_PACKAGE_SPEC" "./cmd/fixture"
 
   assertDetected
 
   compile
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured "go1.12.17"
+  assertCaptured "Using \$GO_INSTALL_PACKAGE_SPEC override."
+  assertCaptured "Running: go install -v -tags heroku ./cmd/fixture"
+  assertCapturedSuccess
   assertCompiledBinaryExists "fixture"
-  assertCompiledBinaryOutputs "fixture" "fixture"
   assertBuildDirFileDoesNotExist "bin/other"
 }
 
-testGodepBasicGo14WithGOVERSIONOverride() {
-  fixture "godep-basic-go14"
+testModGOVERSIONOverride() {
+  fixture "mod-basic"
 
-  env "GOVERSION" "go1.6"
+  env "GOVERSION" "go1.24"
 
   assertDetected
 
   compile
-  assertCaptured "Installing go1.6"
+  assertCaptured "Installing go1.24"
   assertCaptured "Using \$GOVERSION override."
-  assertCaptured "This application is using godep, but godep is no longer maintained."
-
+  assertGoInstallOnlyFixturePackageCaptured
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
 testGovendorGo14WithGOVERSIONOverride() {
@@ -1244,8 +1246,8 @@ testGodepCGOBasic() {
   assertCompiledBinaryExists
 }
 
-testGodepBinFile() {
-  fixture "godep-bin-file"
+testModBinFile() {
+  fixture "mod-bin-file"
 
   assertDetected
 
@@ -1338,8 +1340,8 @@ testGBBasicWithTools() {
   assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
-testGodepLDSymbolValue() {
-  fixture "godep-ld-symbol-value"
+testModLDSymbolValue() {
+  fixture "mod-ld-symbol-value"
 
   env "GO_LINKER_SYMBOL" "main.fixture"
   env "GO_LINKER_VALUE" "fixture"
@@ -1347,11 +1349,12 @@ testGodepLDSymbolValue() {
   assertDetected
 
   compile
-  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture ."
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "fixture"
-#  assertTrue "Binary has the right value" '[ "$(${compile_dir}/bin/fixture)" = "fixture" ]'
 }
 
 # # Older versions of Go have a different format for specifying linked flags
@@ -1387,24 +1390,20 @@ testGodepBasic() {
   assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
 }
 
-testGodepBasicWithTools() {
-  fixture "godep-basic"
+testModBasicWithTools() {
+  fixture "mod-basic"
 
   env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
 
   assertDetected
 
   compile
-  assertCaptured "Checking Godeps/Godeps.json file."
-  assertCaptured "Installing go"
-  assertCaptured "Running: go install -v -tags heroku ."
-  assertCaptured "Installing package '.' (default)"
-  assertCaptured "github.com/heroku/fixture"
+  assertModulesBoilerplateCaptured
+  assertGoInstallCaptured
+  assertGoInstallOnlyFixturePackageCaptured
   assertCaptured "Copying go tool chain to"
-  assertNotCaptured "Copying godep binary" #We don't copy the binary when a workspace isn't present
   assertCapturedSuccess
   assertCompiledBinaryExists
-  assertBuildDirFileDoesNotExist ".profile.d/concurrency.sh"
   assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
