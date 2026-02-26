@@ -1,64 +1,4 @@
 {
-  "dep-linux-amd64": {
-    "Comment": "This is here for backwards compat. Remove after a while.",
-    "LocalName": "dep",
-    "SHA": "408b970c0acacad309d350fc46d718e4a8885b588eca71f4d73e5d6c521ef944",
-    "URL": "https://github.com/golang/dep/releases/download/v0.3.1/dep-linux-amd64"
-  },
-  "dep-v0.3.1-linux-amd64": {
-    "LocalName": "dep",
-    "SHA": "408b970c0acacad309d350fc46d718e4a8885b588eca71f4d73e5d6c521ef944",
-    "URL": "https://github.com/golang/dep/releases/download/v0.3.1/dep-linux-amd64"
-  },
-  "dep-v0.4.0-linux-amd64": {
-    "LocalName": "dep",
-    "SHA": "228088ab0fe15dff6779f4e48223a6dd39544d3348b2f43b28b96eae27f341b5",
-    "URL": "https://github.com/golang/dep/releases/download/v0.4.0/dep-linux-amd64"
-  },
-  "dep-v0.4.1-linux-amd64": {
-    "LocalName": "dep",
-    "SHA": "31144e465e52ffbc0035248a10ddea61a09bf28b00784fd3fdd9882c8cbb2315",
-    "URL": "https://github.com/golang/dep/releases/download/v0.4.1/dep-linux-amd64"
-  },
-  "dep-v0.5.0-linux-amd64": {
-    "LocalName": "dep",
-    "SHA": "287b08291e14f1fae8ba44374b26a2b12eb941af3497ed0ca649253e21ba2f83",
-    "URL": "https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64"
-  },
-  "dep-v0.5.1-linux-amd64": {
-    "LocalName": "dep",
-    "SHA": "7479cca72da0596bb3c23094d363ea32b7336daa5473fa785a2099be28ecd0e3",
-    "URL": "https://github.com/golang/dep/releases/download/v0.5.1/dep-linux-amd64"
-  },
-  "dep-v0.5.2-linux-amd64": {
-    "LocalName": "dep",
-    "SHA": "d2d7e7a620b7cca79a7d6884813acea4e848ffe01b4a1d59ddf135fe0eb17f1b",
-    "URL": "https://github.com/golang/dep/releases/download/0.5.2/dep-linux-amd64"
-  },
-  "errors-0.8.0.tar.gz": {
-    "SHA": "bacf6c58e490911398cee61742ddc6a90c560733e4c9dcb3d867b17a894c9dd5",
-    "URL": "https://github.com/pkg/errors/archive/v0.8.0.tar.gz"
-  },
-  "gb-0.4.3.tar.gz": {
-    "SHA": "480ae2376d20b1c3768b6600d7f9f0c9395071a692c14ea27f9560cccfb3151e",
-    "URL": "https://github.com/constabulary/gb/archive/v0.4.3.tar.gz"
-  },
-  "gb-0.4.4-pre.tar.gz": {
-    "SHA": "f8b3847558d45f8d3a9f8252ab353d5793f1622e78138ec974ea956d7ae4d9d0",
-    "URL": "created manually from commit 137520c0f2217d8b7f934dc307865488ef31b551"
-  },
-  "gb-0.4.4.tar.gz": {
-    "SHA": "c7993ae1994ad85cbe35b833d36a137772599fe7ed720edec2d76ebf3fc4313b",
-    "URL": "https://github.com/constabulary/gb/archive/v0.4.4.tar.gz"
-  },
-  "glide-v0.12.3-linux-amd64.tar.gz": {
-    "SHA": "0e2be5e863464610ebc420443ccfab15cdfdf1c4ab63b5eb25d1216900a75109",
-    "URL": "https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-amd64.tar.gz"
-  },
-  "glide-v0.13.3-linux-amd64.tar.gz": {
-    "SHA": "ba5619955a28d7931a9ae38d095fc5fa5acc28e77abc8737a8136c652d9cbb38",
-    "URL": "https://github.com/Masterminds/glide/releases/download/v0.13.3/glide-v0.13.3-linux-amd64.tar.gz"
-  },
   "go.go1.linux-amd64.tar.gz": {
     "SHA": "9c0cb8a5421727f07d805cb77528d966b8e25cecb239b3ec869c2bf7b5058935",
     "URL": "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/go/go.go1.linux-amd64.tar.gz"
@@ -1259,11 +1199,6 @@
     "SHA": "0d17d440f02505d8fbf6becb777175c242486c1d71046705876dcd20e0574002",
     "URL": "https://dl.google.com/go/go1.9rc2.linux-amd64.tar.gz"
   },
-  "godep_linux_amd64": {
-    "LocalName": "godep",
-    "SHA": "4f0b1a01461f2a1892c8065989b8561a88a1c1f09e2a36f01042cd759ea1858c",
-    "URL": "https://github.com/tools/godep/releases/download/v75/godep_linux_amd64"
-  },
   "golangci-lint-1.16.0-linux-amd64.tar.gz": {
     "SHA": "5343fc3ffcbb9910925f4047ec3c9f2e9623dd56a72a17ac76fb2886abc0976b",
     "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.16.0/golangci-lint-1.16.0-linux-amd64.tar.gz"
@@ -1272,39 +1207,12 @@
     "SHA": "5a638cba74fbfb6e11b9dce38e8caf3f18e998b6548118116d631ebcae3ebac5",
     "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.20.0/golangci-lint-1.20.0-linux-amd64.tar.gz"
   },
-  "govendor_linux_amd64": {
-    "LocalName": "govendor",
-    "SHA": "90c587c3c2dffa242ed62c62426cd85bae8a74165d5434ccc0c31ee8e25d2588",
-    "URL": "https://github.com/kardianos/govendor/releases/download/v1.0.8/govendor_linux_amd64"
-  },
   "jq-linux64": {
     "SHA": "c6b3a7d7d3e7b70c6f51b706a3b90bd01833846c54d32ca32f0027f00226ff6d",
     "URL": "https://github.com/stedolan/jq/releases/download/jq-1.5/jq-linux64"
   },
-  "mercurial-3.9.tar.gz": {
-    "SHA": "834f25dcff44994198fb8a7ba161a6e24204dbd63c8e6270577e06e6cedbdabc",
-    "URL": "https://www.mercurial-scm.org/release/mercurial-3.9.tar.gz"
-  },
-  "migrate-v3.0.0-linux-amd64.tar.gz": {
-    "SHA": "13fbabe2db0ee3f79611c8171b0596939a3f384025f62925ed136267681e4fbf",
-    "URL": "https://github.com/mattes/migrate/releases/download/v3.0.0/migrate.linux-amd64.tar.gz"
-  },
-  "migrate-v3.4.0-linux-amd64.tar.gz": {
-    "SHA": "cc4b544f982fb3cf0ac84fe9c78f3fc37513f31daba90f247e9d477f5daf2396",
-    "URL": "https://github.com/golang-migrate/migrate/releases/download/v3.4.0/migrate.linux-amd64.tar.gz"
-  },
   "stdlib.sh.v8": {
     "SHA": "48b1c663ceda9e93a42fa2ed610fbdd12f9801abd55c317990b30ec75dc3d715",
     "URL": "https://raw.githubusercontent.com/heroku/buildpack-stdlib/v8/stdlib.sh"
-  },
-  "tq-v0.4-linux-amd64": {
-    "LocalName": "tq",
-    "SHA": "36d33a30e2cafe4b747b8de2449185a13239fb6da2887dde74f3d390fc639e3b",
-    "URL": "https://github.com/heroku/tq/releases/download/v0.4/tq-v0.4-linux-amd64"
-  },
-  "tq-v0.5-linux-amd64": {
-    "LocalName": "tq",
-    "SHA": "f22ab0a1694fb329f96e564f1f0b44876b2a60023ef26b1b42a15fb94287378e",
-    "URL": "https://github.com/heroku/tq/releases/download/v0.5/tq-v0.5-linux-amd64"
   }
 }

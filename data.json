@@ -50,80 +50,10 @@
       "go1.1": "go1.1.2",
       "go1.0": "go1",
       "go1": "go1.0.3"
-    },
-    "NeedsConcurrency": [
-      "go1",
-      "go1.0.1",
-      "go1.0.2",
-      "go1.0.3",
-      "go1.1",
-      "go1.1.1",
-      "go1.1.2",
-      "go1.2",
-      "go1.2.1",
-      "go1.2.2",
-      "go1.3",
-      "go1.3.1",
-      "go1.3.2",
-      "go1.3.3",
-      "go1.4",
-      "go1.4.1",
-      "go1.4.2",
-      "go1.4.3",
-      "go1.5",
-      "go1.5.1",
-      "go1.5.2",
-      "go1.5.3",
-      "go1.5.4"
-    ],
-    "SupportsVendorExperiment": [
-      "go1.5",
-      "go1.5.1",
-      "go1.5.2",
-      "go1.5.3",
-      "go1.5.4",
-      "go1.6",
-      "go1.6.1",
-      "go1.6.2",
-      "go1.6.3",
-      "go1.6.4"
-    ]
-  },
-  "Dep": {
-    "DefaultVersion": "v0.5.2"
-  },
-  "Glide": {
-    "DefaultVersion": "v0.13.3"
-  },
-  "Govendor": {
-    "DefaultVersion": "1.0.8"
-  },
-  "GB": {
-    "DefaultVersion": "0.4.4"
-  },
-  "PkgErrors": {
-    "DefaultVersion": "0.8.0"
-  },
-  "HG": {
-    "DefaultVersion": "3.9"
-  },
-  "MattesMigrate": {
-    "DefaultVersion": "v3.0.0"
-  },
-  "GolangMigrate": {
-    "DefaultVersion": "v3.4.0"
-  },
-  "tq": {
-    "DefaultVersion": "v0.5"
+    }
   },
   "test": {
     "assets": [
-      "dep-v0.5.2-linux-amd64",
-      "errors-0.8.0.tar.gz",
-      "gb-0.4.4.tar.gz",
-      "glide-v0.13.3-linux-amd64.tar.gz",
-      "go1.10.8.linux-amd64.tar.gz",
-      "go1.11.13.linux-amd64.tar.gz",
       "go1.12.17.linux-amd64.tar.gz",
       "go1.13.15.linux-amd64.tar.gz",
       "go1.14.2.linux-amd64.tar.gz",
@@ -140,17 +70,7 @@
       "go1.24.13.linux-amd64.tar.gz",
       "go1.25.7.linux-amd64.tar.gz",
       "go1.26.0.linux-amd64.tar.gz",
-      "go1.4.3.linux-amd64.tar.gz",
-      "go1.6.4.linux-amd64.tar.gz",
-      "go1.7.6.linux-amd64.tar.gz",
-      "go1.8.3.linux-amd64.tar.gz",
-      "godep_linux_amd64",
-      "golangci-lint-1.20.0-linux-amd64.tar.gz",
-      "govendor_linux_amd64",
-      "mercurial-3.9.tar.gz",
-      "migrate-v3.0.0-linux-amd64.tar.gz",
-      "migrate-v3.4.0-linux-amd64.tar.gz",
-      "tq-v0.5-linux-amd64"
+      "golangci-lint-1.20.0-linux-amd64.tar.gz"
     ]
   }
 }
