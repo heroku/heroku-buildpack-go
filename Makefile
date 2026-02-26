@@ -113,9 +113,11 @@ SYNC_IGNORE := \
 	go1.9rc2.linux-amd64.tar.gz \
 	godep_linux_amd64 \
 	govendor_linux_amd64 \
+	jq-linux64 \
 	mercurial-3.9.tar.gz \
 	migrate-v3.0.0-linux-amd64.tar.gz \
 	migrate-v3.4.0-linux-amd64.tar.gz \
+	stdlib.sh.v8 \
 	tq-v0.4-linux-amd64 \
 	tq-v0.5-linux-amd64
 
