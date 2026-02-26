@@ -138,14 +138,9 @@ downloadFile() {
 SHAValid() {
     local fileName="${1}"
     local targetFile="${2}"
-    local sh=""
-    local sw="$(<"${FilesJSON}" jq -r '."'${fileName}'".SHA')"
-    if [ ${#sw} -eq 40 ]; then
-        sh="$(shasum "${targetFile}" | cut -d \  -f 1)"
-    else
-        sh="$(shasum -a256 "${targetFile}" | cut -d \  -f 1)"
-    fi
-    [ "${sh}" = "${sw}" ]
+    local expected="$(<"${FilesJSON}" jq -r '."'${fileName}'".SHA')"
+    local actual="$(shasum -a256 "${targetFile}" | cut -d \  -f 1)"
+    [ "${actual}" = "${expected}" ]
 }
 
 ensureFile() {
