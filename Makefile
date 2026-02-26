@@ -24,8 +24,32 @@ test-assets:
 	@echo "Setting up test assets"
 	@sbin/fetch-test-assets
 
+# Legacy tool files still exist in S3 but have been removed from files.json.
+# Pass them as ignore arguments so sync-files.sh doesn't fail on the mismatch.
+SYNC_IGNORE := \
+	dep-linux-amd64 \
+	dep-v0.3.1-linux-amd64 \
+	dep-v0.4.0-linux-amd64 \
+	dep-v0.4.1-linux-amd64 \
+	dep-v0.5.0-linux-amd64 \
+	dep-v0.5.1-linux-amd64 \
+	dep-v0.5.2-linux-amd64 \
+	errors-0.8.0.tar.gz \
+	gb-0.4.3.tar.gz \
+	gb-0.4.4-pre.tar.gz \
+	gb-0.4.4.tar.gz \
+	glide-v0.12.3-linux-amd64.tar.gz \
+	glide-v0.13.3-linux-amd64.tar.gz \
+	godep_linux_amd64 \
+	govendor_linux_amd64 \
+	mercurial-3.9.tar.gz \
+	migrate-v3.0.0-linux-amd64.tar.gz \
+	migrate-v3.4.0-linux-amd64.tar.gz \
+	tq-v0.4-linux-amd64 \
+	tq-v0.5-linux-amd64
+
 sync:
-	@sbin/sync-files.sh
+	@sbin/sync-files.sh $(SYNC_IGNORE)
 
 publish:
 	@bash sbin/publish.sh

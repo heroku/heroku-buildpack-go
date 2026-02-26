@@ -1351,7 +1351,8 @@ testModLDSymbolValue() {
   compile
   assertModulesBoilerplateCaptured
   assertGoInstallCaptured
-  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture github.com/heroku/fixture"
+  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture"
+  assertCaptured "github.com/heroku/fixture"
   assertCapturedSuccess
   assertCompiledBinaryExists
   assertCompiledBinaryOutputs "fixture" "fixture"

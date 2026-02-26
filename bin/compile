@@ -54,66 +54,16 @@ if [ -d "${cache_root}/go-path" ] && [ ! -d "${cache}/go-path" ]; then
 fi
 
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
-DepVersion="$(<${DataJSON} jq -r '.Dep.DefaultVersion')"
-GlideVersion="$(<${DataJSON} jq -r '.Glide.DefaultVersion')"
-GovendorVersion="$(<${DataJSON} jq -r '.Govendor.DefaultVersion')"
-GBVersion="$(<${DataJSON} jq -r '.GB.DefaultVersion')"
-PkgErrorsVersion="$(<${DataJSON} jq -r '.PkgErrors.DefaultVersion')"
-MercurialVersion="$(<${DataJSON} jq -r '.HG.DefaultVersion')"
-MattesMigrateVersion="$(<${DataJSON} jq -r '.MattesMigrate.DefaultVersion')"
-GolangMigrateVersion="$(<${DataJSON} jq -r '.GolangMigrate.DefaultVersion')"
-TQVersion="$(<${DataJSON} jq -r '.tq.DefaultVersion')"
-
-# For specified versions of Go we need to keep concurrency.sh
-needConcurrency() {
-    <"${DataJSON}" jq -e '.Go.NeedsConcurrency | any(. == "'${1}'")' &> /dev/null
-}
 
 handleDefaultPkgSpec() {
     if [ "${pkgs}" = "default" ]; then
         warn "Installing package '.' (default)"
         warn ""
-        case "${TOOL}" in
-            gomodules)
-                warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
-                warn "// +heroku install ./cmd/..."
-                warn ""
-            ;;
-            dep)
-                warn "To install a different package spec set 'metadata.heroku.install' in 'Gopkg.toml'"
-                warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
-                warn ""
-            ;;
-            govendor)
-                warn "To install a different package spec set 'heroku.install' in 'vendor/vendor.json'"
-                warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
-                warn ""
-            ;;
-            glide)
-                warn "To install a different package spec for the next build run:"
-                warn ""
-                warn "'heroku config:set GO_INSTALL_PACKAGE_SPEC=\"<pkg spec>\"'"
-                warn ""
-                warn "For more details see: https://devcenter.heroku.com/articles/go-dependencies-via-glide"
-                warn ""
-            ;;
-        esac
+        warn "To install a different package spec add a comment in the following form to your \`go.mod\` file:"
+        warn "// +heroku install ./cmd/..."
+        warn ""
         pkgs="."
     fi
-}
-
-massagePkgSpecForVendor() {
-    local t=""
-    for pkg in $(echo $pkgs); do
-        if [ "${pkg:0:1}" = "." ] || [ ! -d "./vendor/$pkg" ]; then
-            t+="${pkg} "
-        else
-            t+="${name}/vendor/${pkg} "
-        fi
-    done
-    pkgs="${t}"
 }
 
 # TODO: go1 is missing from storage.googleapis.com and we haven't manually compiled it yet
@@ -161,128 +111,6 @@ reportVer() {
             warn ""
         ;;
     esac
-}
-
-ensureGlide() {
-    local glideVersion="${1}"
-    local gPath="${cache}/glide/${glideVersion}/bin"
-    local gBin="${gPath}/glide"
-    local gFile="glide-${glideVersion}-linux-amd64.tar.gz"
-    local targetFile="${gPath}/${gFile}"
-
-    if [ -x "${gBin}" ]; then
-        step "Using glide ${glideVersion}"
-        addToPATH "${gPath}"
-    else
-        rm -rf "${cache}/glide"
-        step "Installing glide ${glideVersion}"
-        ensureInPath "${gFile}" "${gPath}" "tar -C ${gPath} --strip-components=1 -zxf"
-        chmod a+x "${gBin}"
-        rm -f "${targetFile}"
-    fi
-}
-
-ensureMigrateTool() {
-    local t="${1}"
-    local mtVersion="${2}"
-    local tmp="$(mktemp -d)"
-    local mtPath="${cache}/${t}/${mtVersion}"
-    local targetFile="${build}/bin/migrate"
-
-    if [ -x "targetFile" ]; then
-        warning '"migrate" binary already exists in ~/bin, not installing '${t}
-    else
-        rm -rf "$(dirname "${mtPath}")"
-        mkdir -p "${mtPath}"
-        step "Installing ${t} ${mtVersion}"
-        ensureFile "migrate-${mtVersion}-linux-amd64.tar.gz" "${tmp}" "tar -C ${mtPath} -zxf"
-        mv "${mtPath}/migrate.linux-amd64" "${targetFile}"
-        chmod a+x "${targetFile}"
-    fi
-}
-
-wantAdditionalTool() {
-    local addt="${1}"
-
-    case "${TOOL}" in
-        govendor)
-            <${vendorJSON} jq -e '.heroku.additionalTools | contains(["'${addt}'"])' &> /dev/null
-        ;;
-        dep)
-          <${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep "^${addt}$" &> /dev/null
-        ;;
-        *)
-            false
-        ;;
-    esac
-}
-
-additionalToolVersion() {
-    local addt="${1}"
-    local default="${2}"
-
-    local tv=""
-    case "${TOOL}" in
-        govendor)
-            tv="$(<${vendorJSON} jq -r '.heroku.additionalTools | map(select(contains("'${addt}'@"))) | if .[0] then .[0] else "@'${default}'" end | split("@") | .[1]')"
-        ;;
-        dep)
-            f=$(<${depTOML} tq '$.metadata.heroku["additional-tools"]' | grep ^${addt} | sed s:${addt}::)
-            f=${f:-"@${default}"}
-            tv="$(echo $f | cut -d @ -f 2)"
-        ;;
-    esac
-
-    echo $tv
-}
-
-installGolangMigrateIfWanted() {
-    local t="github.com/golang-migrate/migrate"
-    if wantAdditionalTool $t; then
-        ensureMigrateTool $t $(additionalToolVersion $t ${GolangMigrateVersion})
-    fi
-}
-
-installMattesMigrateIfWanted() {
-    local t="github.com/mattes/migrate"
-    if wantAdditionalTool $t; then
-        warn ""
-        warn "Mattes Migrate is now Golang Migrate"
-        warn "Support for Mattes Migrate will be removed in the future"
-        warn "Please change the addition tool specification from 'github.com/mattes/migrate' to"
-        warn "'github.com/golang-migrate/migrate'"
-        warn ""
-        warn "Note: Supported Golang Migrate versions start at v3.4.0"
-        warn ""
-
-        ensureMigrateTool $t $(additionalToolVersion $t ${MattesMigrateVersion})
-    fi
-}
-
-ensureGB() {
-    local gbVersion="${1}"
-    GOPATH="${cache}/gb/${gbVersion}"
-    PATH="${GOPATH}/bin:${PATH}"
-    local pkgErrsFile="errors-${PkgErrorsVersion}.tar.gz"
-    local pkgErrorsPath="${GOPATH}/src/github.com/pkg/errors"
-    local gbFile="gb-${gbVersion}.tar.gz"
-    local gbPath="${GOPATH}/src/github.com/constabulary/gb"
-    if [ -d "${GOPATH}" ]; then
-        step "Using GB ${gbVersion}"
-    else
-        rm -rf "${cache}/gb/*"
-        ensureFile "${pkgErrsFile}" "${pkgErrorsPath}" "tar -C ${pkgErrorsPath} --strip-components=1 -zxf"
-        rm -f "${pkgErrorsPath}/${pkgErrsFile}"
-
-        ensureFile "${gbFile}" "${gbPath}" "tar -C ${gbPath} --strip-components=1 -zxf"
-        rm -f "${gbPath}/${gbFile}"
-
-        start "Installing GB v${GBVersion}"
-            pushd "${gbPath}" &> /dev/null
-                go install ./...
-            popd &> /dev/null
-        finished
-    fi
 }
 
 ensureGo() {
@@ -376,37 +204,6 @@ warnPackageSpecOverride() {
     fi
 }
 
-warnDeprecatedTool() {
-    local tool=$1
-    warn "This application is using ${tool}, but ${tool} is no longer maintained."
-    warn "${tool} support on Heroku is deprecated and will be removed on March 1, 2025."
-    warn "Please migrate to Go modules. Learn more about Go modules on Heroku here: https://devcenter.heroku.com/articles/go-modules."
-}
-
-# Sets up GOPATH (and posibly other GO* env vars) and returns the location of
-# the source code as $src. The output of this function is meant to be eval'd'
-setupGOPATH() {
-    local name="${1}"
-    local t="$(mktemp -d)"
-
-    if [ "${GO_SETUP_GOPATH_IN_IMAGE}" = "true" ]; then
-        mv -t ${t} ${build}/*
-        GOPATH="${build}"
-    else
-        cp -R ${build}/* ${t}
-        GOPATH="${t}/.go"
-        echo export GOBIN="${build}/bin"
-    fi
-
-    local src="${GOPATH}/src/${name}"
-    mkdir -p "${src}"
-    mkdir -p "${build}/bin"
-    mv -t "${src}" "${t}"/*
-
-    echo "GOPATH=${GOPATH}"
-    echo "src=${src}"
-}
-
 installPkgs() {
     step "Running: go install -v ${FLAGS[@]} ${pkgs}"
     go install -v "${FLAGS[@]}" ${pkgs} 2>&1
@@ -465,7 +262,6 @@ mkdir -p "${build}/bin"
 
 export GOPATH
 
-# GB installation
 mcount "pkgmanagement.$TOOL"
 
 mainPackagesInModule() {
@@ -509,203 +305,74 @@ setupProcfile() {
 
 dependencies_install_start_time=$(build_data::current_unix_realtime)
 
-case "${TOOL}" in
-    gomodules)
-        cd ${build}
+cd ${build}
 
-        export GOBIN="${build}/bin"
-        if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
-            export GOPATH="${build}/.heroku/go-path"
-            mkdir -p $GOPATH # ensure that it's created
-        else
-            export GOPATH="${cache}/go-path"
-        fi
+export GOBIN="${build}/bin"
+if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
+    export GOPATH="${build}/.heroku/go-path"
+    mkdir -p $GOPATH # ensure that it's created
+else
+    export GOPATH="${cache}/go-path"
+fi
 
-        # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
-        # and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
-        # when the desired language version is 1.14+ and vendoring should be used.
-        # https://golang.org/doc/go1.14#vendor
-        if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
-            FLAGS+=(-mod=vendor)
-        fi
+# TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
+# and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
+# when the desired language version is 1.14+ and vendoring should be used.
+# https://golang.org/doc/go1.14#vendor
+if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
+    FLAGS+=(-mod=vendor)
+fi
 
-        step "Determining packages to install"
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
-        if [ -z "${pkgs}" ]; then
-            pkgs=$(mainPackagesInModule)
-            if [ -z "${pkgs}" ]; then
-                warn ""
-                warn "No main packages found in module ${name}"
-                warn ""
-                warn "Unsure what package(s) to install, defaulting to '.'"
-                warn ""
-                pkgs="default"
-                mcount "pkginstall.detect-failed"
-            else
-                info ""
-                info "Detected the following main packages to install:"
-                for pkg in ${pkgs}; do
-                    info "\t\t${pkg}"
-                done
-                info ""
-                mcount "pkginstall.auto"
-            fi
-        else
-            if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
-                mcount "pkginstall.go_install_package_spec"
-            else
-                mcount "pkginstall.heroku_install"
-            fi
-        fi
-
-        if [[ "${pkgs}" =~ "..." ]]; then
-            mcount "package_spec.contains.dot_dot_dot"
-        fi
-
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-        massagePkgSpecForVendor
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        if [[ -f bin/go-pre-compile ]]; then
-            step "Running bin/go-pre-compile hook"
-            chmod a+x bin/go-pre-compile
-            bin/go-pre-compile
-        fi
-
-        installPkgs
-
-        if [[ -f bin/go-post-compile ]]; then
-            step "Running bin/go-post-compile hook"
-            chmod a+x bin/go-post-compile
-            bin/go-post-compile
-        fi
-    ;;
-    dep)
-        eval "$(setupGOPATH ${name})"
-        depTOML="${src}/Gopkg.toml"
-
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${depTOML} tq '$.metadata.heroku["install"]')}
-        if [ -z "${pkgs}" ]; then
-            pkgs="default"
-        fi
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd "${src}"
-
-        if [ "$(< ${depTOML} tq '$.metadata.heroku["ensure"]')" != "false" ]; then
-            ensureInPath "dep-${DepVersion}-linux-amd64" "${cache}/dep/bin"
-            step "Fetching any unsaved dependencies (dep ensure)"
-            dep ensure
-        fi
-        massagePkgSpecForVendor
-
-        installPkgs
-    ;;
-    godep)
-        eval "$(setupGOPATH ${name})"
-        godepsJSON="${src}/Godeps/Godeps.json"
-
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${godepsJSON} jq -r 'if .Packages then .Packages | join(" ") else "default" end')}
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-
-        UseGodepCommand="false" # Default to not wrapping go install with godep (vendor)
-        if [ -d "${src}/Godeps/_workspace/src" ]; then
-            UseGodepCommand="true"
-            if [ -d "${src}/vendor" ]; then
-                warn ""
-                warn "Godeps/_workspace/src and vendor/ exist"
-                warn "code may not compile. Please convert all deps to vendor/"
-                warn ""
-            fi
-        fi
-        # Warn that GO15VENDOREXPIERMENT is set, but the go version does not support it.
-        if ! <"${DataJSON}" jq -e '.Go.SupportsVendorExperiment | any(. == "'${ver}'")' &> /dev/null; then
-            if [ -n "${GO15VENDOREXPERIMENT}" ]; then
-                warn ""
-                warn "GO15VENDOREXPERIMENT is set, but is not supported by ${ver}"
-                warn "run \`heroku config:unset GO15VENDOREXPERIMENT\` to unset."
-                warn ""
-            fi
-        fi
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd "${src}"
-        if [ "${UseGodepCommand}" = "true" ]; then
-            ensureInPath "godep_linux_amd64" "${cache}/godep/bin"
-
-            step "Running: godep go install -v ${FLAGS[@]} ${pkgs}"
-            godep go install -v "${FLAGS[@]}" ${pkgs} 2>&1
-        else
-            massagePkgSpecForVendor
-            installPkgs
-        fi
-    ;;
-    govendor)
-        ensureInPath "govendor_linux_amd64" "${cache}/govendor/bin"
-
-        eval "$(setupGOPATH ${name})"
-        vendorJSON="${src}/vendor/vendor.json"
-
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(<${vendorJSON} jq -r 'if .heroku.install then .heroku.install | join(" ") else "default" end')}
-        warnPackageSpecOverride
-        handleDefaultPkgSpec
-
-        unset GIT_DIR # unset git dir or it will mess with goinstall
-        cd "${src}"
-
-        if [ "$(<${vendorJSON} jq -r '.heroku.sync')" != "false" ]; then
-            step "Fetching any unsaved dependencies (govendor sync)"
-            govendor sync
-        fi
-        massagePkgSpecForVendor
-
-        installPkgs
-    ;;
-    glide)
-        ensureGlide "${GlideVersion}"
-
-        # Do this before setupGOPATH as we need ${name} set first
-        cd "${build}"
-        name=$(glide name 2>/dev/null)
-
-        eval "$(setupGOPATH ${name})"
-
-        pkgs=${GO_INSTALL_PACKAGE_SPEC:-"default"}
-        handleDefaultPkgSpec
-
-        unset GIT_DIR
-        cd "${src}"
-
-        if [[ "${GLIDE_SKIP_INSTALL}" != "true" ]]; then
-            step "Fetching any unsaved dependencies (glide install)"
-            glide install 2>&1
-        fi
-
-        massagePkgSpecForVendor
-
-        installPkgs
-    ;;
-    gb)
-        ensureGB "${GBVersion}"
-
-        cd $build
-        step "Running: gb build ${FLAGS[@]}"
-        gb build "${FLAGS[@]}" 2>&1
-
-        step "Post Compile Cleanup"
-        for f in bin/*-heroku; do
-            mv "$f" "${f/-heroku}"
+step "Determining packages to install"
+pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
+if [ -z "${pkgs}" ]; then
+    pkgs=$(mainPackagesInModule)
+    if [ -z "${pkgs}" ]; then
+        warn ""
+        warn "No main packages found in module ${name}"
+        warn ""
+        warn "Unsure what package(s) to install, defaulting to '.'"
+        warn ""
+        pkgs="default"
+        mcount "pkginstall.detect-failed"
+    else
+        info ""
+        info "Detected the following main packages to install:"
+        for pkg in ${pkgs}; do
+            info "\t\t${pkg}"
         done
-        rm -rf pkg
-    ;;
-esac
+        info ""
+        mcount "pkginstall.auto"
+    fi
+else
+    if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
+        mcount "pkginstall.go_install_package_spec"
+    else
+        mcount "pkginstall.heroku_install"
+    fi
+fi
 
-installGolangMigrateIfWanted
-installMattesMigrateIfWanted
+if [[ "${pkgs}" =~ "..." ]]; then
+    mcount "package_spec.contains.dot_dot_dot"
+fi
+
+warnPackageSpecOverride
+handleDefaultPkgSpec
+
+unset GIT_DIR # unset git dir or it will mess with goinstall
+if [[ -f bin/go-pre-compile ]]; then
+    step "Running bin/go-pre-compile hook"
+    chmod a+x bin/go-pre-compile
+    bin/go-pre-compile
+fi
+
+installPkgs
+
+if [[ -f bin/go-post-compile ]]; then
+    step "Running bin/go-post-compile hook"
+    chmod a+x bin/go-post-compile
+    bin/go-post-compile
+fi
 
 build_data::set_duration "dependencies_install_duration" "${dependencies_install_start_time}"
 
@@ -716,17 +383,7 @@ for fyle in ${_newOrUpdatedBinFiles}; do
   info "\t\t${fyle}"
 done
 
-if [ -n "${src}" -a "${src}" != "${build}" -a -e "${src}/Procfile" ]; then
-    mv -t "${build}" "${src}/Procfile"
-fi
-
-if [ "${TOOL}" = "gomodules" ]; then
-    setupProcfile
-fi
-
-if [ ! -e $build/Procfile -a -n "${name}" ]; then
-    echo -e "web: $(basename $name)" >> $build/Procfile
-fi
+setupProcfile
 
 cd $build
 mkdir -p $build/.profile.d
@@ -739,35 +396,12 @@ if [ "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true" ]; then
         echo 'export GOROOT=$HOME/.heroku/go' > "${build}/.profile.d/goroot.sh"
         echo 'PATH=$PATH:$GOROOT/bin' >> "${build}/.profile.d/goroot.sh"
     finished
-    if which ${TOOL} &> /dev/null; then
-      step "Copying ${TOOL} binary"
-      cp $(which ${TOOL}) "${build}/bin"
-    fi
-fi
-
-if [ "${GO_SETUP_GOPATH_IN_IMAGE}" = "true" ]; then
-    start "Cleaning up \$GOPATH/pkg"
-        rm -rf $GOPATH/pkg
-    finished
-    echo 'export GOPATH=$HOME' > "${build}/.profile.d/zzgopath.sh"  #Try to make sure it's down in towards the end
-    echo 'cd $GOPATH/src/'${name} >> "${build}/.profile.d/zzgopath.sh" # because of this
-fi
-
-if needConcurrency ${ver}; then
-    cp $buildpack/vendor/concurrency.sh $build/.profile.d/
-fi
-
-# dep, gb, glide, godep, govendor are all unmaintained.
-if [ "${TOOL}" != "gomodules" ]; then
-    warnDeprecatedTool "$TOOL"
 fi
 
 t="${build}/.heroku/go"
 mkdir -p "${t}"
 t="${t}/.meta"
 echo "TOOL=${TOOL}" > "${t}"
-if [ "${TOOL}" != "gb" ]; then
-    echo "NAME=${name}" >> "${t}"
-fi
+echo "NAME=${name}" >> "${t}"
 
 build_data::set_duration "total_duration" "${compile_start_time}"

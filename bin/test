@@ -26,87 +26,43 @@ if [ -f "${build}/.heroku/go/.meta" ]; then
 fi
 
 export GOROOT="${build}/.heroku/go"
-if [[ "$TOOL" = "gomodules" ]]; then
-  # Use the GOPATH that was setup during compile, if it exists, so that
-  # any modules downloaded during compile are re-used.
-  if [ -d "${build}/.heroku/go-path" ]; then
-    export GOPATH="${build}/.heroku/go-path"
-  else
-    # Otherwise use a GOPATH that is outside of ${build}
-    export GOPATH="$(mktemp -d)"
-  fi
-  PATH="${build}/bin:${GOROOT}/bin:${PATH}"
+# Use the GOPATH that was setup during compile, if it exists, so that
+# any modules downloaded during compile are re-used.
+if [ -d "${build}/.heroku/go-path" ]; then
+  export GOPATH="${build}/.heroku/go-path"
 else
-  # When not using modules, $build is setup as the GOPATH by compile w/$GO_SETUP_GOPATH_IN_IMAGE
-  export GOPATH="${build}"
-  PATH="${GOPATH}/bin:${GOROOT}/bin:${PATH}"
-  export GO111MODULE=off
+  # Otherwise use a GOPATH that is outside of ${build}
+  export GOPATH="$(mktemp -d)"
 fi
+PATH="${build}/bin:${GOROOT}/bin:${PATH}"
 
 # Install our vendored copy of github.com/apg/patter
 (cd "${testpack}/lib/src/github.com/apg/patter" && GOPATH="${testpack}/lib" GOBIN="${build}/bin" go install .)
 
 output=$(mktemp)
 
-case "${TOOL}" in
-    gomodules)
-        cd "${build}"
-        if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
-            step "Running: golangci-lint -v --build-tags heroku run"
-            ${build}/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1
-        fi
-        _tflags=("-race" "-v")
-        if [ -s "./go.sum" -a -d "./vendor" ]; then
-          _tflags+=("-mod=vendor")
-        else
-          _tflags+=("-mod=readonly")
-        fi
-        step "Running Tests With: go test ${_tflags[@]} ./... | patter"
-        go test ${_tflags[@]} ./... 2>&1 | tee -a ${output} | patter
-        step
-        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
-            _tflags=("${_tflags[@]:1}") # push -race off
-            _tflags+=("-run=_")
-            _tflags+=("-bench=.")
-            _tflags+=("-benchmem")
-            step "Running Benchmarks With: go test ${_tflags[@]} ./..."
-            go test ${_tflags[@]} ./... 2>&1
-        fi
-    ;;
-    govendor)
-        cd "${GOPATH}/src/${NAME}"
-        step "Running Tests With: govendor test -race -v +local | patter"
-        govendor test -race -v +local 2>&1 | tee -a ${output} | patter
-        step
-        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
-            step "Running Benchmarks With: govendor test -run=_ -bench=. -benchmem -v +local"
-            govendor test -run=_ -bench=. -benchmem -v +local 2>&1
-        fi
-    ;;
-    dep|glide|godep)
-        cd "${GOPATH}/src/${NAME}"
-        step 'Running Test With: go test -race -v $(go list ./... | grep -v /vendor/) | patter'
-        go test -race -v $(go list ./... | grep -v /vendor/) 2>&1 | tee -a ${output} | patter
-        step
-        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
-            step 'Running Benchmarks With: go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/)'
-            go test -run=_ -bench=. -benchmem -v $(go list ./... | grep -v /vendor/) 2>&1
-        fi
-    ;;
-    gb)
-        cd "${build}"
-        step "Running Test With: gb test -v | patter"
-        gb test -v 2>&1 | tee -a ${output} | patter
-        step
-        if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
-            step "Running Benchmarks With: gb test -run=_ -bench=. -benchmem -v ${trailer}"
-            gb test -run=_ -bench=. -benchmem -v 2>&1
-        fi
-    ;;
-    *)
-        warn "Testing is not supported for ${TOOL}"
-    ;;
-esac
+cd "${build}"
+if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
+    step "Running: golangci-lint -v --build-tags heroku run"
+    ${build}/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1
+fi
+_tflags=("-race" "-v")
+if [ -s "./go.sum" -a -d "./vendor" ]; then
+  _tflags+=("-mod=vendor")
+else
+  _tflags+=("-mod=readonly")
+fi
+step "Running Tests With: go test ${_tflags[@]} ./... | patter"
+go test ${_tflags[@]} ./... 2>&1 | tee -a ${output} | patter
+step
+if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
+    _tflags=("${_tflags[@]:1}") # push -race off
+    _tflags+=("-run=_")
+    _tflags+=("-bench=.")
+    _tflags+=("-benchmem")
+    step "Running Benchmarks With: go test ${_tflags[@]} ./..."
+    go test ${_tflags[@]} ./... 2>&1
+fi
 
 step
 step "Standard (Non TAP) test output"

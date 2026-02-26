@@ -8,14 +8,7 @@ env_dir="${3}"
 testpack=$(cd "$(dirname $0)/.." && pwd)
 
 echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
-
-if [[ -f "${build}/go.mod" ]]; then
-    echo "false" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
-    echo "true" > "${env_dir}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
-else
-    echo "true" > "${env_dir}/GO_SETUP_GOPATH_IN_IMAGE"
-    echo "false" > "${env_dir}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
-fi
+echo "true" > "${env_dir}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
 
 buildpack="${testpack}"
 source ${testpack}/bin/compile "${build}" "${cache}" "${env_dir}"
