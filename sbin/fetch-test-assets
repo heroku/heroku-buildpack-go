@@ -34,7 +34,7 @@ shaMatchesKnown() {
 
 checkMirror() {
     local filename="${1}"
-    local mirror_url="https://heroku-golang-prod.s3.us-east-1.amazonaws.com/${filename}"
+    local mirror_url="https://heroku-golang-prod.s3.dualstack.us-east-1.amazonaws.com/${filename}"
     local mirror_headers
     
     if ! mirror_headers=$(curl -sI -L --fail "${mirror_url}"); then
