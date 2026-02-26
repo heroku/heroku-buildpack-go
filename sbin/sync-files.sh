@@ -50,12 +50,7 @@ ensureFile() {
   fi
 
   local knownSHA="$(< "${filesJSON}" jq -r '."'${file}'".SHA' 2>&1)"
-  local fileSHA=""
-  if [ ${#knownSHA} -eq 40 ]; then
-    fileSHA="$(shasum "${file}" 2>&1 | cut -d \  -f 1)"
-  else
-    fileSHA="$(shasum -a 256 "${file}" 2>&1 | cut -d \  -f 1)"
-  fi
+  local fileSHA="$(shasum -a 256 "${file}" 2>&1 | cut -d \  -f 1)"
 
   echo "${file} ${knownSHA} ${fileSHA}"
 }
