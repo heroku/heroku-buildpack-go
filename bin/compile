@@ -234,15 +234,7 @@ fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
-    case "${ver}" in
-        go1|go1.0.*|go1.1|go1.1.*|go1.2|go1.2.*|go1.3|go1.3.*|go1.4|go1.4.*)
-            xval="${GO_LINKER_SYMBOL} ${GO_LINKER_VALUE}"
-        ;;
-        *)
-            xval="${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}"
-        ;;
-    esac
-    FLAGS+=(-ldflags "-X ${xval}")
+    FLAGS+=(-ldflags "-X ${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}")
 fi
 
 if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
