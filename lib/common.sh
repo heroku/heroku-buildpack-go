@@ -91,12 +91,6 @@ finished() {
     echo "done"
 }
 
-determinLocalFileName() {
-    local fileName="${1}"
-    local localName="$(<"${FilesJSON}" jq -r '."'${fileName}'".LocalName | if . == null then "'${fileName}'" else . end')"
-    echo "${localName}"
-}
-
 knownFile() {
     local fileName="${1}"
     <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null
@@ -121,16 +115,12 @@ downloadFile() {
 
     local targetDir="${2}"
     local xCmd="${3}"
-    local localName="$(determinLocalFileName "${fileName}")"
-    local targetFile="${targetDir}/${localName}"
+    local targetFile="${targetDir}/${fileName}"
 
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
-        start "Fetching ${localName}"
+        start "Fetching ${fileName}"
             ${CURL} -O "${BucketURL}/${fileName}"
-            if [ "${fileName}" != "${localName}" ]; then
-                mv "${fileName}" "${localName}"
-            fi
             if [ -n "${xCmd}" ]; then
                 ${xCmd} ${targetFile}
             fi
@@ -162,8 +152,7 @@ ensureFile() {
     local fileName="${1}"
     local targetDir="${2}"
     local xCmd="${3}"
-    local localName="$(determinLocalFileName "${fileName}")"
-    local targetFile="${targetDir}/${localName}"
+    local targetFile="${targetDir}/${fileName}"
     local download="false"
     if [ ! -f "${targetFile}" ]; then
         download="true"
@@ -186,8 +175,6 @@ ensureInPath() {
     local fileName="${1}"
     local targetDir="${2}"
     local xCmd="${3:-chmod a+x}"
-    local localName="$(determinLocalFileName "${fileName}")"
-    local targetFile="${targetDir}/${localName}"
     addToPATH "${targetDir}"
     ensureFile "${fileName}" "${targetDir}" "${xCmd}"
 }
