@@ -344,8 +344,38 @@ determineTool() {
             exit 1
         fi
     else
-        err "A go.mod file is required. For instructions:"
-        err "https://devcenter.heroku.com/articles/go-support"
+        local legacy_tool=""
+        if [ -f "${build}/Gopkg.lock" ]; then
+            legacy_tool="dep"
+        elif [ -f "${build}/Godeps/Godeps.json" ]; then
+            legacy_tool="godep"
+        elif [ -f "${build}/vendor/vendor.json" ]; then
+            legacy_tool="govendor"
+        elif [ -f "${build}/glide.yaml" ]; then
+            legacy_tool="glide"
+        elif [ -d "${build}/src" ] && [ -n "$(find "${build}/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]; then
+            legacy_tool="gb"
+        fi
+
+        if [ -n "${legacy_tool}" ]; then
+            build_data::set_string "go_tool" "${legacy_tool}"
+            err "Your app appears to use '${legacy_tool}' for dependency management,"
+            err "but support for ${legacy_tool} has been removed."
+            err ""
+            err "Go modules (go.mod) is now the only supported dependency"
+            err "management solution on Heroku."
+            err ""
+            err "To migrate, run 'go mod init <module-name>' in your project"
+            err "directory and commit the resulting go.mod file."
+            err ""
+            err "For more details see:"
+            err "https://devcenter.heroku.com/articles/go-modules"
+        else
+            err "A go.mod file is required."
+            err ""
+            err "For help with using Go on Heroku, see:"
+            err "https://devcenter.heroku.com/articles/go-support"
+        fi
         exit 1
     fi
 }

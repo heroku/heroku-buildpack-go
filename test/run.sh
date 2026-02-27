@@ -601,6 +601,15 @@ testModBasicWithTools() {
   assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
+testDeprecatedToolDetected() {
+  fixture "dep-deprecated"
+
+  assertDetected
+
+  compile
+  assertCapturedError 1 "support for dep has been removed"
+}
+
 pushd $(dirname 0) >/dev/null
 popd >/dev/null
 
