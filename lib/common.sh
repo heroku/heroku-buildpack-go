@@ -5,10 +5,6 @@
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
 DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
-depTOML="${build}/Gopkg.toml"
-godepsJSON="${build}/Godeps/Godeps.json"
-vendorJSON="${build}/vendor/vendor.json"
-glideYAML="${build}/glide.yaml"
 goMOD="${build}/go.mod"
 
 steptxt="----->"
@@ -95,12 +91,6 @@ finished() {
     echo "done"
 }
 
-determinLocalFileName() {
-    local fileName="${1}"
-    local localName="$(<"${FilesJSON}" jq -r '."'${fileName}'".LocalName | if . == null then "'${fileName}'" else . end')"
-    echo "${localName}"
-}
-
 knownFile() {
     local fileName="${1}"
     <${FilesJSON} jq -e 'to_entries | map(select(.key == "'${fileName}'")) | any' &> /dev/null
@@ -125,16 +115,12 @@ downloadFile() {
 
     local targetDir="${2}"
     local xCmd="${3}"
-    local localName="$(determinLocalFileName "${fileName}")"
-    local targetFile="${targetDir}/${localName}"
+    local targetFile="${targetDir}/${fileName}"
 
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
-        start "Fetching ${localName}"
+        start "Fetching ${fileName}"
             ${CURL} -O "${BucketURL}/${fileName}"
-            if [ "${fileName}" != "${localName}" ]; then
-                mv "${fileName}" "${localName}"
-            fi
             if [ -n "${xCmd}" ]; then
                 ${xCmd} ${targetFile}
             fi
@@ -152,22 +138,16 @@ downloadFile() {
 SHAValid() {
     local fileName="${1}"
     local targetFile="${2}"
-    local sh=""
-    local sw="$(<"${FilesJSON}" jq -r '."'${fileName}'".SHA')"
-    if [ ${#sw} -eq 40 ]; then
-        sh="$(shasum "${targetFile}" | cut -d \  -f 1)"
-    else
-        sh="$(shasum -a256 "${targetFile}" | cut -d \  -f 1)"
-    fi
-    [ "${sh}" = "${sw}" ]
+    local expected="$(<"${FilesJSON}" jq -r '."'${fileName}'".SHA')"
+    local actual="$(shasum -a256 "${targetFile}" | cut -d \  -f 1)"
+    [ "${actual}" = "${expected}" ]
 }
 
 ensureFile() {
     local fileName="${1}"
     local targetDir="${2}"
     local xCmd="${3}"
-    local localName="$(determinLocalFileName "${fileName}")"
-    local targetFile="${targetDir}/${localName}"
+    local targetFile="${targetDir}/${fileName}"
     local download="false"
     if [ ! -f "${targetFile}" ]; then
         download="true"
@@ -190,8 +170,6 @@ ensureInPath() {
     local fileName="${1}"
     local targetDir="${2}"
     local xCmd="${3:-chmod a+x}"
-    local localName="$(determinLocalFileName "${fileName}")"
-    local targetFile="${targetDir}/${localName}"
     addToPATH "${targetDir}"
     ensureFile "${fileName}" "${targetDir}" "${xCmd}"
 }
@@ -204,7 +182,6 @@ loadEnvDir() {
     envFlags+=("CGO_LDFLAGS")
     envFlags+=("GO_LINKER_SYMBOL")
     envFlags+=("GO_LINKER_VALUE")
-    envFlags+=("GO15VENDOREXPERIMENT")
     envFlags+=("GOFLAGS")
     envFlags+=("GOPROXY")
     envFlags+=("GOPRIVATE")
@@ -212,10 +189,8 @@ loadEnvDir() {
     envFlags+=("GOVERSION")
     envFlags+=("GO_INSTALL_PACKAGE_SPEC")
     envFlags+=("GO_INSTALL_TOOLS_IN_IMAGE")
-    envFlags+=("GO_SETUP_GOPATH_IN_IMAGE")
     envFlags+=("GO_SETUP_GOPATH_FOR_MODULE_CACHE")
     envFlags+=("GO_TEST_SKIP_BENCHMARK")
-    envFlags+=("GLIDE_SKIP_INSTALL")
     local env_dir="${1}"
     if [ ! -z "${env_dir}" ]; then
         mkdir -p "${env_dir}"
@@ -302,24 +277,6 @@ setGitCredHelper() {
 }; gitCredHelper'
 }
 
-setGoVersionFromEnvironment() {
-    if [ -z "${GOVERSION}" ]; then
-        warn ""
-        warn "'GOVERSION' isn't set, defaulting to '${DefaultGoVersion}'"
-        warn ""
-        warn "Run 'heroku config:set GOVERSION=goX.Y' to set the Go version to use"
-        warn "for future builds"
-        warn ""
-        go_version_origin="default"
-    else
-        go_version_origin="GOVERSION"
-    fi
-    ver=${GOVERSION:-$DefaultGoVersion}
-
-    build_data::set_string "go_version_origin" "${go_version_origin}"
-    build_data::set_string "go_version_requested" "${ver}"
-}
-
 supportsGoModules() {
     local version="${1}"
     # Ex:      "go1.10.4" | ["go1","10", "4"] | ["1","10","4"]     | [1,10,4]      |  [1]           [10]      == exit 1 (fail)
@@ -386,117 +343,39 @@ determineTool() {
             err "Then commit and push again."
             exit 1
         fi
-    elif [ -f "${depTOML}" ]; then
-        TOOL="dep"
-        build_data::set_string "go_tool" "${TOOL}"
-
-        ensureInPath "tq-${TQVersion}-linux-amd64" "${cache}/.tq/bin"
-        name=$(<${depTOML} tq '$.metadata.heroku["root-package"]')
-        if [ -z "${name}" ]; then
-            err "The 'metadata.heroku[\"root-package\"]' field is not specified in 'Gopkg.toml'."
-            err "root-package must be set to the root package name used by your repository."
-            err ""
-            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
-            exit 1
-        fi
-
-        # Determine Go version from Gopkg.toml if not already set by GOVERSION
-        if [ -z "${ver}" ]; then
-            ver=$(<${depTOML} tq '$.metadata.heroku["go-version"]')
-            if [ -n "${ver}" ]; then
-                go_version_origin="Gopkg.toml"
-            else
-                ver=${DefaultGoVersion}
-                go_version_origin="default"
-            fi
-            build_data::set_string "go_version_origin" "${go_version_origin}"
-            build_data::set_string "go_version_requested" "${ver}"
-        fi
-
-        warnGoVersionOverride
-
-        if [ "${go_version_origin}" = "default" ]; then
-            warn "The 'metadata.heroku[\"go-version\"]' field is not specified in 'Gopkg.toml'."
-            warn ""
-            warn "Defaulting to ${ver}"
-            warn ""
-            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-dep#build-configuration"
-            warn ""
-        fi
-    elif [ -f "${godepsJSON}" ]; then
-        TOOL="godep"
-        build_data::set_string "go_tool" "${TOOL}"
-
-        step "Checking Godeps/Godeps.json file."
-        if ! jq -r . < "${godepsJSON}" > /dev/null; then
-            err "Bad Godeps/Godeps.json file"
-        exit 1
-        fi
-        name=$(<${godepsJSON} jq -r .ImportPath)
-
-        # Determine Go version from Godeps/Godeps.json if not already set by GOVERSION
-        if [ -z "${ver}" ]; then
-            ver=$(<${godepsJSON} jq -r .GoVersion)
-            go_version_origin="Godeps/Godeps.json"
-            build_data::set_string "go_version_origin" "${go_version_origin}"
-            build_data::set_string "go_version_requested" "${ver}"
-        fi
-
-        warnGoVersionOverride
-    elif [ -f "${vendorJSON}" ]; then
-        TOOL="govendor"
-        build_data::set_string "go_tool" "${TOOL}"
-
-        step "Checking vendor/vendor.json file."
-        if ! jq -r . < "${vendorJSON}" > /dev/null; then
-            err "Bad vendor/vendor.json file"
-            exit 1
-        fi
-        name=$(<${vendorJSON} jq -r .rootPath)
-        if [ "$name" = "null" -o -z "$name" ]; then
-            err "The 'rootPath' field is not specified in 'vendor/vendor.json'."
-            err "'rootPath' must be set to the root package name used by your repository."
-            err "Recent versions of govendor add this field automatically, please upgrade"
-            err "and re-run 'govendor init'."
-            err ""
-            err "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
-            exit 1
-        fi
-
-        # Determine Go version from vendor/vendor.json if not already set by GOVERSION
-        if [ -z "${ver}" ]; then
-            ver=$(<${vendorJSON} jq -r .heroku.goVersion)
-            if [ "${ver}" = "null" ] || [ -z "${ver}" ]; then
-                ver=${DefaultGoVersion}
-                go_version_origin="default"
-            else
-                go_version_origin="vendor/vendor.json"
-            fi
-            build_data::set_string "go_version_origin" "${go_version_origin}"
-            build_data::set_string "go_version_requested" "${ver}"
-        fi
-
-        warnGoVersionOverride
-
-        if [ "${go_version_origin}" = "default" ]; then
-            warn "The 'heroku.goVersion' field is not specified in 'vendor/vendor.json'."
-            warn ""
-            warn "Defaulting to ${ver}"
-            warn ""
-            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-govendor#build-configuration"
-            warn ""
-        fi
-    elif [ -f "${glideYAML}" ]; then
-        TOOL="glide"
-        build_data::set_string "go_tool" "${TOOL}"
-        setGoVersionFromEnvironment
-    elif [ -d "$build/src" -a -n "$(find "$build/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]; then
-        TOOL="gb"
-        build_data::set_string "go_tool" "${TOOL}"
-        setGoVersionFromEnvironment
     else
-        err "Go modules, dep, Godep, GB or govendor are required. For instructions:"
-        err "https://devcenter.heroku.com/articles/go-support"
+        local legacy_tool=""
+        if [ -f "${build}/Gopkg.lock" ]; then
+            legacy_tool="dep"
+        elif [ -f "${build}/Godeps/Godeps.json" ]; then
+            legacy_tool="godep"
+        elif [ -f "${build}/vendor/vendor.json" ]; then
+            legacy_tool="govendor"
+        elif [ -f "${build}/glide.yaml" ]; then
+            legacy_tool="glide"
+        elif [ -d "${build}/src" ] && [ -n "$(find "${build}/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]; then
+            legacy_tool="gb"
+        fi
+
+        if [ -n "${legacy_tool}" ]; then
+            build_data::set_string "go_tool" "${legacy_tool}"
+            err "Your app appears to use '${legacy_tool}' for dependency management,"
+            err "but support for ${legacy_tool} has been removed."
+            err ""
+            err "Go modules (go.mod) is now the only supported dependency"
+            err "management solution on Heroku."
+            err ""
+            err "To migrate, run 'go mod init <module-name>' in your project"
+            err "directory and commit the resulting go.mod file."
+            err ""
+            err "For more details see:"
+            err "https://devcenter.heroku.com/articles/go-modules"
+        else
+            err "A go.mod file is required."
+            err ""
+            err "For help with using Go on Heroku, see:"
+            err "https://devcenter.heroku.com/articles/go-support"
+        fi
         exit 1
     fi
 }

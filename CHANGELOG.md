@@ -3,6 +3,14 @@
 ## [Unreleased]
 
 * Changed S3 bucket URL to AWS' dual-stack (IPv6 compatible) endpoint
+* Remove support for dep, godep, govendor, glide, and GB dependency managers.
+  Go modules (`go.mod`) is now the only supported dependency management solution.
+  See the [deprecation announcement](https://devcenter.heroku.com/changelog-items/2983) for more information.
+* Remove config vars and features only applicable to legacy dependency managers:
+  `GO_SETUP_GOPATH_IN_IMAGE`, `GO15VENDOREXPERIMENT`, `GLIDE_SKIP_INSTALL`,
+  built-in `migrate` tool installation
+  (use [pre/post compile hooks](https://github.com/heroku/heroku-buildpack-go#prepost-compile-hooks) instead),
+  and Go versions < 1.11 (`go.mod` requires >= go1.11).
 
 ## [v223] - 2026-02-18
 
