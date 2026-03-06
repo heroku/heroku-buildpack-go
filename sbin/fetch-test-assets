@@ -20,16 +20,9 @@ cd "${td}"
 shaMatchesKnown() {
     local df="${1}"
     local fn="${2}"
-    local s="$(< "${df}" jq -r '."'${fn}'".SHA')"
-    local sf=""
-    if [ ${#s} -eq 40 ]; then
-        sf="$(shasum "${fn}" | cut -d \  -f 1)"
-    else
-        sf="$(shasum -a 256 "${fn}" | cut -d \  -f 1)"
-    fi
-    if [ "${sf}" != "${s}" ]; then
-        return 1
-    fi
+    local expected="$(< "${df}" jq -r '."'${fn}'".SHA')"
+    local actual="$(shasum -a 256 "${fn}" | cut -d \  -f 1)"
+    [ "${actual}" = "${expected}" ]
 }
 
 checkMirror() {
