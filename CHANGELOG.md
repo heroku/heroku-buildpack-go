@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Fetch Go binaries directly from upstream sources instead of S3 mirror
 
 ## [v225] - 2026-03-10
 
