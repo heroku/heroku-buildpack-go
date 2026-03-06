@@ -14,12 +14,6 @@ RED='\033[1;31m'
 NC='\033[0m' # No Color
 CURL="curl --silent --show-error --location --fail --retry 15 --retry-delay 2 --retry-connrefused --connect-timeout 5" # retry for up to 30 seconds
 
-if [ -z "${GO_BUCKET_URL}" ]; then
-    BucketURL="https://heroku-golang-prod.s3.dualstack.us-east-1.amazonaws.com"
-else
-    BucketURL="${GO_BUCKET_URL}"
-fi
-
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 GO_LINKER_VALUE=${SOURCE_VERSION}
@@ -120,7 +114,8 @@ downloadFile() {
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
         start "Fetching ${fileName}"
-            ${CURL} -O "${BucketURL}/${fileName}"
+            local url="$(<"${FilesJSON}" jq -r '."'${fileName}'".URL')"
+            ${CURL} -o "${fileName}" "${url}"
             if [ -n "${xCmd}" ]; then
                 ${xCmd} ${targetFile}
             fi

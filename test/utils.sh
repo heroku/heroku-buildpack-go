@@ -6,7 +6,6 @@ oneTimeSetUp() {
    TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
    BUILDPACK_HOME=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
    DEFAULT_GO_VERSION="$(<"${BUILDPACK_HOME}/data.json" jq -r '.Go.DefaultVersion')"
-   export GO_BUCKET_URL="file://${BUILDPACK_HOME}/test/assets"
 }
 
 oneTimeTearDown() {
