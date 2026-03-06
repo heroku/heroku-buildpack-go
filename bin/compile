@@ -66,21 +66,6 @@ handleDefaultPkgSpec() {
     fi
 }
 
-# TODO: go1 is missing from storage.googleapis.com and we haven't manually compiled it yet
-urlFor() {
-    local ver=$1
-    case $ver in
-        devel*)
-            local sha=$(echo ${ver} | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
-            echo https://github.com/golang/go/archive/$sha.tar.gz
-        ;;
-        *)
-            local file="${ver}.linux-amd64.tar.gz"
-            echo ${BucketURL}/${file}
-        ;;
-    esac
-}
-
 # Expand a version identifier to supported versions of Go. If the version
 # identifier starts with one or more digits, then "go" is prepended before
 # expansion. So `1.23` => `go1.23` => `go1.23.12`, `devel` => `devel`. See
