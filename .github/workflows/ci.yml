@@ -19,6 +19,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      # The images are pulled up front to prevent duplicate pulls due to the tests being run concurrently.
+      - name: Pull build image
+        run: docker pull "heroku/${STACK/-/:}-build"
+        env:
+          STACK: ${{ matrix.stack }}
       - name: Run tests
         run: make -j 4 test-parallel STACK=${{ matrix.stack }}
 
