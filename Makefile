@@ -18,14 +18,17 @@ test:
 			test/run.sh $(if $(TEST),-- "$(TEST)"); \
 		'
 
+# Extract test function names from test/run.sh when test-parallel is invoked.
 ifneq ($(filter test-parallel,$(MAKECMDGOALS)),)
 TEST_NAMES := $(shell grep -oE '^test[a-zA-Z0-9_]+' test/run.sh)
 TEST_TARGETS := $(addprefix run-test-, $(TEST_NAMES))
 endif
 
+# Run all tests in parallel via `make -j N test-parallel`. Each test runs in its own container for full isolation.
 test-parallel: $(TEST_TARGETS)
 	@printf "\nAll %d tests passed!\n" $(words $(TEST_TARGETS))
 
+# Wrapper that runs a single test and buffers its output (so parallel test output doesn't interleave).
 run-test-%:
 	@output=$$($(MAKE) --no-print-directory test STACK="$(STACK)" TEST="$*" 2>&1); \
 	status=$$?; \
