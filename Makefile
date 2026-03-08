@@ -24,11 +24,13 @@ TEST_NAMES := $(shell grep -oE '^test[a-zA-Z0-9_]+' test/run.sh)
 TEST_TARGETS := $(addprefix run-test-, $(TEST_NAMES))
 endif
 
-# Run all tests in parallel via `make -j N test-parallel`. Each test runs in its own container for full isolation.
+# Run all tests in parallel via `make --jobs N --output-sync=recurse test-parallel`.
+# Each test runs in its own container for full isolation.
 test-parallel: $(TEST_TARGETS)
 	@printf "\nAll %d tests passed!\n" $(words $(TEST_TARGETS))
 
-# Wrapper that runs a single test and buffers its output (so parallel test output doesn't interleave).
+# Wrapper that runs a single test and captures its output for printing as a block.
+# Use `--output-sync=recurse` to prevent interleaving across parallel jobs.
 run-test-%:
 	@output=$$($(MAKE) --no-print-directory test STACK="$(STACK)" TEST="$*" 2>&1); \
 	status=$$?; \
