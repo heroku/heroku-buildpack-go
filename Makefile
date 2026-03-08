@@ -16,9 +16,7 @@ test:
 		bash -euo pipefail -O dotglob -c '\
 			cd /src; \
 			test/run.sh $(if $(TEST),-- "$(TEST)"); \
-			echo -e "\nTest run was successful!"; \
 		'
-	@echo
 
 ifneq ($(filter test-parallel,$(MAKECMDGOALS)),)
 TEST_NAMES := $(shell grep -oE '^test[a-zA-Z0-9_]+' test/run.sh)
