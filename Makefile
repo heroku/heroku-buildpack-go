@@ -26,7 +26,7 @@ TEST_TARGETS := $(addprefix run-test-, $(TEST_NAMES))
 endif
 
 test-parallel: $(TEST_TARGETS)
-	@printf "\nAll tests passed!\n"
+	@printf "\nAll %d tests passed!\n" $(words $(TEST_TARGETS))
 
 run-test-%:
 	@output=$$($(MAKE) --no-print-directory test STACK="$(STACK)" TEST="$*" 2>&1); \
