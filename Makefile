@@ -1,4 +1,4 @@
-.PHONY: test run run-ci publish
+.PHONY: test test-parallel run run-ci publish
 
 STACK ?= heroku-24
 FIXTURE ?= test/fixtures/mod-basic-go126
@@ -19,6 +19,20 @@ test:
 			echo -e "\nTest run was successful!"; \
 		'
 	@echo
+
+ifeq ($(MAKELEVEL),0)
+TEST_NAMES := $(shell grep -oE '^test[a-zA-Z0-9_]+' test/run.sh)
+TEST_TARGETS := $(addprefix run-test-, $(TEST_NAMES))
+endif
+
+test-parallel: $(TEST_TARGETS)
+	@printf "\nAll tests passed!\n"
+
+run-test-%:
+	@output=$$($(MAKE) --no-print-directory test STACK="$(STACK)" TEST="$*" 2>&1); \
+	status=$$?; \
+	printf "\n--- %s ---\n%s\n" "$*" "$$output"; \
+	exit $$status
 
 publish:
 	@bash sbin/publish.sh
