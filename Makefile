@@ -20,7 +20,7 @@ test:
 		'
 	@echo
 
-ifeq ($(MAKELEVEL),0)
+ifneq ($(filter test-parallel,$(MAKECMDGOALS)),)
 TEST_NAMES := $(shell grep -oE '^test[a-zA-Z0-9_]+' test/run.sh)
 TEST_TARGETS := $(addprefix run-test-, $(TEST_NAMES))
 endif
