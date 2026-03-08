@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
       - name: Run tests
-        run: make test STACK=${{ matrix.stack }}
+        run: make -j 4 test-parallel STACK=${{ matrix.stack }}
 
   container-test:
     runs-on: ubuntu-24.04
