@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v225] - 2026-03-10
+
 * Remove support for dep, godep, govendor, glide, and GB dependency managers.
   Go modules (`go.mod`) is now the only supported dependency management solution.
   See the [deprecation announcement](https://devcenter.heroku.com/changelog-items/2983) for more information.
@@ -1192,7 +1195,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v224...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v225...main
+[v225]: https://github.com/heroku/heroku-buildpack-go/compare/v224...v225
 [v224]: https://github.com/heroku/heroku-buildpack-go/compare/v223...v224
 [v223]: https://github.com/heroku/heroku-buildpack-go/compare/v222...v223
 [v222]: https://github.com/heroku/heroku-buildpack-go/compare/v221...v222
