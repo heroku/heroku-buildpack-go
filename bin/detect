@@ -7,6 +7,9 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${buildpack}/lib/common.sh"
 
+# Detect go.mod (supported) and legacy dependency manager files (unsupported,
+# but we still want to pass detection so that bin/compile can provide a helpful
+# migration error message rather than the generic "can't detect language" output).
 if test -f "${build}/go.mod" || #go modules
    test -f "${build}/Gopkg.lock" || #dep
    test -f "${build}/Godeps/Godeps.json" || # godeps
