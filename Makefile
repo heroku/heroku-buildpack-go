@@ -1,4 +1,4 @@
-.PHONY: test run run-ci publish
+.PHONY: test test-parallel run run-ci publish
 
 STACK ?= heroku-24
 FIXTURE ?= test/fixtures/mod-basic-go126
@@ -16,9 +16,26 @@ test:
 		bash -euo pipefail -O dotglob -c '\
 			cd /src; \
 			test/run.sh $(if $(TEST),-- "$(TEST)"); \
-			echo -e "\nTest run was successful!"; \
 		'
-	@echo
+
+# Extract test function names from test/run.sh when test-parallel is invoked.
+ifneq ($(filter test-parallel,$(MAKECMDGOALS)),)
+TEST_NAMES := $(shell grep -oE '^test[a-zA-Z0-9_]+' test/run.sh)
+TEST_TARGETS := $(addprefix run-test-, $(TEST_NAMES))
+endif
+
+# Run all tests in parallel via `make --jobs N --output-sync=recurse test-parallel`.
+# Each test runs in its own container for full isolation.
+test-parallel: $(TEST_TARGETS)
+	@printf "\nAll %d tests passed!\n" $(words $(TEST_TARGETS))
+
+# Wrapper that runs a single test and captures its output for printing as a block.
+# Use `--output-sync=recurse` to prevent interleaving across parallel jobs.
+run-test-%:
+	@output=$$($(MAKE) --no-print-directory test STACK="$(STACK)" TEST="$*" 2>&1); \
+	status=$$?; \
+	printf "\n--- %s ---\n%s\n" "$*" "$$output"; \
+	exit $$status
 
 publish:
 	@bash sbin/publish.sh
