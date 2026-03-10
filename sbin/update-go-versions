@@ -54,8 +54,7 @@ for version in "${VERSION_ARRAY[@]}"; do
 
     major_minor=$(echo "$version" | cut -d. -f1,2)
 
-    jq --arg major_minor "go${major_minor}" --arg version "go${version}" --arg tarball "$tarball" '
-        .Go.VersionExpansion[$major_minor] as $old |
+    jq --arg major_minor "go${major_minor}" --arg version "go${version}" '
         .Go.VersionExpansion[$major_minor] = $version |
         # Sort by descending Go version
         .Go.VersionExpansion = (
@@ -68,12 +67,7 @@ for version in "${VERSION_ARRAY[@]}"; do
             ) |
             reverse |
             from_entries
-        ) |
-        if $old and $old != "" then
-            .test.assets = (.test.assets | map(select(. != ($old + ".linux-amd64.tar.gz"))) + [$tarball] | sort)
-        else
-            .test.assets = (.test.assets + [$tarball] | sort)
-        end
+        )
     ' data.json > data.json.tmp
     mv data.json.tmp data.json
     echo "* go${major_minor} defaults to ${version}" >> "$TEMP_CHANGELOG"

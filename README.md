@@ -165,7 +165,7 @@ that tests have been added to `test/run.sh` and any corresponding fixtures to
 
 ### Tests
 
-[Make], [jq] & [docker] are required to run tests.
+[Make] and [docker] are required to run tests.
 
 ```console
 make test
@@ -179,7 +179,7 @@ make test TEST=testModBasic
 
 ### Compiling a fixture locally
 
-[Make] & [docker] are required to compile a fixture.
+[Make] and [docker] are required to compile a fixture.
 
 ```console
 make run
@@ -259,7 +259,6 @@ Use one of those configuration files to configure the golanglint-ci run.
 [gomodules]: https://github.com/golang/go/wiki/Modules
 [gopgsqldriver]: https://github.com/jbarham/gopgsqldriver
 [herokuci]: https://devcenter.heroku.com/articles/heroku-ci
-[jq]: https://github.com/stedolan/jq
 [make]: https://www.gnu.org/software/make/
 [Procfile]: https://devcenter.heroku.com/articles/procfile
 [source-version]: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
