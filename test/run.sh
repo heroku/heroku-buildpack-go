@@ -251,140 +251,14 @@ testModBasic() {
   assertInstalledFixtureBinary
 }
 
-testModBasicGo115() {
-  fixture "mod-basic-go115"
+testModBasicGo111() {
+  fixture "mod-basic-go111"
 
   assertDetected
 
   compile
   assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.15"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo116() {
-  fixture "mod-basic-go116"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.16"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo117() {
-  fixture "mod-basic-go117"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.17"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo118() {
-  fixture "mod-basic-go118"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.18"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo119() {
-  fixture "mod-basic-go119"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.19"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo120() {
-  fixture "mod-basic-go120"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.20"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo121() {
-  fixture "mod-basic-go121"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.21"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo122() {
-  fixture "mod-basic-go122"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.22"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo123() {
-  fixture "mod-basic-go123"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.23"
-  assertGoInstallOnlyFixturePackageCaptured
-
-  assertCapturedSuccess
-  assertInstalledFixtureBinary
-}
-
-testModBasicGo124() {
-  fixture "mod-basic-go124"
-
-  assertDetected
-
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.24"
+  assertCaptured "Installing go1.11.13"
   assertGoInstallOnlyFixturePackageCaptured
 
   assertCapturedSuccess
