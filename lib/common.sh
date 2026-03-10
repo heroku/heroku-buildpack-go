@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 # seconds relying on the build system timeout. Go tarballs are up to ~70 MB and typically download in a few
 # seconds on Heroku, so we set relatively low timeouts to reduce delays before retries.
 # We use --no-progress-meter rather than --silent so that retry status messages are printed.
-CURL="curl --no-progress-meter --location --fail --max-time 150 --retry-max-time 150 --retry 5 --retry-connrefused --connect-timeout 5"
+CURL="curl --no-progress-meter --location --fail --max-time 150 --retry-max-time 350 --retry 5 --retry-connrefused --connect-timeout 5"
 
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
