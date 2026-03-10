@@ -119,7 +119,7 @@ downloadFile() {
     pushd "${targetDir}" &> /dev/null
         start "Fetching ${fileName}"
             local url="$(<"${FilesJSON}" jq -r '."'${fileName}'".URL')"
-            ${CURL} -o "${fileName}" "${url}"
+            ${CURL} -o "${fileName}" "${url}" 2>&1
             if [ -n "${xCmd}" ]; then
                 ${xCmd} ${targetFile}
             fi
