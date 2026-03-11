@@ -5,7 +5,7 @@ set -e
 build=$(cd "$1/" && pwd)
 buildpack=$(cd "$(dirname $0)/.." && pwd)
 
-source "${buildpack}/lib/common.sh"
+source "${buildpack}/lib/output.sh"
 
 # Detect go.mod (supported) and legacy dependency manager files (unsupported,
 # but we still want to pass detection so that bin/compile can provide a helpful
