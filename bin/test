@@ -53,7 +53,7 @@ else
   _tflags+=("-mod=readonly")
 fi
 output::step "Running Tests With: go test ${_tflags[*]} ./... | patter"
-go test ${_tflags[@]} ./... 2>&1 | tee -a ${output} | patter | output::indent
+go test ${_tflags[@]} ./... 2>&1 | tee -a ${output} | patter
 if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
     _tflags=("${_tflags[@]:1}") # push -race off
     _tflags+=("-run=_")
