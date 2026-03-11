@@ -42,7 +42,7 @@ publish:
 
 define SETUP_BUILDPACK_ENV
 	mkdir -p /tmp/buildpack /tmp/cache /tmp/env; \
-	cp -r /src/{bin,lib,vendor,files.json,data.json} /tmp/buildpack; \
+	cp -r /src/{bin,lib,files.json,data.json} /tmp/buildpack; \
 	cp -r /src/$(FIXTURE) /tmp/build_1; \
 	cd /tmp/buildpack; \
 	unset $$(printenv | cut -d '=' -f 1 | grep -vE "^(HOME|LANG|PATH|STACK)$$");

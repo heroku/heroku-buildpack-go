@@ -15,10 +15,6 @@ buildpack=$(cd "$(dirname $0)/.." && pwd)
 
 source "${buildpack}/lib/common.sh"
 
-# Used by buildpack-stdlib
-BPLOG_PREFIX="buildpack.go"
-source "${buildpack}/vendor/buildpack-stdlib_v8.sh"
-
 # Set CACHE_DIR (used by build_data)
 CACHE_DIR="${cache_root}"
 source "${buildpack}/lib/build_data.sh"
@@ -83,8 +79,6 @@ expandVer() {
 # Use after expandVer
 reportVer() {
     local ver="${1}"
-    mcount "version.go.$ver"
-
     case $ver in
         devel*)
             warn ""
@@ -239,8 +233,6 @@ mkdir -p "${build}/bin"
 
 export GOPATH
 
-mcount "pkgmanagement.$TOOL"
-
 mainPackagesInModule() {
   # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
   go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
@@ -311,7 +303,6 @@ if [ -z "${pkgs}" ]; then
         warn "Unsure what package(s) to install, defaulting to '.'"
         warn ""
         pkgs="default"
-        mcount "pkginstall.detect-failed"
     else
         info ""
         info "Detected the following main packages to install:"
@@ -319,18 +310,7 @@ if [ -z "${pkgs}" ]; then
             info "\t\t${pkg}"
         done
         info ""
-        mcount "pkginstall.auto"
     fi
-else
-    if [ -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
-        mcount "pkginstall.go_install_package_spec"
-    else
-        mcount "pkginstall.heroku_install"
-    fi
-fi
-
-if [[ "${pkgs}" =~ "..." ]]; then
-    mcount "package_spec.contains.dot_dot_dot"
 fi
 
 warnPackageSpecOverride
