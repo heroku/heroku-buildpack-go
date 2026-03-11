@@ -64,5 +64,5 @@ if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
 fi
 
 output::step "Standard (Non TAP) test output"
-cat "${output}" | output::indent
+output::indent < "${output}"
 output::step "Finished"
