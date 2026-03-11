@@ -4,6 +4,7 @@
 
 * Fetch Go binaries directly from upstream sources instead of S3 mirror
 * Improve curl download resilience and timeouts
+* Clean up build output with structured formatting and consistent indentation
 
 ## [v225] - 2026-03-10
 
