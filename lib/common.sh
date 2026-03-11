@@ -92,7 +92,7 @@ downloadFile() {
     pushd "${targetDir}" &> /dev/null
         output::step "Fetching ${fileName}"
             local url="$(<"${FilesJSON}" jq -r '."'${fileName}'".URL')"
-            ${CURL} -o "${fileName}" "${url}" 2>&1
+            ${CURL} -o "${fileName}" "${url}" 2>&1 | output::indent
             if ! SHAValid "${fileName}" "${targetFile}"; then
                 output::error <<-EOF
 					Error: Downloaded file (${fileName}) SHA does not match recorded SHA.
