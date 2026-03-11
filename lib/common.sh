@@ -7,11 +7,7 @@ DataJSON="${buildpack}/data.json"
 FilesJSON="${buildpack}/files.json"
 goMOD="${build}/go.mod"
 
-steptxt="----->"
-GREEN='\033[1;32m'
-YELLOW='\033[1;33m'
-RED='\033[1;31m'
-NC='\033[0m' # No Color
+source "$(dirname "${BASH_SOURCE[0]}")/output.sh"
 # We use --max-time/--retry-max-time for improved UX and metrics for hanging downloads compared to
 # seconds relying on the build system timeout. Go tarballs are up to ~70 MB and typically download in a few
 # seconds on Heroku, so we set relatively low timeouts to reduce delays before retries.
@@ -65,29 +61,6 @@ binDiff() {
   echo ${new[@]}
 }
 
-info() {
-    echo -e "${GREEN}       $@${NC}"
-}
-
-warn() {
-    echo -e "${YELLOW} !!    $@${NC}"
-}
-
-err() {
-    echo -e >&2 "${RED} !!    $@${NC}"
-}
-
-step() {
-    echo "$steptxt $@"
-}
-
-start() {
-    echo -n "$steptxt $@... "
-}
-
-finished() {
-    echo "done"
-}
 
 knownFile() {
     local fileName="${1}"
@@ -98,16 +71,16 @@ downloadFile() {
     local fileName="${1}"
 
     if ! knownFile ${fileName}; then
-        err ""
-        err "The requested file (${fileName}) is unknown to the buildpack!"
-        err ""
-        err "The buildpack tracks and validates the SHA256 sums of the files"
-        err "it uses. Because the buildpack doesn't know about the file"
-        err "it likely won't be able to obtain a copy and validate the SHA."
-        err ""
-        err "To find out more info about this error please visit:"
-        err "    https://devcenter.heroku.com/articles/unknown-go-buildack-files"
-        err ""
+        output::error <<-EOF
+			Error: The requested file (${fileName}) is unknown to the buildpack!
+
+			The buildpack tracks and validates the SHA256 sums of the files
+			it uses. Because the buildpack doesn't know about the file
+			it likely won't be able to obtain a copy and validate the SHA.
+
+			To find out more info about this error please visit:
+			https://devcenter.heroku.com/articles/unknown-go-buildack-files
+		EOF
         exit 1
     fi
 
@@ -117,20 +90,20 @@ downloadFile() {
 
     mkdir -p "${targetDir}"
     pushd "${targetDir}" &> /dev/null
-        start "Fetching ${fileName}"
+        output::step "Fetching ${fileName}"
             local url="$(<"${FilesJSON}" jq -r '."'${fileName}'".URL')"
             ${CURL} -o "${fileName}" "${url}" 2>&1
             if ! SHAValid "${fileName}" "${targetFile}"; then
-                err ""
-                err "Downloaded file (${fileName}) sha does not match recorded SHA"
-                err "Unable to continue."
-                err ""
+                output::error <<-EOF
+					Error: Downloaded file (${fileName}) SHA does not match recorded SHA.
+
+					Unable to continue.
+				EOF
                 exit 1
             fi
             if [ -n "${xCmd}" ]; then
-                ${xCmd} ${targetFile}
+                ${xCmd} ${targetFile} 2>&1 | output::indent
             fi
-        finished
     popd &> /dev/null
 }
 
@@ -295,9 +268,7 @@ determineTool() {
         TOOL="gomodules"
         build_data::set_string "go_tool" "${TOOL}"
 
-        step ""
-        info "Detected go modules via go.mod"
-        step ""
+        output::step "Detected go modules via go.mod"
 
         # Determine Go version from go.mod if not already set by GOVERSION
         if [ -z "${ver}" ]; then
@@ -318,28 +289,32 @@ determineTool() {
         fi
 
         name=$(awk '{ if ($1 == "module" ) { gsub(/"/, "", $2); print $2; exit } }' < ${goMOD})
-        info "Detected Module Name: ${name}"
-        step ""
+        output::step "Detected Module Name: ${name}"
         warnGoVersionOverride
 
         if [ "${go_version_origin}" = "default" ]; then
-            warn "The go.mod file for this project does not specify a Go version"
-            warn ""
-            warn "Defaulting to ${ver}"
-            warn ""
-            warn "For more details see: https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration"
-            warn ""
+            output::warning <<-EOF
+				The go.mod file for this project does not specify a Go version.
+
+				Defaulting to ${ver}
+
+				For more details see:
+				https://devcenter.heroku.com/articles/go-apps-with-modules#build-configuration
+			EOF
         fi
 
         if supportsGoModules "${ver}"; then
-            err "You are using ${ver}, which does not support Go modules"
-            err ""
-            err "Go modules are supported by go1.11 and above."
-            err ""
-            err "Please add/update the comment in your go.mod file to specify a Go version >= go1.11 like so:"
-            err "// +heroku goVersion ${DefaultGoVersion}"
-            err ""
-            err "Then commit and push again."
+            output::error <<-EOF
+				Error: You are using ${ver}, which does not support Go modules.
+
+				Go modules are supported by go1.11 and above.
+
+				Please add/update the comment in your go.mod file to specify
+				a Go version >= go1.11 like so:
+				// +heroku goVersion ${DefaultGoVersion}
+
+				Then commit and push again.
+			EOF
             exit 1
         fi
     else
@@ -358,22 +333,26 @@ determineTool() {
 
         if [ -n "${legacy_tool}" ]; then
             build_data::set_string "go_tool" "${legacy_tool}"
-            err "Your app appears to use '${legacy_tool}' for dependency management,"
-            err "but support for ${legacy_tool} has been removed."
-            err ""
-            err "Go modules (go.mod) is now the only supported dependency"
-            err "management solution on Heroku."
-            err ""
-            err "To migrate, run 'go mod init <module-name>' in your project"
-            err "directory and commit the resulting go.mod file."
-            err ""
-            err "For more details see:"
-            err "https://devcenter.heroku.com/articles/go-modules"
+            output::error <<-EOF
+				Error: Your app appears to use '${legacy_tool}' for dependency management,
+				but support for ${legacy_tool} has been removed.
+
+				Go modules (go.mod) is now the only supported dependency
+				management solution on Heroku.
+
+				To migrate, run 'go mod init <module-name>' in your project
+				directory and commit the resulting go.mod file.
+
+				For more details see:
+				https://devcenter.heroku.com/articles/go-modules
+			EOF
         else
-            err "A go.mod file is required."
-            err ""
-            err "For help with using Go on Heroku, see:"
-            err "https://devcenter.heroku.com/articles/go-support"
+            output::error <<-EOF
+				Error: A go.mod file is required.
+
+				For help with using Go on Heroku, see:
+				https://devcenter.heroku.com/articles/go-support
+			EOF
         fi
         exit 1
     fi

@@ -43,8 +43,8 @@ output=$(mktemp)
 
 cd "${build}"
 if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
-    step "Running: golangci-lint -v --build-tags heroku run"
-    ${build}/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1
+    output::step "Running: golangci-lint -v --build-tags heroku run"
+    ${build}/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1 | output::indent
 fi
 _tflags=("-race" "-v")
 if [ -s "./go.sum" -a -d "./vendor" ]; then
@@ -52,21 +52,17 @@ if [ -s "./go.sum" -a -d "./vendor" ]; then
 else
   _tflags+=("-mod=readonly")
 fi
-step "Running Tests With: go test ${_tflags[@]} ./... | patter"
-go test ${_tflags[@]} ./... 2>&1 | tee -a ${output} | patter
-step
+output::step "Running Tests With: go test ${_tflags[*]} ./... | patter"
+go test ${_tflags[@]} ./... 2>&1 | tee -a ${output} | patter | output::indent
 if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
     _tflags=("${_tflags[@]:1}") # push -race off
     _tflags+=("-run=_")
     _tflags+=("-bench=.")
     _tflags+=("-benchmem")
-    step "Running Benchmarks With: go test ${_tflags[@]} ./..."
-    go test ${_tflags[@]} ./... 2>&1
+    output::step "Running Benchmarks With: go test ${_tflags[*]} ./..."
+    go test ${_tflags[@]} ./... 2>&1 | output::indent
 fi
 
-step
-step "Standard (Non TAP) test output"
-cat "${output}"
-step
-step "Finished"
-step
+output::step "Standard (Non TAP) test output"
+cat "${output}" | output::indent
+output::step "Finished"

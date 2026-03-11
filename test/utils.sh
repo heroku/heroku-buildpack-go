@@ -183,6 +183,10 @@ assertCaptured() {
   assertFileContains "$@" "${STD_OUT}"
 }
 
+assertCapturedStderr() {
+  assertFileContains "$@" "${STD_ERR}"
+}
+
 assertNotCaptured() {
   assertFileNotContains "$@" "${STD_OUT}"
 }
@@ -306,6 +310,6 @@ assertInstalledFixtureBinary() {
 
 assertGoInstallCaptured() {
   local go_ver=${1:-${DEFAULT_GO_VERSION}}
-  assertCaptured "Installing ${go_ver}
-Fetching ${go_ver}.linux-amd64.tar.gz... done"
+  assertCaptured "Installing ${go_ver}"
+  assertCaptured "Fetching ${go_ver}"
 }

@@ -14,7 +14,7 @@ buildpack="${testpack}"
 source ${testpack}/bin/compile "${build}" "${cache}" "${env_dir}"
 
 if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
-    step "/.golangci.{yml,toml,json} detected"
+    output::step "/.golangci.{yml,toml,json} detected"
     tmp="$(mktemp -d)"
     mkdir -p "${build}/.heroku/golangci/bin"
     ensureFile "golangci-lint-1.20.0-linux-amd64.tar.gz" "${tmp}" "tar -C ${build}/.heroku/golangci/bin --strip-components=1 -zxf"
