@@ -238,7 +238,9 @@ export GOPATH
 
 mainPackagesInModule() {
   # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
-  go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./...
+  # Stderr (module download progress) is indented and redirected back to stderr so it displays
+  # neatly under the current step without being captured into the command substitution's stdout.
+  go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./... 2> >(output::indent >&2)
 }
 
 setupProcfile() {
