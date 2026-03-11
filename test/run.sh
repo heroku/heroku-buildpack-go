@@ -95,7 +95,7 @@ github.com/gorilla/mux
   assertGoInstallOnlyFixturePackageCaptured
 
   # On the second compile go should already be fetched and installed & the packages should be downloaded already.
-  assertNotCaptured "Fetching ${DEFAULT_GO_VERSION}.linux-amd64.tar.gz"
+  assertNotCaptured "Fetching ${DEFAULT_GO_VERSION}"
   assertNotCaptured "Installing ${DEFAULT_GO_VERSION}"
   assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
   assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
