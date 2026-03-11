@@ -120,15 +120,15 @@ downloadFile() {
         start "Fetching ${fileName}"
             local url="$(<"${FilesJSON}" jq -r '."'${fileName}'".URL')"
             ${CURL} -o "${fileName}" "${url}" 2>&1
-            if [ -n "${xCmd}" ]; then
-                ${xCmd} ${targetFile}
-            fi
             if ! SHAValid "${fileName}" "${targetFile}"; then
                 err ""
                 err "Downloaded file (${fileName}) sha does not match recorded SHA"
                 err "Unable to continue."
                 err ""
                 exit 1
+            fi
+            if [ -n "${xCmd}" ]; then
+                ${xCmd} ${targetFile}
             fi
         finished
     popd &> /dev/null
