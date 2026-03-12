@@ -105,14 +105,16 @@ function build_data::_set() {
 		new_data_file_contents="$(jq --exit-status --arg key "${key}" "${jq_args[@]}" '. + { ($key): ($value) }' "${BUILD_DATA_FILE}")"
 		echo "${new_data_file_contents}" >"${BUILD_DATA_FILE}"
 	else
-		err "Error: Can't find the buildpack's build data file."
-        err ""
-		err "The Go buildpack's internal build data file is missing:"
-        err "${BUILD_DATA_FILE}"
-        err ""
-		err "This file is required for the buildpack to work correctly,"
-		err "and so you must not delete it when removing files from the"
-		err "build cache or /tmp directories."
+		output::error <<-EOF
+			Error: Can't find the buildpack's build data file.
+
+			The Go buildpack's internal build data file is missing:
+			${BUILD_DATA_FILE}
+
+			This file is required for the buildpack to work correctly,
+			and so you must not delete it when removing files from the
+			build cache or /tmp directories.
+		EOF
 		build_data::setup
 		build_data::set_string "failure_reason" "build-data::data-file-deleted"
 		exit 1
