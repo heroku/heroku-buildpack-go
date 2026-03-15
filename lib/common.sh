@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034 # Variables like DataJSON, GO_LINKER_VALUE, TOOL are used by the caller (bin/compile)
-# shellcheck disable=SC2154 # BUILDPACK_DIR, BUILD_DIR, SOURCE_VERSION, DefaultGoVersion are set by the caller (bin/compile)
-
 # This is technically redundant, since all consumers of this lib will have enabled these,
 # however, it helps Shellcheck realise the options under which these functions will run.
 set -euo pipefail
+# shellcheck disable=SC2034,SC2154
 DataJSON="${BUILDPACK_DIR}/data.json"
+# shellcheck disable=SC2034,SC2154
 FilesJSON="${BUILDPACK_DIR}/files.json"
+# shellcheck disable=SC2154
 goMOD="${BUILD_DIR}/go.mod"
 
 # We use --max-time/--retry-max-time for improved UX and metrics for hanging downloads compared to
@@ -18,6 +18,7 @@ CURL="curl --no-progress-meter --location --fail --max-time 30 --retry-max-time 
 
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
+# shellcheck disable=SC2034
 GO_LINKER_VALUE="${SOURCE_VERSION:-}"
 
 snapshotBinBefore() {
@@ -294,6 +295,7 @@ determineTool() {
 				if [[ -n "${ver}" ]]; then
 					go_version_origin="go.mod"
 				else
+					# shellcheck disable=SC2154
 					ver=${DefaultGoVersion}
 					go_version_origin="default"
 				fi
