@@ -3,10 +3,9 @@
 set -e
 
 build=$(cd "$1/" && pwd)
-buildpack=$(cd "$(dirname "$0")/.." && pwd)
+BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
-# shellcheck disable=SC1091
-source "${buildpack}/lib/output.sh"
+source "${BUILDPACK_DIR}/lib/output.sh"
 
 # Detect go.mod (supported) and legacy dependency manager files (unsupported,
 # but we still want to pass detection so that bin/compile can provide a helpful

@@ -6,9 +6,9 @@
 # load environment variables
 # allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
 
-# shellcheck disable=SC2154 # buildpack, build, SOURCE_VERSION, DefaultGoVersion are set by the caller (bin/compile)
-DataJSON="${buildpack}/data.json"
-FilesJSON="${buildpack}/files.json"
+# shellcheck disable=SC2154 # BUILDPACK_DIR, build, SOURCE_VERSION, DefaultGoVersion are set by the caller (bin/compile)
+DataJSON="${BUILDPACK_DIR}/data.json"
+FilesJSON="${BUILDPACK_DIR}/files.json"
 goMOD="${build}/go.mod"
 
 # shellcheck disable=SC1091

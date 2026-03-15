@@ -6,11 +6,9 @@ set -eo pipefail
 mkdir -p "${1}" "${2}"
 build="$(cd "${1}/" && pwd)"
 env_dir="$(cd "${2}/" && pwd)"
-testpack=$(cd "$(dirname "$0")/.." && pwd)
-# shellcheck disable=SC2034
-buildpack="${testpack}"
-# shellcheck source=lib/common.sh disable=SC1091
-source "${testpack}/lib/common.sh"
+BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
+
+source "${BUILDPACK_DIR}/lib/common.sh"
 
 # loadEnvDir "${env_dir}"
 # For now, load all of env_dir
@@ -42,7 +40,7 @@ fi
 PATH="${build}/bin:${GOROOT}/bin:${PATH}"
 
 # Install our vendored copy of github.com/apg/patter
-(cd "${testpack}/lib/src/github.com/apg/patter" && GOPATH="${testpack}/lib" GOBIN="${build}/bin" go install .)
+(cd "${BUILDPACK_DIR}/lib/src/github.com/apg/patter" && GOPATH="${BUILDPACK_DIR}/lib" GOBIN="${build}/bin" go install .)
 
 output=$(mktemp)
 
