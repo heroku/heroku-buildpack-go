@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # shellcheck disable=SC2034 # Variables like DataJSON, GO_LINKER_VALUE, TOOL are used by the caller (bin/compile)
 

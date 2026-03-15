@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # usage: bin/test <build-dir> <env-dir> <artifact-dir>
 
 set -eo pipefail

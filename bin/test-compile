@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # usage: bin/test-compile <build-dir> <cache-dir> <env-dir>
 
 mkdir -p "$1" "$2"
