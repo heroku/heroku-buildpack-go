@@ -5,7 +5,7 @@ set -euo pipefail
 
 [[ -n "${BUILDPACK_XTRACE:-}" ]] && set -o xtrace
 
-build="${1}"
+BUILD_DIR="${1}"
 cache_root="${2}"
 cache="${cache_root}/.heroku/go"
 mkdir -p "${cache}"
@@ -237,7 +237,7 @@ if [[ -n "${GO_LINKER_SYMBOL:-}" ]] && [[ -n "${GO_LINKER_VALUE:-}" ]]; then
 	FLAGS+=(-ldflags "-X ${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}")
 fi
 
-if [[ -e "${build}/bin" ]] && [[ ! -d "${build}/bin" ]]; then
+if [[ -e "${BUILD_DIR}/bin" ]] && [[ ! -d "${BUILD_DIR}/bin" ]]; then
 	output::error <<-EOF
 		Error: File bin exists and is not a directory.
 	EOF
@@ -250,7 +250,7 @@ go_install_start_time=$(build_data::current_unix_realtime)
 ensureGo "${ver}"
 build_data::set_duration "go_install_duration" "${go_install_start_time}"
 
-mkdir -p "${build}/bin"
+mkdir -p "${BUILD_DIR}/bin"
 
 export GOPATH
 
@@ -263,7 +263,7 @@ mainPackagesInModule() {
 }
 
 setupProcfile() {
-	if [[ -f "${build}/Procfile" ]]; then
+	if [[ -f "${BUILD_DIR}/Procfile" ]]; then
 		return
 	fi
 	local pkgs
@@ -285,11 +285,11 @@ setupProcfile() {
 	if [[ ${#pf[@]} -eq 1 ]]; then
 		local line
 		line="web: bin/$(echo "${pf[0]}" | cut -d / -f 2)"
-		echo "${line}" >"${build}/Procfile"
+		echo "${line}" >"${BUILD_DIR}/Procfile"
 		echo "${line}" | output::indent
 	elif [[ ${#pf[@]} -gt 1 ]]; then
 		for pfl in "${pf[@]}"; do
-			echo "${pfl}" >>"${build}/Procfile"
+			echo "${pfl}" >>"${BUILD_DIR}/Procfile"
 			echo "${pfl}" | output::indent
 		done
 	fi
@@ -302,11 +302,11 @@ setupProcfile() {
 
 dependencies_install_start_time=$(build_data::current_unix_realtime)
 
-cd "${build}" || exit
+cd "${BUILD_DIR}" || exit
 
-export GOBIN="${build}/bin"
+export GOBIN="${BUILD_DIR}/bin"
 if [[ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE:-}" = "true" ]]; then
-	export GOPATH="${build}/.heroku/go-path"
+	export GOPATH="${BUILD_DIR}/.heroku/go-path"
 	mkdir -p "${GOPATH}" # ensure that it's created
 else
 	export GOPATH="${cache}/go-path"
@@ -316,7 +316,7 @@ fi
 # and only do this if it's <1.14. The 1.14 release and beyond handles this automatically
 # when the desired language version is 1.14+ and vendoring should be used.
 # https://golang.org/doc/go1.14#vendor
-if [[ -d "${build}/vendor" ]] && [[ -s "${build}/go.sum" ]]; then
+if [[ -d "${BUILD_DIR}/vendor" ]] && [[ -s "${BUILD_DIR}/go.sum" ]]; then
 	FLAGS+=(-mod=vendor)
 fi
 
@@ -370,22 +370,22 @@ done
 
 setupProcfile
 
-cd "${build}" || exit
-mkdir -p "${build}/.profile.d"
+cd "${BUILD_DIR}" || exit
+mkdir -p "${BUILD_DIR}/.profile.d"
 # shellcheck disable=SC2016
-echo 'PATH=$PATH:$HOME/bin' >"${build}/.profile.d/go.sh"
+echo 'PATH=$PATH:$HOME/bin' >"${BUILD_DIR}/.profile.d/go.sh"
 
 if [[ "${GO_INSTALL_TOOLS_IN_IMAGE:-}" = "true" ]]; then
 	output::step "Copying go tool chain to \$GOROOT=\$HOME/.heroku/go"
-	mkdir -p "${build}/.heroku/go"
-	cp -a "${GOROOT}/"* "${build}/.heroku/go"
+	mkdir -p "${BUILD_DIR}/.heroku/go"
+	cp -a "${GOROOT}/"* "${BUILD_DIR}/.heroku/go"
 	# shellcheck disable=SC2016
-	echo 'export GOROOT=$HOME/.heroku/go' >"${build}/.profile.d/goroot.sh"
+	echo 'export GOROOT=$HOME/.heroku/go' >"${BUILD_DIR}/.profile.d/goroot.sh"
 	# shellcheck disable=SC2016
-	echo 'PATH=$PATH:$GOROOT/bin' >>"${build}/.profile.d/goroot.sh"
+	echo 'PATH=$PATH:$GOROOT/bin' >>"${BUILD_DIR}/.profile.d/goroot.sh"
 fi
 
-t="${build}/.heroku/go"
+t="${BUILD_DIR}/.heroku/go"
 mkdir -p "${t}"
 t="${t}/.meta"
 # shellcheck disable=SC2154

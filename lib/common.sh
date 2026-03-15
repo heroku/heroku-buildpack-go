@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC2034 # Variables like DataJSON, GO_LINKER_VALUE, TOOL are used by the caller (bin/compile)
-# shellcheck disable=SC2154 # BUILDPACK_DIR, build, SOURCE_VERSION, DefaultGoVersion are set by the caller (bin/compile)
+# shellcheck disable=SC2154 # BUILDPACK_DIR, BUILD_DIR, SOURCE_VERSION, DefaultGoVersion are set by the caller (bin/compile)
 
 # This is technically redundant, since all consumers of this lib will have enabled these,
 # however, it helps Shellcheck realise the options under which these functions will run.
 set -euo pipefail
 DataJSON="${BUILDPACK_DIR}/data.json"
 FilesJSON="${BUILDPACK_DIR}/files.json"
-goMOD="${build}/go.mod"
+goMOD="${BUILD_DIR}/go.mod"
 
 # We use --max-time/--retry-max-time for improved UX and metrics for hanging downloads compared to
 # seconds relying on the build system timeout. Go tarballs are up to ~70 MB and typically download in a few
@@ -21,13 +21,13 @@ TOOL=""
 GO_LINKER_VALUE="${SOURCE_VERSION:-}"
 
 snapshotBinBefore() {
-	if [[ ! -d "${build}/bin" ]]; then
+	if [[ ! -d "${BUILD_DIR}/bin" ]]; then
 		return 0
 	fi
 	_oifs=${IFS}
 	IFS=$'\n'
 	_binBefore=()
-	for f in "${build}"/bin/*; do
+	for f in "${BUILD_DIR}"/bin/*; do
 		if [[ -f "${f}" ]]; then
 			# shellcheck disable=SC2207
 			_binBefore+=("$(shasum "${f}")")
@@ -40,7 +40,7 @@ binDiff() {
 	_oifs=${IFS}
 	IFS=$'\n'
 	local binAfter=()
-	for f in "${build}"/bin/*; do
+	for f in "${BUILD_DIR}"/bin/*; do
 		if [[ -f "${f}" ]]; then
 			# shellcheck disable=SC2207
 			binAfter+=("$(shasum "${f}")")
@@ -182,7 +182,7 @@ loadEnvDir() {
 		env_dir=$(cd "${env_dir}/" && pwd)
 		for key in "${envFlags[@]}"; do
 			if [[ -f "${env_dir}/${key}" ]]; then
-				export "${key}=$(sed -e "s:\${build_dir}:${build}:" <"${env_dir}/${key}")"
+				export "${key}=$(sed -e "s:\${build_dir}:${BUILD_DIR}:" <"${env_dir}/${key}")"
 			fi
 		done
 	fi
@@ -335,15 +335,15 @@ determineTool() {
 	else
 		local legacy_tool=""
 		# shellcheck disable=SC2312
-		if [[ -f "${build}/Gopkg.lock" ]]; then
+		if [[ -f "${BUILD_DIR}/Gopkg.lock" ]]; then
 			legacy_tool="dep"
-		elif [[ -f "${build}/Godeps/Godeps.json" ]]; then
+		elif [[ -f "${BUILD_DIR}/Godeps/Godeps.json" ]]; then
 			legacy_tool="godep"
-		elif [[ -f "${build}/vendor/vendor.json" ]]; then
+		elif [[ -f "${BUILD_DIR}/vendor/vendor.json" ]]; then
 			legacy_tool="govendor"
-		elif [[ -f "${build}/glide.yaml" ]]; then
+		elif [[ -f "${BUILD_DIR}/glide.yaml" ]]; then
 			legacy_tool="glide"
-		elif [[ -d "${build}/src" ]] && [[ -n "$(find "${build}/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]]; then
+		elif [[ -d "${BUILD_DIR}/src" ]] && [[ -n "$(find "${BUILD_DIR}/src" -mindepth 2 -type f -name '*.go' | sed 1q)" ]]; then
 			legacy_tool="gb"
 		fi
 

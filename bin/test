@@ -3,7 +3,7 @@
 
 set -euo pipefail
 
-build="${1}"
+BUILD_DIR="${1}"
 env_dir="${2}"
 
 # The absolute path to the root of the buildpack.
@@ -19,37 +19,37 @@ if [[ -n "${env_dir}" ]]; then
 	for f in ${env_dir}/*; do
 		key=$(basename "${f}")
 		if [[ -f "${f}" ]]; then
-			export "${key}=$(sed -e "s:\${build_dir}:${build}:" "${f}")"
+			export "${key}=$(sed -e "s:\${build_dir}:${BUILD_DIR}:" "${f}")"
 		fi
 	done
 fi
 
-if [[ -f "${build}/.heroku/go/.meta" ]]; then
+if [[ -f "${BUILD_DIR}/.heroku/go/.meta" ]]; then
 	# shellcheck disable=SC1091
-	source "${build}/.heroku/go/.meta"
+	source "${BUILD_DIR}/.heroku/go/.meta"
 fi
 
-export GOROOT="${build}/.heroku/go"
+export GOROOT="${BUILD_DIR}/.heroku/go"
 # Use the GOPATH that was setup during compile, if it exists, so that
 # any modules downloaded during compile are re-used.
-if [[ -d "${build}/.heroku/go-path" ]]; then
-	export GOPATH="${build}/.heroku/go-path"
+if [[ -d "${BUILD_DIR}/.heroku/go-path" ]]; then
+	export GOPATH="${BUILD_DIR}/.heroku/go-path"
 else
-	# Otherwise use a GOPATH that is outside of ${build}
+	# Otherwise use a GOPATH that is outside of ${BUILD_DIR}
 	GOPATH="$(mktemp -d)"
 	export GOPATH
 fi
-PATH="${build}/bin:${GOROOT}/bin:${PATH}"
+PATH="${BUILD_DIR}/bin:${GOROOT}/bin:${PATH}"
 
 # Install our vendored copy of github.com/apg/patter
-(cd "${BUILDPACK_DIR}/lib/src/github.com/apg/patter" && GOPATH="${BUILDPACK_DIR}/lib" GOBIN="${build}/bin" go install .)
+(cd "${BUILDPACK_DIR}/lib/src/github.com/apg/patter" && GOPATH="${BUILDPACK_DIR}/lib" GOBIN="${BUILD_DIR}/bin" go install .)
 
 output=$(mktemp)
 
-cd "${build}"
-if [[ -f "${build}/.golangci.yml" ]] || [[ -f "${build}/.golangci.toml" ]] || [[ -f "${build}/.golangci.json" ]]; then
+cd "${BUILD_DIR}"
+if [[ -f "${BUILD_DIR}/.golangci.yml" ]] || [[ -f "${BUILD_DIR}/.golangci.toml" ]] || [[ -f "${BUILD_DIR}/.golangci.json" ]]; then
 	output::step "Running: golangci-lint -v --build-tags heroku run"
-	"${build}"/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1 | output::indent
+	"${BUILD_DIR}"/.heroku/golangci/bin/golangci-lint -v --build-tags heroku run 2>&1 | output::indent
 fi
 _tflags=("-race" "-v")
 if [[ -s "./go.sum" ]] && [[ -d "./vendor" ]]; then
