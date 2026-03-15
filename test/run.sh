@@ -485,9 +485,6 @@ testDeprecatedToolDetected() {
 	assertCapturedError 1 "support for dep has been removed"
 }
 
-pushd "$(dirname 0)" >/dev/null || exit
-popd >/dev/null || exit
-
 # shellcheck source=test/utils.sh
 # shellcheck disable=SC2312
 source "$(pwd)/test/utils.sh"
