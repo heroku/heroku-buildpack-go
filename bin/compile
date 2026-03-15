@@ -7,9 +7,10 @@ set -euo pipefail
 
 BUILD_DIR="${1}"
 CACHE_DIR="${2}"
+ENV_DIR="${3}"
+
 GO_CACHE_DIR="${CACHE_DIR}/.heroku/go"
 mkdir -p "${GO_CACHE_DIR}"
-ENV_DIR="${3}"
 
 # The absolute path to the root of the buildpack.
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
