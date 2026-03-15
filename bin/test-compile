@@ -6,6 +6,8 @@ set -euo pipefail
 build="${1}"
 cache="${2}"
 env_dir="${3}"
+
+# The absolute path to the root of the buildpack.
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
 echo "true" >"${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
