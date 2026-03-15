@@ -15,8 +15,7 @@ source "${BUILDPACK_DIR}/lib/common.sh"
 # loadEnvDir "${ENV_DIR}"
 # For now, load all of ENV_DIR
 if [[ -n "${ENV_DIR}" ]]; then
-	# shellcheck disable=SC2231
-	for f in ${ENV_DIR}/*; do
+	for f in "${ENV_DIR}"/*; do
 		key=$(basename "${f}")
 		if [[ -f "${f}" ]]; then
 			export "${key}=$(sed -e "s:\${build_dir}:${BUILD_DIR}:" "${f}")"
