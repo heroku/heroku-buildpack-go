@@ -120,9 +120,6 @@ ensureGo() {
 				goPath="${GO_CACHE_DIR}/${bGoVersion}/go"
 				txt="Installing bootstrap ${bGoVersion}"
 				;;
-			go1)
-				goFile="go.go1.linux-amd64.tar.gz"
-				;;
 			*)
 				goFile="${goVersion}.linux-amd64.tar.gz"
 				;;
