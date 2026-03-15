@@ -1,0 +1,37 @@
+# https://editorconfig.org
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.sh]
+binary_next_line = true
+# We use tabs in shell scripts since heredoc indent stripping (<<-) requires them:
+# https://www.gnu.org/software/bash/manual/html_node/Redirections.html#Here-Documents
+indent_style = tab
+shell_variant = bash
+switch_case_indent = true
+
+# Catches scripts without a .sh file extension, such as the Buildpack API scripts.
+[**/bin/**]
+binary_next_line = true
+indent_style = tab
+shell_variant = bash
+switch_case_indent = true
+
+# Catches sbin/ scripts without a .sh extension.
+[**/sbin/**]
+binary_next_line = true
+indent_style = tab
+switch_case_indent = true
+
+# Vendored third-party script that must not be modified.
+[test/shunit2.sh]
+ignore = true
+
+[Makefile]
+indent_style = tab
