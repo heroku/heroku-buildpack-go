@@ -2,7 +2,7 @@
 # bin/detect <build-dir>
 set -euo pipefail
 
-build=$(cd "$1/" && pwd)
+build="${1}"
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
 source "${BUILDPACK_DIR}/lib/output.sh"

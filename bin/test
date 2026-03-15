@@ -3,8 +3,8 @@
 
 set -euo pipefail
 
-build="$(cd "${1}/" && pwd)"
-env_dir="$(cd "${2}/" && pwd)"
+build="${1}"
+env_dir="${2}"
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
 source "${BUILDPACK_DIR}/lib/output.sh"

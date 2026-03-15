@@ -5,8 +5,8 @@ set -euo pipefail
 
 [[ -n "${BUILDPACK_XTRACE:-}" ]] && set -o xtrace
 
-build=$(cd "$1/" && pwd)
-cache_root=$(cd "$2/" && pwd)
+build="${1}"
+cache_root="${2}"
 cache="${cache_root}/.heroku/go"
 mkdir -p "${cache}"
 env_dir="${3}"
