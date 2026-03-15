@@ -26,6 +26,8 @@ compile_start_time=$(build_data::current_unix_realtime)
 # a build report that will be consumed by the build system for observability.
 build_data::setup
 
+ARCH=$(dpkg --print-architecture)
+
 snapshotBinBefore
 
 # Clean up old cache files if migrating from old cache structure.
