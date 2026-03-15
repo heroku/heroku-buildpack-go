@@ -27,6 +27,7 @@ switch_case_indent = true
 [**/sbin/**]
 binary_next_line = true
 indent_style = tab
+shell_variant = bash
 switch_case_indent = true
 
 # Vendored third-party script that must not be modified.

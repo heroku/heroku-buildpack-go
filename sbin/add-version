@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 BASEURL="https://dl.google.com/go"
 V="$1"
 
-if [ -z "${V}" ]; then
+if [[ -z "${V}" ]]; then
 	echo "usage: $0 <go version>" >&2
 	exit 1
 fi
