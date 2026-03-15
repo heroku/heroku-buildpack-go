@@ -6,9 +6,9 @@ set -euo pipefail
 [[ -n "${BUILDPACK_XTRACE:-}" ]] && set -o xtrace
 
 BUILD_DIR="${1}"
-cache_root="${2}"
-cache="${cache_root}/.heroku/go"
-mkdir -p "${cache}"
+CACHE_DIR="${2}"
+GO_CACHE_DIR="${CACHE_DIR}/.heroku/go"
+mkdir -p "${GO_CACHE_DIR}"
 ENV_DIR="${3}"
 
 # The absolute path to the root of the buildpack.
@@ -16,10 +16,6 @@ BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
 source "${BUILDPACK_DIR}/lib/output.sh"
 source "${BUILDPACK_DIR}/lib/common.sh"
-
-# Set CACHE_DIR (used by build_data)
-# shellcheck disable=SC2034
-CACHE_DIR="${cache_root}"
 source "${BUILDPACK_DIR}/lib/build_data.sh"
 
 compile_start_time=$(build_data::current_unix_realtime)
@@ -33,23 +29,23 @@ snapshotBinBefore
 
 # Clean up old cache files if migrating from old cache structure.
 # We detect this legacy structure by looking for 'go-path' in the root.
-if [[ -d "${cache_root}/go-path" ]] && [[ ! -d "${cache}/go-path" ]]; then
+if [[ -d "${CACHE_DIR}/go-path" ]] && [[ ! -d "${GO_CACHE_DIR}/go-path" ]]; then
 	output::step "Clearing old build cache artifacts"
 
 	# Remove artifacts that were previously stored in the cache root
-	rm -rf "${cache_root}"/go[0-9]* \
-		"${cache_root}"/devel-* \
-		"${cache_root}/go-path" \
-		"${cache_root}/go-build-cache" \
-		"${cache_root}/glide" \
-		"${cache_root}/gb" \
-		"${cache_root}/dep" \
-		"${cache_root}/godep" \
-		"${cache_root}/govendor" \
-		"${cache_root}/.tq" \
-		"${cache_root}/.jq" \
-		"${cache_root}/github.com/golang-migrate" \
-		"${cache_root}/github.com/mattes" 2>/dev/null || true
+	rm -rf "${CACHE_DIR}"/go[0-9]* \
+		"${CACHE_DIR}"/devel-* \
+		"${CACHE_DIR}/go-path" \
+		"${CACHE_DIR}/go-build-cache" \
+		"${CACHE_DIR}/glide" \
+		"${CACHE_DIR}/gb" \
+		"${CACHE_DIR}/dep" \
+		"${CACHE_DIR}/godep" \
+		"${CACHE_DIR}/govendor" \
+		"${CACHE_DIR}/.tq" \
+		"${CACHE_DIR}/.jq" \
+		"${CACHE_DIR}/github.com/golang-migrate" \
+		"${CACHE_DIR}/github.com/mattes" 2>/dev/null || true
 fi
 
 # shellcheck disable=SC2154
@@ -102,7 +98,7 @@ reportVer() {
 
 ensureGo() {
 	local goVersion="${1}"
-	local goPath="${cache}/${goVersion}/go"
+	local goPath="${GO_CACHE_DIR}/${goVersion}/go"
 	local goFile=""
 	local txt="Installing ${goVersion}"
 	if [[ -d "${goPath}" ]]; then
@@ -110,17 +106,17 @@ ensureGo() {
 	else
 		#For a go version change, we delete everything in our namespace
 		output::step "New Go Version, clearing old cache"
-		if [[ -d "${cache}/go-path" ]]; then
-			find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
+		if [[ -d "${GO_CACHE_DIR}/go-path" ]]; then
+			find "${GO_CACHE_DIR}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
 		fi
-		rm -rf "${cache:?}"/*
+		rm -rf "${GO_CACHE_DIR:?}"/*
 		case "${goVersion}" in
 			devel*)
 				local bGoVersion
 				# shellcheck disable=SC2310
 				bGoVersion="$(expandVer "${DefaultGoVersion}")"
 				goFile="${bGoVersion}.linux-amd64.tar.gz"
-				goPath="${cache}/${bGoVersion}/go"
+				goPath="${GO_CACHE_DIR}/${bGoVersion}/go"
 				txt="Installing bootstrap ${bGoVersion}"
 				;;
 			go1)
@@ -137,7 +133,7 @@ ensureGo() {
 
 		case "${goVersion}" in
 			devel*)
-				pushd "${cache}" &>/dev/null
+				pushd "${GO_CACHE_DIR}" &>/dev/null
 				mkdir -p "${goVersion}"
 				pushd "${goVersion}" &>/dev/null
 				local sha
@@ -153,7 +149,7 @@ ensureGo() {
 				echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")" >../VERSION
 				# shellcheck disable=SC2312
 				GOROOT_BOOTSTRAP=$(
-					pushd "${cache}/${bGoVersion}/go" >/dev/null || exit
+					pushd "${GO_CACHE_DIR}/${bGoVersion}/go" >/dev/null || exit
 					pwd
 					popd >/dev/null || exit
 				) ./make.bash 2>&1
@@ -162,7 +158,7 @@ ensureGo() {
 				rm -rf "${goPath}"
 				popd &>/dev/null
 				popd &>/dev/null
-				goPath="${cache}/${goVersion}/go"
+				goPath="${GO_CACHE_DIR}/${goVersion}/go"
 				;;
 			*) ;;
 		esac
@@ -173,7 +169,7 @@ ensureGo() {
 
 	# Export GOCACHE if Go >= 1.10
 	if go env | grep -q '^GOCACHE='; then
-		export GOCACHE="${cache}/go-build-cache"
+		export GOCACHE="${GO_CACHE_DIR}/go-build-cache"
 	fi
 }
 
@@ -309,7 +305,7 @@ if [[ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE:-}" = "true" ]]; then
 	export GOPATH="${BUILD_DIR}/.heroku/go-path"
 	mkdir -p "${GOPATH}" # ensure that it's created
 else
-	export GOPATH="${cache}/go-path"
+	export GOPATH="${GO_CACHE_DIR}/go-path"
 fi
 
 # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)

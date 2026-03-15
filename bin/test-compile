@@ -4,7 +4,7 @@
 set -euo pipefail
 
 BUILD_DIR="${1}"
-cache="${2}"
+CACHE_DIR="${2}"
 ENV_DIR="${3}"
 
 # The absolute path to the root of the buildpack.
@@ -13,7 +13,7 @@ BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 echo "true" >"${ENV_DIR}/GO_INSTALL_TOOLS_IN_IMAGE"
 echo "true" >"${ENV_DIR}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
 
-source "${BUILDPACK_DIR}/bin/compile" "${BUILD_DIR}" "${cache}" "${ENV_DIR}"
+source "${BUILDPACK_DIR}/bin/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
 
 if [[ -f "${BUILD_DIR}/.golangci.yml" ]] || [[ -f "${BUILD_DIR}/.golangci.toml" ]] || [[ -f "${BUILD_DIR}/.golangci.json" ]]; then
 	output::step "/.golangci.{yml,toml,json} detected"
