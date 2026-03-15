@@ -13,6 +13,7 @@ mkdir -p "${cache}"
 env_dir="${3}"
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
+source "${BUILDPACK_DIR}/lib/output.sh"
 source "${BUILDPACK_DIR}/lib/common.sh"
 
 # Set CACHE_DIR (used by build_data)

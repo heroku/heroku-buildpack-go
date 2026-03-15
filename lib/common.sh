@@ -10,8 +10,6 @@ DataJSON="${BUILDPACK_DIR}/data.json"
 FilesJSON="${BUILDPACK_DIR}/files.json"
 goMOD="${build}/go.mod"
 
-# shellcheck disable=SC1091
-source "$(dirname "${BASH_SOURCE[0]}")/output.sh"
 # We use --max-time/--retry-max-time for improved UX and metrics for hanging downloads compared to
 # seconds relying on the build system timeout. Go tarballs are up to ~70 MB and typically download in a few
 # seconds on Heroku, so we set relatively low timeouts to reduce delays before retries.
