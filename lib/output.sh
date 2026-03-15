@@ -2,7 +2,7 @@
 
 # This is technically redundant, since all consumers of this lib will have enabled these,
 # however, it helps Shellcheck realise the options under which these functions will run.
-set -eo pipefail
+set -euo pipefail
 
 ANSI_BLUE=$'\e[1;34m'
 ANSI_RED=$'\e[1;31m'

@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # usage: bin/compile <build-dir> <cache-dir> <env-dir>
 
-set -eo pipefail
+set -euo pipefail
 
-[[ -n "${BUILDPACK_XTRACE}" ]] && set -o xtrace
+[[ -n "${BUILDPACK_XTRACE:-}" ]] && set -o xtrace
 
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
@@ -176,7 +176,7 @@ ensureGo() {
 }
 
 warnGoVersionOverride() {
-	if [[ -n "${GOVERSION}" ]]; then
+	if [[ -n "${GOVERSION:-}" ]]; then
 		output::warning <<-EOF
 			Using \$GOVERSION override.
 			\$GOVERSION = ${GOVERSION}
@@ -188,7 +188,7 @@ warnGoVersionOverride() {
 }
 
 warnPackageSpecOverride() {
-	if [[ -n "${GO_INSTALL_PACKAGE_SPEC}" ]]; then
+	if [[ -n "${GO_INSTALL_PACKAGE_SPEC:-}" ]]; then
 		output::warning <<-EOF
 			Using \$GO_INSTALL_PACKAGE_SPEC override.
 			\$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}
@@ -231,7 +231,7 @@ else
 fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
-if [[ -n "${GO_LINKER_SYMBOL}" ]] && [[ -n "${GO_LINKER_VALUE}" ]]; then
+if [[ -n "${GO_LINKER_SYMBOL:-}" ]] && [[ -n "${GO_LINKER_VALUE:-}" ]]; then
 	FLAGS+=(-ldflags "-X ${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}")
 fi
 
@@ -303,8 +303,7 @@ dependencies_install_start_time=$(build_data::current_unix_realtime)
 cd "${build}" || exit
 
 export GOBIN="${build}/bin"
-# shellcheck disable=SC2154
-if [[ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]]; then
+if [[ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE:-}" = "true" ]]; then
 	export GOPATH="${build}/.heroku/go-path"
 	mkdir -p "${GOPATH}" # ensure that it's created
 else
@@ -374,8 +373,7 @@ mkdir -p "${build}/.profile.d"
 # shellcheck disable=SC2016
 echo 'PATH=$PATH:$HOME/bin' >"${build}/.profile.d/go.sh"
 
-# shellcheck disable=SC2154
-if [[ "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true" ]]; then
+if [[ "${GO_INSTALL_TOOLS_IN_IMAGE:-}" = "true" ]]; then
 	output::step "Copying go tool chain to \$GOROOT=\$HOME/.heroku/go"
 	mkdir -p "${build}/.heroku/go"
 	cp -a "${GOROOT}/"* "${build}/.heroku/go"

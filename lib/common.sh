@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC2034 # Variables like DataJSON, GO_LINKER_VALUE, TOOL are used by the caller (bin/compile)
-
-# -----------------------------------------
-# load environment variables
-# allow apps to specify cgo flags. The literal text '${build_dir}' is substituted for the build directory
-
 # shellcheck disable=SC2154 # BUILDPACK_DIR, build, SOURCE_VERSION, DefaultGoVersion are set by the caller (bin/compile)
+
+# This is technically redundant, since all consumers of this lib will have enabled these,
+# however, it helps Shellcheck realise the options under which these functions will run.
+set -euo pipefail
 DataJSON="${BUILDPACK_DIR}/data.json"
 FilesJSON="${BUILDPACK_DIR}/files.json"
 goMOD="${build}/go.mod"
@@ -21,7 +20,7 @@ CURL="curl --no-progress-meter --location --fail --max-time 30 --retry-max-time 
 
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile
-GO_LINKER_VALUE="${SOURCE_VERSION}"
+GO_LINKER_VALUE="${SOURCE_VERSION:-}"
 
 snapshotBinBefore() {
 	if [[ ! -d "${build}/bin" ]]; then
@@ -274,7 +273,7 @@ supportsGoModules() {
 
 determineTool() {
 	# Check GOVERSION first - it overrides all tool-specific configurations
-	if [[ -n "${GOVERSION}" ]]; then
+	if [[ -n "${GOVERSION:-}" ]]; then
 		ver="${GOVERSION}"
 		go_version_origin="GOVERSION"
 		build_data::set_string "go_version_origin" "${go_version_origin}"
@@ -288,7 +287,7 @@ determineTool() {
 		output::step "Detected go modules via go.mod"
 
 		# Determine Go version from go.mod if not already set by GOVERSION
-		if [[ -z "${ver}" ]]; then
+		if [[ -z "${ver:-}" ]]; then
 			ver=$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' "${goMOD}")
 			if [[ -n "${ver}" ]]; then
 				go_version_origin="go.mod (heroku comment)"

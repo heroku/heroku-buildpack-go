@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # usage: bin/test-compile <build-dir> <cache-dir> <env-dir>
 
+set -euo pipefail
+
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # usage: bin/test <build-dir> <env-dir> <artifact-dir>
 
-set -eo pipefail
+set -euo pipefail
 
 mkdir -p "${1}" "${2}"
 build="$(cd "${1}/" && pwd)"
@@ -58,7 +58,7 @@ fi
 output::step "Running Tests With: go test ${_tflags[*]} ./... | patter"
 go test "${_tflags[@]}" ./... 2>&1 | tee -a "${output}" | patter
 echo
-if [[ -z "${GO_TEST_SKIP_BENCHMARK}" ]]; then
+if [[ -z "${GO_TEST_SKIP_BENCHMARK:-}" ]]; then
 	_tflags=("${_tflags[@]:1}") # push -race off
 	_tflags+=("-run=_")
 	_tflags+=("-bench=.")
