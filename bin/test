@@ -3,7 +3,6 @@
 
 set -euo pipefail
 
-mkdir -p "${1}" "${2}"
 build="$(cd "${1}/" && pwd)"
 env_dir="$(cd "${2}/" && pwd)"
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
