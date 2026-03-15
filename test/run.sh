@@ -313,7 +313,7 @@ testModPrivateProxy() {
 	local repo="${BUILDPACK_HOME}/test/fixtures/mod-private-proxy/repo"
 	fixture "mod-private-proxy/app"
 
-	env "GOPROXY" "file://$repo"
+	env "GOPROXY" "file://${repo}"
 	env "GOPRIVATE" "git.fury.io/*"
 	env "GONOPROXY" "none"
 
@@ -485,8 +485,12 @@ testDeprecatedToolDetected() {
 	assertCapturedError 1 "support for dep has been removed"
 }
 
-pushd $(dirname 0) >/dev/null
-popd >/dev/null
+pushd "$(dirname 0)" >/dev/null || exit
+popd >/dev/null || exit
 
-source $(pwd)/test/utils.sh
-source $(pwd)/test/shunit2.sh
+# shellcheck source=test/utils.sh
+# shellcheck disable=SC2312
+source "$(pwd)/test/utils.sh"
+# shellcheck source=test/shunit2.sh
+# shellcheck disable=SC1091,SC2312
+source "$(pwd)/test/shunit2.sh"

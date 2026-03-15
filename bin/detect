@@ -3,13 +3,15 @@
 set -e
 
 build=$(cd "$1/" && pwd)
-buildpack=$(cd "$(dirname $0)/.." && pwd)
+buildpack=$(cd "$(dirname "$0")/.." && pwd)
 
+# shellcheck disable=SC1091
 source "${buildpack}/lib/output.sh"
 
 # Detect go.mod (supported) and legacy dependency manager files (unsupported,
 # but we still want to pass detection so that bin/compile can provide a helpful
 # migration error message rather than the generic "can't detect language" output).
+# shellcheck disable=SC2235,SC2312
 if test -f "${build}/go.mod" \
 	||
 	#go modules

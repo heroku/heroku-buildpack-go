@@ -1,33 +1,36 @@
+# shellcheck shell=bash
+
 ##############
 ## shunit2 setup/teardown functions
 ##
 
+# shellcheck disable=SC2154 # SHUNIT_TMPDIR is set by the shunit2 test framework
 oneTimeSetUp() {
-	TEST_SUITE_CACHE="$(mktemp -d ${SHUNIT_TMPDIR}/test_suite_cache.XXXX)"
+	TEST_SUITE_CACHE="$(mktemp -d "${SHUNIT_TMPDIR}/test_suite_cache.XXXX")"
 	BUILDPACK_HOME=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 	DEFAULT_GO_VERSION="$(<"${BUILDPACK_HOME}/data.json" jq -r '.Go.DefaultVersion')"
 }
 
 oneTimeTearDown() {
-	rm -rf ${TEST_SUITE_CACHE}
+	rm -rf "${TEST_SUITE_CACHE}"
 }
 
 setUp() {
-	OUTPUT_DIR="$(mktemp -d ${SHUNIT_TMPDIR}/output.XXXX)"
+	OUTPUT_DIR="$(mktemp -d "${SHUNIT_TMPDIR}/output.XXXX")"
 	STD_OUT="${OUTPUT_DIR}/stdout"
 	STD_ERR="${OUTPUT_DIR}/stderr"
 	BUILD_DIR="${OUTPUT_DIR}/build"
 	CACHE_DIR="${OUTPUT_DIR}/cache"
 	ENV_DIR="${OUTPUT_DIR}/env"
-	mkdir -p ${OUTPUT_DIR}
-	mkdir -p ${BUILD_DIR}
-	mkdir -p ${CACHE_DIR}
-	mkdir -p ${ENV_DIR}
+	mkdir -p "${OUTPUT_DIR}"
+	mkdir -p "${BUILD_DIR}"
+	mkdir -p "${CACHE_DIR}"
+	mkdir -p "${ENV_DIR}"
 
 }
 
 tearDown() {
-	if [ -d "${OUTPUT_DIR}" ]; then
+	if [[ -d "${OUTPUT_DIR}" ]]; then
 		# Go modules are read-only by default; give ourselves write permission to delete it first
 		chmod -R +w "${OUTPUT_DIR}"
 		rm -rf "${OUTPUT_DIR}"
@@ -41,35 +44,38 @@ tearDown() {
 capture() {
 	resetCapture
 
-	LAST_COMMAND="$@"
+	LAST_COMMAND="$*"
 
-	$@ >${STD_OUT} 2>${STD_ERR}
+	"$@" >"${STD_OUT}" 2>"${STD_ERR}"
 	RETURN=$?
-	rtrn=${RETURN} # deprecated
+	# shellcheck disable=SC2034 # deprecated, used externally
+	rtrn=${RETURN}
 }
 
 continue_capture() {
-	LAST_COMMAND="$@"
+	# shellcheck disable=SC2034 # LAST_COMMAND is used externally
+	LAST_COMMAND="$*"
 
-	$@ >>${STD_OUT} 2>>${STD_ERR}
+	"$@" >>"${STD_OUT}" 2>>"${STD_ERR}"
 	local cr=$?
-	if [ "$RETURN" = "0" ]; then
-		RETURN=$cr
+	if [[ "${RETURN}" = "0" ]]; then
+		RETURN=${cr}
 	fi
-	rtrn=${RETURN} # deprecated
+	# shellcheck disable=SC2034 # deprecated, used externally
+	rtrn=${RETURN}
 }
 
 resetCapture() {
-	if [ -f ${STD_OUT} ]; then
-		rm ${STD_OUT}
+	if [[ -f "${STD_OUT}" ]]; then
+		rm "${STD_OUT}"
 	fi
 
-	if [ -f "${STD_OUT}_no_color" ]; then
+	if [[ -f "${STD_OUT}_no_color" ]]; then
 		rm "${STD_OUT}_no_color"
 	fi
 
-	if [ -f ${STD_ERR} ]; then
-		rm ${STD_ERR}
+	if [[ -f "${STD_ERR}" ]]; then
+		rm "${STD_ERR}"
 	fi
 
 	unset LAST_COMMAND
@@ -81,13 +87,14 @@ fixture() {
 	local fixture="${1}"
 	echo "* fixture: ${fixture}"
 	local fp="${BUILDPACK_HOME}/test/fixtures/${fixture}"
-	tar -cf - -C $fp . | tar -x -C ${BUILD_DIR}
+	# shellcheck disable=SC2312
+	tar -cf - -C "${fp}" . | tar -x -C "${BUILD_DIR}"
 }
 
 env() {
 	local var="${1}"
 	local val="${2}"
-	if [ -z "${var}" ]; then
+	if [[ -z "${var}" ]]; then
 		fail "set env var w/o specifying name"
 		exit 1
 	fi
@@ -96,7 +103,7 @@ env() {
 
 detect() {
 	echo "* detect"
-	capture ${BUILDPACK_HOME}/bin/detect ${BUILD_DIR}
+	capture "${BUILDPACK_HOME}/bin/detect" "${BUILD_DIR}"
 }
 
 assertDetected() {
@@ -107,7 +114,7 @@ assertDetected() {
 
 compile() {
 	echo "* compile"
-	capture ${BUILDPACK_HOME}/bin/compile ${BUILD_DIR} ${CACHE_DIR} ${ENV_DIR}
+	capture "${BUILDPACK_HOME}/bin/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
 }
 
 dotest() {
@@ -122,61 +129,65 @@ dotest() {
 }
 
 release() {
-	capture ${BUILDPACK_HOME}/bin/release ${BUILD_DIR}
+	capture "${BUILDPACK_HOME}/bin/release" "${BUILD_DIR}"
 }
 
 assertFile() {
 	local content="${1}"
 	local name="${2}"
 	local tgt="${BUILD_DIR}/${name}"
-	assertEquals "${content}" "$(cat ${tgt})"
+	# shellcheck disable=SC2312
+	assertEquals "${content}" "$(cat "${tgt}")"
 }
 
 assertBuildDirFileDoesNotExist() {
 	local name="${1}"
 	local tgt="${BUILD_DIR}/${name}"
-	assertTrue "File ${name} exists" "[ ! -f ${tgt} ]"
+	assertTrue "File ${name} exists" "[[ ! -f ${tgt} ]]"
 }
 
 assertBuildDirFileExists() {
 	local name="${1}"
 	local tgt="${BUILD_DIR}/${name}"
-	assertTrue "File ${name} does not exist" "[ -f ${tgt} ]"
+	assertTrue "File ${name} does not exist" "[[ -f ${tgt} ]]"
 }
 
 assertFileExists() {
 	local name="${1}"
-	assertTrue "File ${name} does not exist" "[ -f ${name} ]"
+	assertTrue "File ${name} does not exist" "[[ -f ${name} ]]"
 }
 
 assertDirExists() {
 	local path="${1}"
-	assertTrue "Dir ${path} does not exist" "[ -d ${path} ]"
+	assertTrue "Dir ${path} does not exist" "[[ -d ${path} ]]"
 }
 
 assertDirDoesNotExist() {
 	local path="${1}"
-	assertTrue "Dir ${path} exists" "[ ! -d ${path} ]"
+	assertTrue "Dir ${path} exists" "[[ ! -d ${path} ]]"
 }
 
 assertCompiledBinaryExists() {
 	local name="${1:-fixture}"
 	local tgt="${BUILD_DIR}/bin/${name}"
-	assertTrue "Compiled binary (${tgt}) exists" "[ -x ${tgt} ]"
+	assertTrue "Compiled binary (${tgt}) exists" "[[ -x ${tgt} ]]"
 }
 
 assertCompiledBinaryOutputs() {
 	local name="${1}"
+	# shellcheck disable=SC2034 # output is reserved for future use
 	local output="${2}"
 	capture "${BUILD_DIR}/bin/${name}"
 }
 
 assertCapturedEquals() {
-	assertEquals "$@" "$(cat ${STD_OUT})"
+	# shellcheck disable=SC2312
+	assertEquals "$@" "$(cat "${STD_OUT}")"
 }
 
 assertCapturedNotEquals() {
-	assertNotEquals "$@" "$(cat ${STD_OUT})"
+	# shellcheck disable=SC2312
+	assertNotEquals "$@" "$(cat "${STD_OUT}")"
 }
 
 assertCaptured() {
@@ -193,7 +204,8 @@ assertNotCaptured() {
 
 assertCapturedSuccess() {
 	assertEquals "Expected captured exit code to be 0; was <${RETURN}>" "0" "${RETURN}"
-	assertEquals "Expected STD_ERR to be empty; was <$(cat ${STD_ERR})>" "" "$(cat ${STD_ERR})"
+	# shellcheck disable=SC2312
+	assertEquals "Expected STD_ERR to be empty; was <$(cat "${STD_ERR}")>" "" "$(cat "${STD_ERR}")"
 }
 
 assertCapturedExitSuccess() {
@@ -202,53 +214,57 @@ assertCapturedExitSuccess() {
 
 # assertCapturedError [[expectedErrorCode] expectedErrorMsg]
 assertCapturedError() {
-	if [ $# -gt 1 ]; then
-		local expectedErrorCode="${1}"
+	local expectedErrorCode=""
+	if [[ $# -gt 1 ]]; then
+		expectedErrorCode="${1}"
 		shift
 	fi
 
 	local expectedErrorMsg="${1:-""}"
 
-	if [ -z ${expectedErrorCode} ]; then
-		assertTrue "Expected captured exit code to be greater than 0; was <${RETURN}>" "[ ${RETURN} -gt 0 ]"
+	if [[ -z "${expectedErrorCode}" ]]; then
+		assertTrue "Expected captured exit code to be greater than 0; was <${RETURN}>" "[[ ${RETURN} -gt 0 ]]"
 	else
-		assertTrue "Expected captured exit code to be <${expectedErrorCode}>; was <${RETURN}>" "[ ${RETURN} -eq ${expectedErrorCode} ]"
+		assertTrue "Expected captured exit code to be <${expectedErrorCode}>; was <${RETURN}>" "[[ ${RETURN} -eq ${expectedErrorCode} ]]"
 	fi
 
-	if [ "${expectedErrorMsg}" != "" ]; then
+	if [[ "${expectedErrorMsg}" != "" ]]; then
 		assertFileContains "Expected STD_ERR to contain error <${expectedErrorMsg}>" "${expectedErrorMsg}" "${STD_ERR}"
 	fi
 }
 
 _assertContains() {
-	if [ 5 -eq $# ]; then
+	if [[ 5 -eq $# ]]; then
 		local msg="${1}"
 		shift
-	elif [ ! 4 -eq $# ]; then
+	elif [[ 4 -ne $# ]]; then
 		fail "Expected 4 or 5 parameters; Receieved $# parameters"
 	fi
 
-	local needle=$1
-	local haystack=$2
-	local expectation=$3
-	local haystack_type=$4
+	local needle="${1}"
+	local haystack="${2}"
+	local expectation="${3}"
+	local haystack_type="${4}"
 
 	case "${haystack_type}" in
 		"file")
 			local haystack_no_color="${haystack}_no_color"
-			if [ ! -e ${haystack_no_color} ]; then
-				sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <${haystack} >${haystack_no_color}
+			if [[ ! -e "${haystack_no_color}" ]]; then
+				sed "s,\x1B\[[0-9;]*[a-zA-Z],,g" <"${haystack}" >"${haystack_no_color}"
 			fi
-			## echo grep -q -F -e "${needle}" ${haystack_no_color}
-			grep -q -F -e "${needle}" ${haystack_no_color}
+			grep -q -F -e "${needle}" "${haystack_no_color}"
 			;;
 		"text") echo "${haystack}" | grep -q -F -e "${needle}" ;;
+		*) fail "Unknown haystack_type: ${haystack_type}" ;;
 	esac
 
-	if [ "${expectation}" != "$?" ]; then
+	local result=$?
+	if [[ "${expectation}" != "${result}" ]]; then
+		local default_msg
 		case "${expectation}" in
 			0) default_msg="Expected <${haystack}> to contain <${needle}>" ;;
 			1) default_msg="Did not expect <${haystack}> to contain <${needle}>" ;;
+			*) default_msg="Unexpected expectation value: ${expectation}" ;;
 		esac
 
 		fail "${msg:-${default_msg}}"
@@ -276,9 +292,12 @@ command_exists() {
 }
 
 assertFileMD5() {
-	expectedHash=$1
-	filename=$2
+	local expectedHash="${1}"
+	local filename="${2}"
+	local md5_cmd
+	local expected_md5_cmd_output
 
+	# shellcheck disable=SC2310 # command_exists used in if condition
 	if command_exists "md5sum"; then
 		md5_cmd="md5sum ${filename}"
 		expected_md5_cmd_output="${expectedHash}  ${filename}"
@@ -289,6 +308,7 @@ assertFileMD5() {
 		fail "no suitable MD5 hashing command found on this system"
 	fi
 
+	# shellcheck disable=SC2312
 	assertEquals "${expected_md5_cmd_output}" "$(${md5_cmd})"
 }
 
@@ -310,7 +330,7 @@ assertInstalledFixtureBinary() {
 }
 
 assertGoInstallCaptured() {
-	local go_ver=${1:-${DEFAULT_GO_VERSION}}
+	local go_ver="${1:-${DEFAULT_GO_VERSION}}"
 	assertCaptured "Installing ${go_ver}"
 	assertCaptured "Fetching ${go_ver}"
 }

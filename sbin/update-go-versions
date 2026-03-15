@@ -4,7 +4,7 @@ set -euo pipefail
 
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
-if [ -z "${1:-}" ]; then
+if [[ -z "${1:-}" ]]; then
 	echo "Usage: $0 [comma-separated-versions]"
 	echo ""
 	echo "Examples:"
@@ -25,34 +25,34 @@ if [ -z "${1:-}" ]; then
 		'https://go.dev/dl/?mode=json&include=stable' \
 		| jq -r '.[].version | sub("^go"; "")')
 
-	if [ -z "$latest_versions" ]; then
+	if [[ -z "${latest_versions}" ]]; then
 		echo "Error: Failed to fetch latest versions from go.dev"
 		exit 1
 	fi
 
 	# Convert newline-separated versions to comma-separated
-	versions_arg=$(echo "$latest_versions" | tr '\n' ',' | sed 's/,$//')
-	echo "Found latest stable versions: $versions_arg"
-	IFS=',' read -ra VERSION_ARRAY <<<"$versions_arg"
+	versions_arg=$(echo "${latest_versions}" | tr '\n' ',' | sed 's/,$//')
+	echo "Found latest stable versions: ${versions_arg}"
+	IFS=',' read -ra VERSION_ARRAY <<<"${versions_arg}"
 else
 	IFS=',' read -ra VERSION_ARRAY <<<"$1"
 fi
 
 TEMP_CHANGELOG=$(mktemp)
-awk '/## \[Unreleased\]/{print; print ""; exit} {print}' CHANGELOG.md >"$TEMP_CHANGELOG"
+awk '/## \[Unreleased\]/{print; print ""; exit} {print}' CHANGELOG.md >"${TEMP_CHANGELOG}"
 
 for version in "${VERSION_ARRAY[@]}"; do
 	tarball="go${version}.linux-amd64.tar.gz"
 
-	if jq -e --arg key "$tarball" 'has($key)' files.json >/dev/null 2>&1; then
-		echo "Version $version already exists, skipping"
+	if jq -e --arg key "${tarball}" 'has($key)' files.json >/dev/null 2>&1; then
+		echo "Version ${version} already exists, skipping"
 		continue
 	fi
 
-	sbin/add-version "$version"
-	echo "* Add go${version}" >>"$TEMP_CHANGELOG"
+	sbin/add-version "${version}"
+	echo "* Add go${version}" >>"${TEMP_CHANGELOG}"
 
-	major_minor=$(echo "$version" | cut -d. -f1,2)
+	major_minor=$(echo "${version}" | cut -d. -f1,2)
 
 	jq --arg major_minor "go${major_minor}" --arg version "go${version}" '
         .Go.VersionExpansion[$major_minor] = $version |
@@ -70,9 +70,9 @@ for version in "${VERSION_ARRAY[@]}"; do
         )
     ' data.json >data.json.tmp
 	mv data.json.tmp data.json
-	echo "* go${major_minor} defaults to ${version}" >>"$TEMP_CHANGELOG"
+	echo "* go${major_minor} defaults to ${version}" >>"${TEMP_CHANGELOG}"
 done
 
-awk '/## \[Unreleased\]/{flag=1; next} flag{if(flag==1 && NF==0){flag=2; next}} flag==2' CHANGELOG.md >>"$TEMP_CHANGELOG"
+awk '/## \[Unreleased\]/{flag=1; next} flag{if(flag==1 && NF==0){flag=2; next}} flag==2' CHANGELOG.md >>"${TEMP_CHANGELOG}"
 
-mv "$TEMP_CHANGELOG" CHANGELOG.md
+mv "${TEMP_CHANGELOG}" CHANGELOG.md

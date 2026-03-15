@@ -5,15 +5,16 @@ mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 env_dir="${3}"
-testpack=$(cd "$(dirname $0)/.." && pwd)
+testpack=$(cd "$(dirname "$0")/.." && pwd)
 
 echo "true" >"${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
 echo "true" >"${env_dir}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
 
 buildpack="${testpack}"
-source ${testpack}/bin/compile "${build}" "${cache}" "${env_dir}"
+# shellcheck source=bin/compile
+source "${testpack}/bin/compile" "${build}" "${cache}" "${env_dir}"
 
-if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
+if [[ -f "${build}/.golangci.yml" ]] || [[ -f "${build}/.golangci.toml" ]] || [[ -f "${build}/.golangci.json" ]]; then
 	output::step "/.golangci.{yml,toml,json} detected"
 	tmp="$(mktemp -d)"
 	mkdir -p "${build}/.heroku/golangci/bin"
