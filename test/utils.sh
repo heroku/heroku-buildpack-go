@@ -1,4 +1,4 @@
-# shellcheck shell=bash
+#!/usr/bin/env bash
 
 ##############
 ## shunit2 setup/teardown functions
