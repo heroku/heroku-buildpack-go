@@ -485,9 +485,7 @@ testDeprecatedToolDetected() {
 	assertCapturedError 1 "support for dep has been removed"
 }
 
-# shellcheck source=test/utils.sh
-# shellcheck disable=SC2312
-source "$(pwd)/test/utils.sh"
-# shellcheck source=test/shunit2.sh
-# shellcheck disable=SC1091,SC2312
-source "$(pwd)/test/shunit2.sh"
+BUILDPACK_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+source "${BUILDPACK_DIR}/test/utils.sh"
+# shellcheck disable=SC1091
+source "${BUILDPACK_DIR}/test/shunit2.sh"
