@@ -1,4 +1,17 @@
-.PHONY: test test-parallel run run-ci publish
+.PHONY: lint lint-scripts check-format format test test-parallel run run-ci publish
+
+lint: lint-scripts check-format
+
+lint-scripts:
+	@git ls-files -z --cached --others --exclude-standard 'bin/*' 'sbin/*' '*.sh' \
+		| grep -zv '^test/shunit2\.sh$$' \
+		| xargs -0 shellcheck --check-sourced --color=always
+
+check-format:
+	@shfmt --diff .
+
+format:
+	@shfmt --write --list .
 
 STACK ?= heroku-24
 FIXTURE ?= test/fixtures/mod-basic-go126
