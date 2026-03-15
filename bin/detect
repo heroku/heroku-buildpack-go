@@ -14,21 +14,11 @@ source "${BUILDPACK_DIR}/lib/output.sh"
 # migration error message rather than the generic "can't detect language" output).
 # shellcheck disable=SC2235,SC2312
 if test -f "${BUILD_DIR}/go.mod" \
-	||
-	#go modules
-	test -f "${BUILD_DIR}/Gopkg.lock" \
-	||
-	#dep
-	test -f "${BUILD_DIR}/Godeps/Godeps.json" \
-	||
-	# godeps
-	test -f "${BUILD_DIR}/vendor/vendor.json" \
-	||
-	# govendor
-	test -f "${BUILD_DIR}/glide.yaml" \
-	||
-	# glide
-	(test -d "${BUILD_DIR}/src" && test -n "$(find "${BUILD_DIR}/src" -mindepth 2 -type f -name '*.go' | sed 1q)"); then # gb
+	|| test -f "${BUILD_DIR}/Gopkg.lock" \
+	|| test -f "${BUILD_DIR}/Godeps/Godeps.json" \
+	|| test -f "${BUILD_DIR}/vendor/vendor.json" \
+	|| test -f "${BUILD_DIR}/glide.yaml" \
+	|| (test -d "${BUILD_DIR}/src" && test -n "$(find "${BUILD_DIR}/src" -mindepth 2 -type f -name '*.go' | sed 1q)"); then
 	echo Go
 else
 	output::error <<-EOF
