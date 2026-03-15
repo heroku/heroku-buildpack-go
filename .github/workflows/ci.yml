@@ -10,7 +10,22 @@ on:
 permissions:
   contents: read
 
+env:
+  FORCE_COLOR: 1
+
 jobs:
+  lint:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Run ShellCheck
+        run: make lint-scripts
+      - name: Run shfmt
+        uses: docker://mvdan/shfmt:latest
+        with:
+          args: "--diff ."
+
   integration-test:
     runs-on: ubuntu-latest
     strategy:
