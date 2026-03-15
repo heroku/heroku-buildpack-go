@@ -4,7 +4,7 @@
 set -euo pipefail
 
 BUILD_DIR="${1}"
-env_dir="${2}"
+ENV_DIR="${2}"
 
 # The absolute path to the root of the buildpack.
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
@@ -12,11 +12,11 @@ BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 source "${BUILDPACK_DIR}/lib/output.sh"
 source "${BUILDPACK_DIR}/lib/common.sh"
 
-# loadEnvDir "${env_dir}"
-# For now, load all of env_dir
-if [[ -n "${env_dir}" ]]; then
+# loadEnvDir "${ENV_DIR}"
+# For now, load all of ENV_DIR
+if [[ -n "${ENV_DIR}" ]]; then
 	# shellcheck disable=SC2231
-	for f in ${env_dir}/*; do
+	for f in ${ENV_DIR}/*; do
 		key=$(basename "${f}")
 		if [[ -f "${f}" ]]; then
 			export "${key}=$(sed -e "s:\${build_dir}:${BUILD_DIR}:" "${f}")"

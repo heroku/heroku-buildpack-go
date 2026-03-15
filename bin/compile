@@ -9,7 +9,7 @@ BUILD_DIR="${1}"
 cache_root="${2}"
 cache="${cache_root}/.heroku/go"
 mkdir -p "${cache}"
-env_dir="${3}"
+ENV_DIR="${3}"
 
 # The absolute path to the root of the buildpack.
 BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
@@ -207,9 +207,9 @@ installPkgs() {
 	go install -v "${FLAGS[@]}" ${pkgs} 2>&1 | output::indent
 }
 
-loadEnvDir "${env_dir}"
+loadEnvDir "${ENV_DIR}"
 
-setGitCredHelper "${env_dir}"
+setGitCredHelper "${ENV_DIR}"
 trap clearGitCredHelper INT TERM EXIT
 
 FLAGS=(-tags heroku)
