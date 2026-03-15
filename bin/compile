@@ -31,37 +31,37 @@ snapshotBinBefore
 # Clean up old cache files if migrating from old cache structure.
 # We detect this legacy structure by looking for 'go-path' in the root.
 if [ -d "${cache_root}/go-path" ] && [ ! -d "${cache}/go-path" ]; then
-    output::step "Clearing old build cache artifacts"
+	output::step "Clearing old build cache artifacts"
 
-    # Remove artifacts that were previously stored in the cache root
-    rm -rf "${cache_root}"/go[0-9]* \
-           "${cache_root}"/devel-* \
-           "${cache_root}/go-path" \
-           "${cache_root}/go-build-cache" \
-           "${cache_root}/glide" \
-           "${cache_root}/gb" \
-           "${cache_root}/dep" \
-           "${cache_root}/godep" \
-           "${cache_root}/govendor" \
-           "${cache_root}/.tq" \
-           "${cache_root}/.jq" \
-           "${cache_root}/github.com/golang-migrate" \
-           "${cache_root}/github.com/mattes" 2>/dev/null || true
+	# Remove artifacts that were previously stored in the cache root
+	rm -rf "${cache_root}"/go[0-9]* \
+		"${cache_root}"/devel-* \
+		"${cache_root}/go-path" \
+		"${cache_root}/go-build-cache" \
+		"${cache_root}/glide" \
+		"${cache_root}/gb" \
+		"${cache_root}/dep" \
+		"${cache_root}/godep" \
+		"${cache_root}/govendor" \
+		"${cache_root}/.tq" \
+		"${cache_root}/.jq" \
+		"${cache_root}/github.com/golang-migrate" \
+		"${cache_root}/github.com/mattes" 2>/dev/null || true
 fi
 
 DefaultGoVersion="$(<${DataJSON} jq -r '.Go.DefaultVersion')"
 
 handleDefaultPkgSpec() {
-    if [ "${pkgs}" = "default" ]; then
-        output::warning <<-EOF
+	if [ "${pkgs}" = "default" ]; then
+		output::warning <<-EOF
 			Installing package '.' (default)
 
 			To install a different package spec add a comment in the
 			following form to your go.mod file:
 			// +heroku install ./cmd/...
 		EOF
-        pkgs="."
-    fi
+		pkgs="."
+	fi
 }
 
 # Expand a version identifier to supported versions of Go. If the version
@@ -70,125 +70,128 @@ handleDefaultPkgSpec() {
 # data.json for supported expansions. All others are returned as is without go
 # prepended to it.
 expandVer() {
-    local v="${1}"
-    if [[ "${v}" =~ ^[[:digit:]]+ ]]; then
-        v="go${v}"
-    fi
-    echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
+	local v="${1}"
+	if [[ "${v}" =~ ^[[:digit:]]+ ]]; then
+		v="go${v}"
+	fi
+	echo $(<${DataJSON} jq -r 'if .Go.VersionExpansion."'${v}'" then .Go.VersionExpansion."'${v}'" else "'${v}'" end')
 }
 
 # Report development versions to user
 # Use after expandVer
 reportVer() {
-    local ver="${1}"
-    case $ver in
-        devel*)
-            output::warning <<-EOF
+	local ver="${1}"
+	case $ver in
+		devel*)
+			output::warning <<-EOF
 				You are using a development build of Go.
 				This is provided for users requiring an unreleased Go version
 				but is otherwise unsupported.
 
 				Build tests are NOT RUN!!
 			EOF
-        ;;
-    esac
+			;;
+	esac
 }
 
 ensureGo() {
-    local goVersion="${1}"
-    local goPath="${cache}/${goVersion}/go"
-    local goFile=""
-    local txt="Installing ${goVersion}"
-    if [ -d "${goPath}" ]; then
-        output::step "Using ${goVersion}"
-    else
-        #For a go version change, we delete everything in our namespace
-        output::step "New Go Version, clearing old cache"
-        if [ -d "${cache}/go-path" ]; then
-            find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
-        fi
-        rm -rf ${cache}/*
-        case "${goVersion}" in
-            devel*)
-                local bGoVersion="$(expandVer ${DefaultGoVersion})"
-                goFile="${bGoVersion}.linux-amd64.tar.gz"
-                goPath="${cache}/${bGoVersion}/go"
-                txt="Installing bootstrap ${bGoVersion}"
-            ;;
-            go1)
-                goFile="go.go1.linux-amd64.tar.gz"
-            ;;
-            *)
-                goFile="${goVersion}.linux-amd64.tar.gz"
-            ;;
-        esac
+	local goVersion="${1}"
+	local goPath="${cache}/${goVersion}/go"
+	local goFile=""
+	local txt="Installing ${goVersion}"
+	if [ -d "${goPath}" ]; then
+		output::step "Using ${goVersion}"
+	else
+		#For a go version change, we delete everything in our namespace
+		output::step "New Go Version, clearing old cache"
+		if [ -d "${cache}/go-path" ]; then
+			find "${cache}/go-path" ! -perm -u=w -print0 | xargs -r -0 chmod u+w 2>&1
+		fi
+		rm -rf ${cache}/*
+		case "${goVersion}" in
+			devel*)
+				local bGoVersion="$(expandVer ${DefaultGoVersion})"
+				goFile="${bGoVersion}.linux-amd64.tar.gz"
+				goPath="${cache}/${bGoVersion}/go"
+				txt="Installing bootstrap ${bGoVersion}"
+				;;
+			go1)
+				goFile="go.go1.linux-amd64.tar.gz"
+				;;
+			*)
+				goFile="${goVersion}.linux-amd64.tar.gz"
+				;;
+		esac
 
-        output::step "${txt}"
-        ensureFile "${goFile}" "${goPath}" "tar -C ${goPath} --strip-components=1 -zxf"
-        rm -f "${goPath}/${goFile}"
+		output::step "${txt}"
+		ensureFile "${goFile}" "${goPath}" "tar -C ${goPath} --strip-components=1 -zxf"
+		rm -f "${goPath}/${goFile}"
 
-        case "${goVersion}" in
-            devel*)
-                pushd "${cache}" &> /dev/null
-                    mkdir -p "${goVersion}"
-                    pushd "${goVersion}" &> /dev/null
-                        local sha=$(echo ${goVersion} | cut -d - -f 2)  #assumes devel-<short sha> or devel-<full sha>
-                        local url="https://github.com/golang/go/archive/$sha.tar.gz"
-                        output::step "Downloading development Go version ${goVersion}"
-                            ${CURL} ${url} | tar zxf -
-                            mv go-${sha}* go
-                        output::step "Compiling development Go version ${goVersion}"
-                        pushd go/src &> /dev/null
-                            echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")"> ../VERSION
-                            GOROOT_BOOTSTRAP=$(pushd ${cache}/${bGoVersion}/go > /dev/null; pwd; popd > /dev/null) ./make.bash 2>&1
-                        popd &> /dev/null
-                        go/bin/go version
-                        rm -rf "${goPath}"
-                    popd &> /dev/null
-                popd &> /dev/null
-                goPath="${cache}/${goVersion}/go"
-            ;;
-            *)
-            ;;
-        esac
-    fi
+		case "${goVersion}" in
+			devel*)
+				pushd "${cache}" &>/dev/null
+				mkdir -p "${goVersion}"
+				pushd "${goVersion}" &>/dev/null
+				local sha=$(echo ${goVersion} | cut -d - -f 2) #assumes devel-<short sha> or devel-<full sha>
+				local url="https://github.com/golang/go/archive/$sha.tar.gz"
+				output::step "Downloading development Go version ${goVersion}"
+				${CURL} ${url} | tar zxf -
+				mv go-${sha}* go
+				output::step "Compiling development Go version ${goVersion}"
+				pushd go/src &>/dev/null
+				echo "devel +${sha} $(date "+%a %b %H:%M:%S %G %z")" >../VERSION
+				GOROOT_BOOTSTRAP=$(
+					pushd ${cache}/${bGoVersion}/go >/dev/null
+					pwd
+					popd >/dev/null
+				) ./make.bash 2>&1
+				popd &>/dev/null
+				go/bin/go version
+				rm -rf "${goPath}"
+				popd &>/dev/null
+				popd &>/dev/null
+				goPath="${cache}/${goVersion}/go"
+				;;
+			*) ;;
+		esac
+	fi
 
-    export GOROOT="${goPath}"
-    PATH="${goPath}/bin:${PATH}"
+	export GOROOT="${goPath}"
+	PATH="${goPath}/bin:${PATH}"
 
-    # Export GOCACHE if Go >= 1.10
-    if go env | grep -q '^GOCACHE='; then
-      export GOCACHE="${cache}/go-build-cache"
-    fi
+	# Export GOCACHE if Go >= 1.10
+	if go env | grep -q '^GOCACHE='; then
+		export GOCACHE="${cache}/go-build-cache"
+	fi
 }
 
 warnGoVersionOverride() {
-    if [ ! -z "${GOVERSION}" ]; then
-        output::warning <<-EOF
+	if [ ! -z "${GOVERSION}" ]; then
+		output::warning <<-EOF
 			Using \$GOVERSION override.
 			\$GOVERSION = ${GOVERSION}
 
 			If this isn't what you want please run:
 			heroku config:unset GOVERSION -a <app>
 		EOF
-    fi
+	fi
 }
 
 warnPackageSpecOverride() {
-    if [ ! -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
-        output::warning <<-EOF
+	if [ ! -z "${GO_INSTALL_PACKAGE_SPEC}" ]; then
+		output::warning <<-EOF
 			Using \$GO_INSTALL_PACKAGE_SPEC override.
 			\$GO_INSTALL_PACKAGE_SPEC = ${GO_INSTALL_PACKAGE_SPEC}
 
 			If this isn't what you want please run:
 			heroku config:unset GO_INSTALL_PACKAGE_SPEC -a <app>
 		EOF
-    fi
+	fi
 }
 
 installPkgs() {
-    output::step "Running: go install -v ${FLAGS[*]} ${pkgs}"
-    go install -v "${FLAGS[@]}" ${pkgs} 2>&1 | output::indent
+	output::step "Running: go install -v ${FLAGS[*]} ${pkgs}"
+	go install -v "${FLAGS[@]}" ${pkgs} 2>&1 | output::indent
 }
 
 loadEnvDir "${env_dir}"
@@ -209,21 +212,21 @@ build_data::set_string "go_version" "${ver}"
 
 # Track whether the version was pinned (fully specified)
 if [ "${requested_go_version}" = "${ver}" ]; then
-    build_data::set_raw "go_version_pinned" "true"
+	build_data::set_raw "go_version_pinned" "true"
 else
-    build_data::set_raw "go_version_pinned" "false"
+	build_data::set_raw "go_version_pinned" "false"
 fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
 if [ -n "${GO_LINKER_SYMBOL}" -a -n "${GO_LINKER_VALUE}" ]; then
-    FLAGS+=(-ldflags "-X ${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}")
+	FLAGS+=(-ldflags "-X ${GO_LINKER_SYMBOL}=${GO_LINKER_VALUE}")
 fi
 
 if [ -e "${build}/bin" -a ! -d "${build}/bin" ]; then
-    output::error <<-EOF
+	output::error <<-EOF
 		Error: File bin exists and is not a directory.
 	EOF
-    exit 1
+	exit 1
 fi
 
 reportVer "${ver}"
@@ -237,40 +240,40 @@ mkdir -p "${build}/bin"
 export GOPATH
 
 mainPackagesInModule() {
-  # For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
-  # Stderr (module download progress) is indented and redirected back to stderr so it displays
-  # neatly under the current step without being captured into the command substitution's stdout.
-  go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./... 2> >(output::indent >&2)
+	# For an explanation of what this is doing, see https://dave.cheney.net/2014/09/14/go-list-your-swiss-army-knife
+	# Stderr (module download progress) is indented and redirected back to stderr so it displays
+	# neatly under the current step without being captured into the command substitution's stdout.
+	go list -find "${FLAGS[@]}" -f '{{ if eq .Name "main" }} {{.ImportPath}} {{ end }}' ./... 2> >(output::indent >&2)
 }
 
 setupProcfile() {
-    if [ -f "${build}/Procfile" ]; then
-        return
-    fi
-    local pkgs=$(mainPackagesInModule)
-    if [ -z "${pkgs}" ]; then
-        return
-    fi
-    local pf=()
-    for pkg in ${pkgs}; do
-        local bn=$(basename ${pkg})
-        pf+=("${bn}: bin/${bn}")
-    done
-    if [ ${#pf} -eq 0 ]; then
-        return
-    fi
-    output::step "Created a Procfile with the following entries:"
-    if [ ${#pf[@]} -eq 1 ]; then
-        local line="web: bin/$(echo ${pf[0]} | cut -d / -f 2)"
-        echo "${line}" > ${build}/Procfile
-        echo "${line}" | output::indent
-    elif [ ${#pf[@]} -gt 1 ]; then
-        for pfl in "${pf[@]}"; do
-            echo "${pfl}" >> ${build}/Procfile
-            echo "${pfl}" | output::indent
-        done
-    fi
-    output::notice <<-EOF
+	if [ -f "${build}/Procfile" ]; then
+		return
+	fi
+	local pkgs=$(mainPackagesInModule)
+	if [ -z "${pkgs}" ]; then
+		return
+	fi
+	local pf=()
+	for pkg in ${pkgs}; do
+		local bn=$(basename ${pkg})
+		pf+=("${bn}: bin/${bn}")
+	done
+	if [ ${#pf} -eq 0 ]; then
+		return
+	fi
+	output::step "Created a Procfile with the following entries:"
+	if [ ${#pf[@]} -eq 1 ]; then
+		local line="web: bin/$(echo ${pf[0]} | cut -d / -f 2)"
+		echo "${line}" >${build}/Procfile
+		echo "${line}" | output::indent
+	elif [ ${#pf[@]} -gt 1 ]; then
+		for pfl in "${pf[@]}"; do
+			echo "${pfl}" >>${build}/Procfile
+			echo "${pfl}" | output::indent
+		done
+	fi
+	output::notice <<-EOF
 		If these entries look incomplete or incorrect please create a
 		Procfile with the required entries.
 		See https://devcenter.heroku.com/articles/procfile for more details about Procfiles
@@ -283,10 +286,10 @@ cd ${build}
 
 export GOBIN="${build}/bin"
 if [ "${GO_SETUP_GOPATH_FOR_MODULE_CACHE}" = "true" ]; then
-    export GOPATH="${build}/.heroku/go-path"
-    mkdir -p $GOPATH # ensure that it's created
+	export GOPATH="${build}/.heroku/go-path"
+	mkdir -p $GOPATH # ensure that it's created
 else
-    export GOPATH="${cache}/go-path"
+	export GOPATH="${cache}/go-path"
 fi
 
 # TODO: Check the desired language version (eg `go mod edit -json | jq -r '.Go'`)
@@ -294,26 +297,26 @@ fi
 # when the desired language version is 1.14+ and vendoring should be used.
 # https://golang.org/doc/go1.14#vendor
 if [ -d "${build}/vendor" -a -s "${build}/go.sum" ]; then
-    FLAGS+=(-mod=vendor)
+	FLAGS+=(-mod=vendor)
 fi
 
 output::step "Determining packages to install"
 pkgs=${GO_INSTALL_PACKAGE_SPEC:-$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "install" ) { print substr($0, index($0,$4)); exit }}' ${goMOD})}
 if [ -z "${pkgs}" ]; then
-    pkgs=$(mainPackagesInModule)
-    if [ -z "${pkgs}" ]; then
-        output::warning <<-EOF
+	pkgs=$(mainPackagesInModule)
+	if [ -z "${pkgs}" ]; then
+		output::warning <<-EOF
 			No main packages found in module ${name}
 
 			Unsure what package(s) to install, defaulting to '.'
 		EOF
-        pkgs="default"
-    else
-        output::step "Detected the following main packages to install:"
-        for pkg in ${pkgs}; do
-            echo "${pkg}" | output::indent
-        done
-    fi
+		pkgs="default"
+	else
+		output::step "Detected the following main packages to install:"
+		for pkg in ${pkgs}; do
+			echo "${pkg}" | output::indent
+		done
+	fi
 fi
 
 warnPackageSpecOverride
@@ -321,17 +324,17 @@ handleDefaultPkgSpec
 
 unset GIT_DIR # unset git dir or it will mess with goinstall
 if [[ -f bin/go-pre-compile ]]; then
-    output::step "Running bin/go-pre-compile hook"
-    chmod a+x bin/go-pre-compile
-    bin/go-pre-compile 2>&1 | output::indent
+	output::step "Running bin/go-pre-compile hook"
+	chmod a+x bin/go-pre-compile
+	bin/go-pre-compile 2>&1 | output::indent
 fi
 
 installPkgs
 
 if [[ -f bin/go-post-compile ]]; then
-    output::step "Running bin/go-post-compile hook"
-    chmod a+x bin/go-post-compile
-    bin/go-post-compile 2>&1 | output::indent
+	output::step "Running bin/go-post-compile hook"
+	chmod a+x bin/go-post-compile
+	bin/go-post-compile 2>&1 | output::indent
 fi
 
 build_data::set_duration "dependencies_install_duration" "${dependencies_install_start_time}"
@@ -339,27 +342,27 @@ build_data::set_duration "dependencies_install_duration" "${dependencies_install
 _newOrUpdatedBinFiles=$(binDiff)
 output::step "Installed the following binaries:"
 for fyle in ${_newOrUpdatedBinFiles}; do
-  echo "${fyle}" | output::indent
+	echo "${fyle}" | output::indent
 done
 
 setupProcfile
 
 cd $build
 mkdir -p $build/.profile.d
-echo 'PATH=$PATH:$HOME/bin' > $build/.profile.d/go.sh
+echo 'PATH=$PATH:$HOME/bin' >$build/.profile.d/go.sh
 
 if [ "${GO_INSTALL_TOOLS_IN_IMAGE}" = "true" ]; then
-    output::step "Copying go tool chain to \$GOROOT=\$HOME/.heroku/go"
-    mkdir -p "${build}/.heroku/go"
-    cp -a "${GOROOT}/"* "${build}/.heroku/go"
-    echo 'export GOROOT=$HOME/.heroku/go' > "${build}/.profile.d/goroot.sh"
-    echo 'PATH=$PATH:$GOROOT/bin' >> "${build}/.profile.d/goroot.sh"
+	output::step "Copying go tool chain to \$GOROOT=\$HOME/.heroku/go"
+	mkdir -p "${build}/.heroku/go"
+	cp -a "${GOROOT}/"* "${build}/.heroku/go"
+	echo 'export GOROOT=$HOME/.heroku/go' >"${build}/.profile.d/goroot.sh"
+	echo 'PATH=$PATH:$GOROOT/bin' >>"${build}/.profile.d/goroot.sh"
 fi
 
 t="${build}/.heroku/go"
 mkdir -p "${t}"
 t="${t}/.meta"
-echo "TOOL=${TOOL}" > "${t}"
-echo "NAME=${name}" >> "${t}"
+echo "TOOL=${TOOL}" >"${t}"
+echo "NAME=${name}" >>"${t}"
 
 build_data::set_duration "total_duration" "${compile_start_time}"
