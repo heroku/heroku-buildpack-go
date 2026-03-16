@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 # bin/release <build-dir>
 
+set -euo pipefail
+
 echo "--- {}"

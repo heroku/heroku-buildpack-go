@@ -1,21 +1,23 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # usage: bin/test-compile <build-dir> <cache-dir> <env-dir>
 
-mkdir -p "$1" "$2"
-build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
-env_dir="${3}"
-testpack=$(cd "$(dirname $0)/.." && pwd)
+set -euo pipefail
 
-echo "true" > "${env_dir}/GO_INSTALL_TOOLS_IN_IMAGE"
-echo "true" > "${env_dir}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
+BUILD_DIR="${1}"
+CACHE_DIR="${2}"
+ENV_DIR="${3}"
 
-buildpack="${testpack}"
-source ${testpack}/bin/compile "${build}" "${cache}" "${env_dir}"
+# The absolute path to the root of the buildpack.
+BUILDPACK_DIR=$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" && pwd)
 
-if [ -f "${build}/.golangci.yml" -o -f "${build}/.golangci.toml" -o -f "${build}/.golangci.json" ]; then
-    output::step "/.golangci.{yml,toml,json} detected"
-    tmp="$(mktemp -d)"
-    mkdir -p "${build}/.heroku/golangci/bin"
-    ensureFile "golangci-lint-1.20.0-linux-amd64.tar.gz" "${tmp}" "tar -C ${build}/.heroku/golangci/bin --strip-components=1 -zxf"
+echo "true" >"${ENV_DIR}/GO_INSTALL_TOOLS_IN_IMAGE"
+echo "true" >"${ENV_DIR}/GO_SETUP_GOPATH_FOR_MODULE_CACHE"
+
+source "${BUILDPACK_DIR}/bin/compile" "${BUILD_DIR}" "${CACHE_DIR}" "${ENV_DIR}"
+
+if [[ -f "${BUILD_DIR}/.golangci.yml" ]] || [[ -f "${BUILD_DIR}/.golangci.toml" ]] || [[ -f "${BUILD_DIR}/.golangci.json" ]]; then
+	output::step "/.golangci.{yml,toml,json} detected"
+	tmp="$(mktemp -d)"
+	mkdir -p "${BUILD_DIR}/.heroku/golangci/bin"
+	ensureFile "golangci-lint-1.20.0-linux-amd64.tar.gz" "${tmp}" "tar -C ${BUILD_DIR}/.heroku/golangci/bin --strip-components=1 -zxf"
 fi

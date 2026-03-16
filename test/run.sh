@@ -2,352 +2,352 @@
 # See README.md for info on running these tests.
 
 testTestPackModulesVendoredGolangLintCI() {
-  fixture "mod-deps-vendored-with-tests"
+	fixture "mod-deps-vendored-with-tests"
 
-  dotest
-  assertCapturedExitSuccess
-  assertCaptured "RUN   Test_BasicTest"
-  assertCaptured "PASS: Test_BasicTest"
-  assertCaptured "/.golangci.{yml,toml,json} detected"
-  assertCaptured "Running: golangci-lint -v --build-tags heroku run"
+	dotest
+	assertCapturedExitSuccess
+	assertCaptured "RUN   Test_BasicTest"
+	assertCaptured "PASS: Test_BasicTest"
+	assertCaptured "/.golangci.{yml,toml,json} detected"
+	assertCaptured "Running: golangci-lint -v --build-tags heroku run"
 }
 
 testTestPackModulesGolangLintCI() {
-  fixture "mod-deps-with-tests"
+	fixture "mod-deps-with-tests"
 
-  dotest
-  assertCapturedExitSuccess
+	dotest
+	assertCapturedExitSuccess
 
-  # The other deps are downloaded/installed
-  assertCaptured "
+	# The other deps are downloaded/installed
+	assertCaptured "
 go: finding github.com/gorilla/mux v1.6.2
 go: finding github.com/gorilla/context v1.1.1
 go: downloading github.com/gorilla/mux v1.6.2
 go: extracting github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
 "
-  assertCaptured "RUN   Test_BasicTest"
-  assertCaptured "PASS: Test_BasicTest"
-  assertCaptured "/.golangci.{yml,toml,json} detected"
-  assertCaptured "Running: golangci-lint -v --build-tags heroku run"
+	assertCaptured "RUN   Test_BasicTest"
+	assertCaptured "PASS: Test_BasicTest"
+	assertCaptured "/.golangci.{yml,toml,json} detected"
+	assertCaptured "Running: golangci-lint -v --build-tags heroku run"
 }
 
 testTestPackModulesGolangLintCI116() {
-  fixture "mod-deps-with-tests-116"
+	fixture "mod-deps-with-tests-116"
 
-  dotest
-  assertCapturedExitSuccess
+	dotest
+	assertCapturedExitSuccess
 
-  # The other deps are downloaded/installed
-  assertCaptured "
+	# The other deps are downloaded/installed
+	assertCaptured "
 go: finding github.com/gorilla/mux v1.6.2
 go: finding github.com/gorilla/context v1.1.1
 go: downloading github.com/gorilla/mux v1.6.2
 go: extracting github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
 "
-  assertCaptured "RUN   Test_BasicTest"
-  assertCaptured "PASS: Test_BasicTest"
-  assertCaptured "/.golangci.{yml,toml,json} detected"
-  assertCaptured "Running: golangci-lint -v --build-tags heroku run"
+	assertCaptured "RUN   Test_BasicTest"
+	assertCaptured "PASS: Test_BasicTest"
+	assertCaptured "/.golangci.{yml,toml,json} detected"
+	assertCaptured "Running: golangci-lint -v --build-tags heroku run"
 }
 
 testModProcfileCreation() {
-  fixture "mod-cmd-web"
+	fixture "mod-cmd-web"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "go1.12.17"
-  assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/web
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured "go1.12.17"
+	assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/web
 github.com/heroku/fixture/cmd/other"
 
-  assertCapturedExitSuccess
-  assertFile "other: bin/other
+	assertCapturedExitSuccess
+	assertFile "other: bin/other
 web: bin/web" "Procfile"
 }
 
 testModDepsRecompile() {
-  fixture "mod-deps"
+	fixture "mod-deps"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  # The other deps are downloaded/installed
-  assertCaptured "
+	# The other deps are downloaded/installed
+	assertCaptured "
 go: finding github.com/gorilla/mux v1.6.2
 go: finding github.com/gorilla/context v1.1.1
 go: downloading github.com/gorilla/mux v1.6.2
 go: extracting github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
 "
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 
-  # Second compile
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	# Second compile
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  # On the second compile go should already be fetched and installed & the packages should be downloaded already.
-  assertNotCaptured "Fetching ${DEFAULT_GO_VERSION}"
-  assertNotCaptured "Installing ${DEFAULT_GO_VERSION}"
-  assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
-  assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
-  assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
-  assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
+	# On the second compile go should already be fetched and installed & the packages should be downloaded already.
+	assertNotCaptured "Fetching ${DEFAULT_GO_VERSION}"
+	assertNotCaptured "Installing ${DEFAULT_GO_VERSION}"
+	assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
+	assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModWithQuotesModule() {
-  fixture "mod-with-quoted-module"
+	fixture "mod-with-quoted-module"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "go1.12.17"
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured "go1.12.17"
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
-  assertFile "web: bin/fixture" "Procfile"
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
+	assertFile "web: bin/fixture" "Procfile"
 }
 
 testModWithNonFilesInBin() {
-  fixture "mod-with-non-files-in-bin"
+	fixture "mod-with-non-files-in-bin"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
-  assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
-  assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
-  assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
+	assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModcmdDetection() {
-  fixture "mod-cmd"
+	fixture "mod-cmd"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "go1.12.17"
-  assertCaptured "Detected the following main packages to install:
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured "go1.12.17"
+	assertCaptured "Detected the following main packages to install:
 github.com/heroku/fixture/cmd/fixture
 github.com/heroku/fixture/cmd/other"
-  assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/fixture github.com/heroku/fixture/cmd/other
+	assertCaptured "Running: go install -v -tags heroku github.com/heroku/fixture/cmd/fixture github.com/heroku/fixture/cmd/other
 github.com/heroku/fixture/cmd/fixture
 github.com/heroku/fixture/cmd/other"
 
-  assertCaptured "Installed the following binaries:
+	assertCaptured "Installed the following binaries:
 ./bin/fixture
 ./bin/other"
 
-  assertFile "fixture: bin/fixture
+	assertFile "fixture: bin/fixture
 other: bin/other" "Procfile"
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
-  assertCompiledBinaryExists other
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
+	assertCompiledBinaryExists other
 }
 
 testModWithHooks() {
-  fixture "mod-basic-with-hooks"
+	fixture "mod-basic-with-hooks"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
 
-  assertCaptured "Running bin/go-pre-compile hook
+	assertCaptured "Running bin/go-pre-compile hook
 PRE COMPILE"
 
-  assertGoInstallOnlyFixturePackageCaptured
-  assertCaptured "Running bin/go-post-compile hook
+	assertGoInstallOnlyFixturePackageCaptured
+	assertCaptured "Running bin/go-post-compile hook
 POST COMPILE"
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModNoVersion() {
-  fixture "mod-no-version"
+	fixture "mod-no-version"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertCapturedStderr "does not specify a Go version"
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertCapturedStderr "does not specify a Go version"
+	assertInstalledFixtureBinary
 }
 
 testModOldVersion() {
-  fixture "mod-old-version"
+	fixture "mod-old-version"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertCaptured "Detected go modules via go.mod"
-  assertCaptured "Detected Module Name: github.com/heroku/fixture"
-  assertCapturedError 1 "a Go version >= go1.11 like so:"
+	compile
+	assertCaptured "Detected go modules via go.mod"
+	assertCaptured "Detected Module Name: github.com/heroku/fixture"
+	assertCapturedError 1 "a Go version >= go1.11 like so:"
 }
 
 testModInstall() {
-  fixture "mod-install"
+	fixture "mod-install"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
 
-  assertCaptured "Running: go install -v -tags heroku ./cmd/... ./other
+	assertCaptured "Running: go install -v -tags heroku ./cmd/... ./other
 github.com/heroku/fixture/cmd/fixture1
 github.com/heroku/fixture/cmd/fixture2
 github.com/heroku/fixture/other"
 
-  assertCaptured "Installed the following binaries:
+	assertCaptured "Installed the following binaries:
 ./bin/fixture1
 ./bin/fixture2
 ./bin/other"
 
-  assertCapturedExitSuccess
-  assertCompiledBinaryExists "fixture1"
-  assertCompiledBinaryExists "fixture2"
-  assertCompiledBinaryExists "other"
+	assertCapturedExitSuccess
+	assertCompiledBinaryExists "fixture1"
+	assertCompiledBinaryExists "fixture2"
+	assertCompiledBinaryExists "other"
 }
 
 testModBasic() {
-  fixture "mod-basic"
+	fixture "mod-basic"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModBasicGo111() {
-  fixture "mod-basic-go111"
+	fixture "mod-basic-go111"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.11.13"
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertCaptured "Installing go1.11.13"
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModBasicGo125() {
-  fixture "mod-basic-go125"
+	fixture "mod-basic-go125"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.25"
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertCaptured "Installing go1.25"
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModBasicGo126() {
-  fixture "mod-basic-go126"
+	fixture "mod-basic-go126"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.26"
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertCaptured "Installing go1.26"
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModBasicWithoutProcfile() {
-  fixture "mod-basic-wo-procfile"
+	fixture "mod-basic-wo-procfile"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
-  assertFile "web: bin/fixture" "Procfile"
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
+	assertFile "web: bin/fixture" "Procfile"
 }
 
 testModPrivateProxy() {
-  local repo="${BUILDPACK_HOME}/test/fixtures/mod-private-proxy/repo"
-  fixture "mod-private-proxy/app"
+	local repo="${BUILDPACK_HOME}/test/fixtures/mod-private-proxy/repo"
+	fixture "mod-private-proxy/app"
 
-  env "GOPROXY" "file://$repo"
-  env "GOPRIVATE" "git.fury.io/*"
-  env "GONOPROXY" "none"
+	env "GOPROXY" "file://${repo}"
+	env "GOPRIVATE" "git.fury.io/*"
+	env "GONOPROXY" "none"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "go1.15.15"
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured "go1.15.15"
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModDeps() {
-  fixture "mod-deps"
+	fixture "mod-deps"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  # The other deps are downloaded/installed
-  assertCaptured "
+	# The other deps are downloaded/installed
+	assertCaptured "
 go: finding github.com/gorilla/mux v1.6.2
 go: finding github.com/gorilla/context v1.1.1
 go: downloading github.com/gorilla/mux v1.6.2
 go: extracting github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
 "
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 # Ensure that a project works when:
@@ -360,133 +360,132 @@ github.com/gorilla/mux
 # activates new consistency checks between go.mod and the vendor
 # directory, described at https://golang.org/doc/go1.14#vendor.
 testModDeps114() {
-  fixture "mod-deps-114"
+	fixture "mod-deps-114"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertCaptured "Installing go1.14.2"
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertCaptured "Installing go1.14.2"
+	assertGoInstallOnlyFixturePackageCaptured
 
-  # The other deps are downloaded/installed
-  assertCaptured "
+	# The other deps are downloaded/installed
+	assertCaptured "
 go: finding github.com/gorilla/mux v1.6.2
 go: finding github.com/gorilla/context v1.1.1
 go: downloading github.com/gorilla/mux v1.6.2
 go: extracting github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
 "
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModDepsVendored() {
-  fixture "mod-deps-vendored"
+	fixture "mod-deps-vendored"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
 
-  assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
-  assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
-  assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
-  assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: finding github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: finding github.com/gorilla/context v1.1.1"
+	assertNotCaptured "go: downloading github.com/gorilla/mux v1.6.2"
+	assertNotCaptured "go: extracting github.com/gorilla/mux v1.6.2"
 
-  assertCapturedExitSuccess
-  assertInstalledFixtureBinary
+	assertCapturedExitSuccess
+	assertInstalledFixtureBinary
 }
 
 testModPackageSpecOverride() {
-  fixture "mod-cmd"
+	fixture "mod-cmd"
 
-  env "GO_INSTALL_PACKAGE_SPEC" "./cmd/fixture"
+	env "GO_INSTALL_PACKAGE_SPEC" "./cmd/fixture"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured "go1.12.17"
-  assertCapturedStderr "Using \$GO_INSTALL_PACKAGE_SPEC override."
-  assertCaptured "Running: go install -v -tags heroku ./cmd/fixture"
-  assertCapturedExitSuccess
-  assertCompiledBinaryExists "fixture"
-  assertBuildDirFileDoesNotExist "bin/other"
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured "go1.12.17"
+	assertCapturedStderr "Using \$GO_INSTALL_PACKAGE_SPEC override."
+	assertCaptured "Running: go install -v -tags heroku ./cmd/fixture"
+	assertCapturedExitSuccess
+	assertCompiledBinaryExists "fixture"
+	assertBuildDirFileDoesNotExist "bin/other"
 }
 
 testModGOVERSIONOverride() {
-  fixture "mod-basic"
+	fixture "mod-basic"
 
-  env "GOVERSION" "go1.24"
+	env "GOVERSION" "go1.24"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertCaptured "Installing go1.24"
-  assertCapturedStderr "Using \$GOVERSION override."
-  assertGoInstallOnlyFixturePackageCaptured
-  assertCapturedExitSuccess
-  assertCompiledBinaryExists
+	compile
+	assertCaptured "Installing go1.24"
+	assertCapturedStderr "Using \$GOVERSION override."
+	assertGoInstallOnlyFixturePackageCaptured
+	assertCapturedExitSuccess
+	assertCompiledBinaryExists
 }
 
 testModBinFile() {
-  fixture "mod-bin-file"
+	fixture "mod-bin-file"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertCapturedError 1 "File bin exists and is not a directory."
+	compile
+	assertCapturedError 1 "File bin exists and is not a directory."
 }
 
 testModLDSymbolValue() {
-  fixture "mod-ld-symbol-value"
+	fixture "mod-ld-symbol-value"
 
-  env "GO_LINKER_SYMBOL" "main.fixture"
-  env "GO_LINKER_VALUE" "fixture"
+	env "GO_LINKER_SYMBOL" "main.fixture"
+	env "GO_LINKER_VALUE" "fixture"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture"
-  assertCaptured "github.com/heroku/fixture"
-  assertCapturedExitSuccess
-  assertCompiledBinaryExists
-  assertCompiledBinaryOutputs "fixture" "fixture"
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertCaptured "Running: go install -v -tags heroku -ldflags -X main.fixture=fixture"
+	assertCaptured "github.com/heroku/fixture"
+	assertCapturedExitSuccess
+	assertCompiledBinaryExists
+	assertCompiledBinaryOutputs "fixture" "fixture"
 }
 
 testModBasicWithTools() {
-  fixture "mod-basic"
+	fixture "mod-basic"
 
-  env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
+	env "GO_INSTALL_TOOLS_IN_IMAGE" "true"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertModulesBoilerplateCaptured
-  assertGoInstallCaptured
-  assertGoInstallOnlyFixturePackageCaptured
-  assertCaptured "Copying go tool chain to"
-  assertCapturedExitSuccess
-  assertCompiledBinaryExists
-  assertBuildDirFileExists ".heroku/go/bin/go"
+	compile
+	assertModulesBoilerplateCaptured
+	assertGoInstallCaptured
+	assertGoInstallOnlyFixturePackageCaptured
+	assertCaptured "Copying go tool chain to"
+	assertCapturedExitSuccess
+	assertCompiledBinaryExists
+	assertBuildDirFileExists ".heroku/go/bin/go"
 }
 
 testDeprecatedToolDetected() {
-  fixture "dep-deprecated"
+	fixture "dep-deprecated"
 
-  assertDetected
+	assertDetected
 
-  compile
-  assertCapturedError 1 "support for dep has been removed"
+	compile
+	assertCapturedError 1 "support for dep has been removed"
 }
 
-pushd $(dirname 0) >/dev/null
-popd >/dev/null
-
-source $(pwd)/test/utils.sh
-source $(pwd)/test/shunit2.sh
+BUILDPACK_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+source "${BUILDPACK_DIR}/test/utils.sh"
+# shellcheck disable=SC1091
+source "${BUILDPACK_DIR}/test/shunit2.sh"

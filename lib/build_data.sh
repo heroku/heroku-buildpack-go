@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Note: -u is omitted for now so we don't break non-strict callers.
-set -eo pipefail
+# This is technically redundant, since all consumers of this lib will have enabled these,
+# however, it helps Shellcheck realise the options under which these functions will run.
+set -euo pipefail
 
 BUILD_DATA_FILE="${CACHE_DIR:?}/build-data/go.json"
 PREVIOUS_BUILD_DATA_FILE="${CACHE_DIR:?}/build-data/go-prev.json"

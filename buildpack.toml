@@ -7,6 +7,8 @@ name = "Go"
     "test/",
     "sbin/",
     "file-cache/",
+    ".editorconfig",
     ".gitignore",
+    ".shellcheckrc",
     "Makefile"
   ]
