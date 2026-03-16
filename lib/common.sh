@@ -10,11 +10,11 @@ FilesJSON="${BUILDPACK_DIR}/files.json"
 # shellcheck disable=SC2154
 goMOD="${BUILD_DIR}/go.mod"
 
-# We use --max-time/--retry-max-time for improved UX and metrics for hanging downloads compared to
-# seconds relying on the build system timeout. Go tarballs are up to ~70 MB and typically download in a few
-# seconds on Heroku, so we set relatively low timeouts to reduce delays before retries.
+# We use --max-time for improved UX and metrics for hanging downloads compared to relying on the
+# build system timeout. Go tarballs are up to ~70 MB and typically download in a few seconds on
+# Heroku, so we set relatively low timeouts to reduce delays before retries.
 # We use --no-progress-meter rather than --silent so that retry status messages are printed.
-CURL="curl --no-progress-meter --location --fail --max-time 30 --retry-max-time 200 --retry 5 --retry-connrefused --connect-timeout 5"
+CURL="curl --no-progress-meter --location --fail --max-time 30 --retry 5 --retry-connrefused --connect-timeout 5"
 
 TOOL=""
 # Default to $SOURCE_VERSION environment variable: https://devcenter.heroku.com/articles/buildpack-api#bin-compile

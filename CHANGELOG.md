@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Remove redundant `--retry-max-time` curl option
 
 ## [v226] - 2026-03-16
 
