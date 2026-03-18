@@ -19,5 +19,5 @@ if [[ -f "${BUILD_DIR}/.golangci.yml" ]] || [[ -f "${BUILD_DIR}/.golangci.toml" 
 	output::step "/.golangci.{yml,toml,json} detected"
 	tmp="$(mktemp -d)"
 	mkdir -p "${BUILD_DIR}/.heroku/golangci/bin"
-	ensureFile "golangci-lint-1.20.0-linux-amd64.tar.gz" "${tmp}" "tar -C ${BUILD_DIR}/.heroku/golangci/bin --strip-components=1 -zxf"
+	ensureFile "golangci-lint-1.20.0-linux-${ARCH}.tar.gz" "${tmp}" "tar -C ${BUILD_DIR}/.heroku/golangci/bin --strip-components=1 -zxf"
 fi

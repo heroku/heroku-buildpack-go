@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 * Remove redundant `--retry-max-time` curl option
+* Add ARM64 (linux-arm64) architecture support
 
 ## [v226] - 2026-03-16
 

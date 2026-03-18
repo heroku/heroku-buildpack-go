@@ -20,8 +20,7 @@ COMPILE_FAILURE_EXIT_CODE ?= 1
 
 # Converts a stack name of `heroku-NN` to its build Docker image tag of `heroku/heroku:NN-build`.
 STACK_IMAGE_TAG := heroku/$(subst -,:,$(STACK))-build
-# TODO: Add buildpack support for arm64 and use the native architecture for improved test performance locally.
-DOCKER_FLAGS := --rm --platform linux/amd64 -v $(PWD):/src:ro
+DOCKER_FLAGS := --rm -v $(PWD):/src:ro
 
 test:
 	@echo "Running tests using: STACK=$(STACK) TEST=$(TEST)"
