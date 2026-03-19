@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v227] - 2026-03-19
+
 * Remove redundant `--retry-max-time` curl option
 * Add ARM64 (linux-arm64) architecture support
 
@@ -1203,7 +1206,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v226...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v227...main
+[v227]: https://github.com/heroku/heroku-buildpack-go/compare/v226...v227
 [v226]: https://github.com/heroku/heroku-buildpack-go/compare/v225...v226
 [v225]: https://github.com/heroku/heroku-buildpack-go/compare/v224...v225
 [v224]: https://github.com/heroku/heroku-buildpack-go/compare/v223...v224
