@@ -1,4 +1,4 @@
 # Default to requesting pull request reviews from the Heroku Languages team.
 #ECCN:Open Source
-#GUSINFO:Languages,Heroku Go Platform
+#GUSINFO:Heroku - Languages,Heroku Go Platform
 * @heroku/languages
