@@ -185,10 +185,10 @@ make test TEST=testModBasic
 make run
 ```
 
-You can also specify a custom fixture (defaults to `test/fixtures/mod-basic-go126`) and stack (defaults to `heroku-24`):
+You can also specify a custom fixture (defaults to `test/fixtures/mod-basic-go126`) and stack (defaults to `heroku-26`):
 
 ```console
-make run FIXTURE=test/fixtures/mod-basic-go125 STACK=heroku-22
+make run FIXTURE=test/fixtures/mod-basic-go125 STACK=heroku-24
 ```
 
 This will run the buildpack's detect, compile, and release scripts against the specified fixture, simulating a complete buildpack execution.
