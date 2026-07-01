@@ -25,7 +25,7 @@ jobs:
           private-key: ${{ secrets.LINGUIST_GH_PRIVATE_KEY }}
 
       - name: Checkout Repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           # Using the GH application token here will configure the local git config for this repo with credentials
           # that can be used to make signed commits that are attributed to the GH application user
