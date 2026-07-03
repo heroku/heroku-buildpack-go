@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Run ShellCheck
         run: make lint-scripts
       - name: Run shfmt
@@ -33,7 +33,7 @@ jobs:
         stack: ["heroku-22", "heroku-24", "heroku-26"]
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       # The images are pulled up front to prevent duplicate pulls due to the tests being run concurrently.
       - name: Pull build image
         run: docker pull "heroku/${STACK/-/:}-build"
@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       # Test both the local development `make run` workflow and that `bin/report` completes successfully
       # for both passing and failing builds (since `bin/report` can't easily be tested via Hatchet tests).
       - name: Run buildpack using default app fixture
