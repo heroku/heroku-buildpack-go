@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-BASEURL="https://dl.google.com/go"
+BASEURL="https://go.dev/dl"
 V="$1"
 
 if [[ -z "${V}" ]]; then
@@ -10,13 +10,21 @@ if [[ -z "${V}" ]]; then
 	exit 1
 fi
 
+# Fetch the release metadata once. go.dev serves the sha256 for each file
+# inline in this JSON; the per-file `<tarball>.sha256` endpoint is not served
+# from go.dev (it redirects to the docs page), so we source checksums here.
+if ! releases="$(curl -s -f "https://go.dev/dl/?mode=json&include=all")"; then
+	echo "error: adding ${V}: couldn't fetch release metadata from go.dev" >&2
+	exit 1
+fi
+
 for arch in amd64 arm64; do
 	tgz_fn="go${V}.linux-${arch}.tar.gz"
 	tgz_url="${BASEURL}/${tgz_fn}"
-	sha256_url="${tgz_url}.sha256"
 
-	if ! sha256_content="$(curl -s -f "${sha256_url}")"; then
-		echo "error: adding ${V} (${arch}): couldn't fetch ${sha256_url}" >&2
+	sha256_content="$(jq -r --arg fn "${tgz_fn}" '[.[].files[] | select(.filename == $fn) | .sha256] | first // empty' <<<"${releases}")"
+	if [[ -z "${sha256_content}" ]]; then
+		echo "error: adding ${V} (${arch}): couldn't find ${tgz_fn} in go.dev release metadata" >&2
 		exit 1
 	fi
 
