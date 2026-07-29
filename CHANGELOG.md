@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 * Download Go binaries from go.dev instead of dl.google.com.
+* Remove pre-release (beta/rc) Go versions from the inventory.
 
 ## [v231] - 2026-07-08
 
