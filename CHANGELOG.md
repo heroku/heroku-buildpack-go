@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Download Go binaries from go.dev instead of dl.google.com.
 
 ## [v231] - 2026-07-08
 
