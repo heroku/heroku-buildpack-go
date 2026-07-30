@@ -13,7 +13,19 @@ fi
 # Fetch the release metadata once. go.dev serves the sha256 for each file
 # inline in this JSON; the per-file `<tarball>.sha256` endpoint is not served
 # from go.dev (it redirects to the docs page), so we source checksums here.
-if ! releases="$(curl -s -f "https://go.dev/dl/?mode=json&include=all")"; then
+# The curl flags mirror sbin/update-go-versions: --no-progress-meter (rather
+# than -s) keeps retry status messages visible, and the timeouts/retries stop a
+# transient go.dev blip from failing the run and delaying updates until the next
+# daily cron.
+if ! releases="$(curl \
+	--no-progress-meter \
+	--fail \
+	--connect-timeout 3 \
+	--max-time 60 \
+	--retry 5 \
+	--retry-max-time 60 \
+	--retry-connrefused \
+	'https://go.dev/dl/?mode=json&include=all')"; then
 	echo "error: adding ${V}: couldn't fetch release metadata from go.dev" >&2
 	exit 1
 fi
