@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v232] - 2026-08-03
+
 * Download Go binaries from go.dev instead of dl.google.com.
 * Remove pre-release (beta/rc) Go versions from the inventory.
 
@@ -1236,7 +1239,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v231...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v232...main
+[v232]: https://github.com/heroku/heroku-buildpack-go/compare/v231...v232
 [v231]: https://github.com/heroku/heroku-buildpack-go/compare/v230...v231
 [v230]: https://github.com/heroku/heroku-buildpack-go/compare/v229...v230
 [v229]: https://github.com/heroku/heroku-buildpack-go/compare/v228...v229
