@@ -225,7 +225,10 @@ setGitCredHelper() {
                     password)
                         password="${value}"
                     ;;
-                    wwwauth[])
+                    wwwauth[]|capability[]|state[])
+                        # Informational fields (git 2.44+/2.46+); the
+                        # credential-helper protocol requires ignoring
+                        # unrecognized attributes.
                         :
                     ;;
                     *)
