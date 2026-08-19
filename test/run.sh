@@ -328,6 +328,52 @@ testModPrivateProxy() {
 	assertInstalledFixtureBinary
 }
 
+# Regression test for #683: git >= 2.46 announces `capability[]=authtype` to
+# credential helpers (and can follow with `state[]`) when it authenticates over
+# HTTP. The helper installed by setGitCredHelper must ignore these the same way it
+# already ignores `wwwauth[]`; before the fix it hit the catch-all `case` branch
+# and died with "Unsupported key: capability[]=authtype" before ever returning
+# credentials, breaking every private-repo fetch on stacks shipping git >= 2.46.
+#
+# We drive the installed helper directly — the same way git does: `sh -c "<body>
+# get"` with the request attributes on stdin, each newline-terminated and closed
+# with EOF. This exercises the exact parser that regressed, with a fixed input
+# matching git's documented credential-helper protocol, rather than depending on
+# `git credential fill` to relay a caller-injected capability (which the CLI path
+# does not announce on its own, so such a test could silently stop reproducing).
+testGitCredHelperIgnoresCapabilityAttributes() {
+	echo "fake-token" >"${ENV_DIR}/GO_GIT_CRED__HTTPS__GITHUB__COM"
+
+	# Run in a subprocess with an isolated HOME: common.sh enables `set -euo
+	# pipefail` at source time and setGitCredHelper installs the helper via `git
+	# config --global`, neither of which should leak into the test runner or other
+	# tests. `command env` bypasses the `env` test helper defined in test/utils.sh.
+	# shellcheck disable=SC2016 # the single-quoted body is expanded by the inner bash, not here
+	capture command env \
+		BUILDPACK_DIR="${BUILDPACK_HOME}" \
+		BUILD_DIR="${BUILD_DIR}" \
+		ENV_DIR="${ENV_DIR}" \
+		HOME="${OUTPUT_DIR}/githome" \
+		bash -c '
+			set -euo pipefail
+			mkdir -p "${HOME}"
+			# shellcheck disable=SC1091
+			source "${BUILDPACK_DIR}/lib/common.sh"
+			setGitCredHelper "${ENV_DIR}"
+			# git stores a shell helper prefixed with "!" and invokes it as
+			# `sh -c "<body> <operation>"`; strip the "!" and do the same.
+			helper="$(git config --global credential.helper)"
+			printf "capability[]=authtype\nprotocol=https\nhost=github.com\nstate[]=helper:0\n" \
+				| sh -c "${helper#!} get"
+		'
+
+	assertCapturedExitSuccess
+	assertCaptured "username=fake-token"
+	assertCaptured "password=fake-token"
+	assertCapturedStderr "Using credentials from GO_GIT_CRED__HTTPS__GITHUB__COM"
+	assertFileNotContains "Unsupported key" "${STD_ERR}"
+}
+
 testModDeps() {
 	fixture "mod-deps"
 
