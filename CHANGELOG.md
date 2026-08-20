@@ -6,6 +6,8 @@
 * go1.27 defaults to 1.27.0
 * Add go1.26.7
 * go1.26 defaults to 1.26.7
+* Add go1.25.14
+* go1.25 defaults to 1.25.14
 
 ## [v233] - 2026-08-14
 
