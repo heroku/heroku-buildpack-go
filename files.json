@@ -1799,6 +1799,22 @@
     "SHA": "d0507e9e9d7fe012aae570108cbd76c15de879e17130ab8cb90d4d7445cb1f2e",
     "URL": "https://go.dev/dl/go1.26.6.linux-arm64.tar.gz"
   },
+  "go1.26.7.linux-amd64.tar.gz": {
+    "SHA": "ffb5f8de10c62550dfddab66b36b57030721e0a44a3218e9e1181d7b59f121ca",
+    "URL": "https://go.dev/dl/go1.26.7.linux-amd64.tar.gz"
+  },
+  "go1.26.7.linux-arm64.tar.gz": {
+    "SHA": "5a4ec883379d51ee9ce1040d5e87f8d35e20387574dd8c947feb01eabc3c1b37",
+    "URL": "https://go.dev/dl/go1.26.7.linux-arm64.tar.gz"
+  },
+  "go1.27.0.linux-amd64.tar.gz": {
+    "SHA": "675c26c449cbb18fc24b74650de1eabbae6e16f64326fd85a283fb3b58280685",
+    "URL": "https://go.dev/dl/go1.27.0.linux-amd64.tar.gz"
+  },
+  "go1.27.0.linux-arm64.tar.gz": {
+    "SHA": "51798d2c42d0e1c6ed7fd9f48728b4193abac9e8aad6dbac2fe96a81f5909bda",
+    "URL": "https://go.dev/dl/go1.27.0.linux-arm64.tar.gz"
+  },
   "golangci-lint-1.20.0-linux-amd64.tar.gz": {
     "SHA": "5a638cba74fbfb6e11b9dce38e8caf3f18e998b6548118116d631ebcae3ebac5",
     "URL": "https://github.com/golangci/golangci-lint/releases/download/v1.20.0/golangci-lint-1.20.0-linux-amd64.tar.gz"
