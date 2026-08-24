@@ -225,7 +225,10 @@ setGitCredHelper() {
                     password)
                         password="${value}"
                     ;;
-                    wwwauth[])
+                    wwwauth[]|capability[]|state[])
+                        # Informational fields:
+                        # - wwwauth[] (git 2.41+)
+                        # - capability[] / state[] (git 2.46+)
                         :
                     ;;
                     *)

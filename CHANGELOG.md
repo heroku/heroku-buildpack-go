@@ -2,6 +2,7 @@
 
 ## [Unreleased]
 
+* Add support for capability[] and state[] git credential arguments
 
 ## [v234] - 2026-08-20
 
