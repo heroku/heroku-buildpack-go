@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v235] - 2026-08-24
+
 * Add support for capability[] and state[] git credential arguments
 
 ## [v234] - 2026-08-20
@@ -1256,7 +1259,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v234...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v235...main
+[v235]: https://github.com/heroku/heroku-buildpack-go/compare/v234...v235
 [v234]: https://github.com/heroku/heroku-buildpack-go/compare/v233...v234
 [v233]: https://github.com/heroku/heroku-buildpack-go/compare/v232...v233
 [v232]: https://github.com/heroku/heroku-buildpack-go/compare/v231...v232
