@@ -30,7 +30,7 @@ Creating polar-waters-4785...
 $ git push heroku main
 ...
 -----> Go app detected
------> Installing go1.25.7... done
+-----> Installing go1.27.1... done
 -----> Running: go install -v -tags heroku .
 -----> Discovering process types
        Procfile declares types -> web
@@ -54,17 +54,23 @@ packages, ignoring any in `vendor/`, and will automatically compile those
 packages. If this isn't what you want you can specify specific package spec(s)
 via the `go.mod` file's `// +heroku install` directive (see below).
 
-The `go.mod` file allows for arbitrary comments. This buildpack utilizes [build
-constraint](https://golang.org/pkg/go/build/#hdr-Build_Constraints) style
+By default this buildpack reads the Go version from the standard `go` directive
+in your `go.mod` file, falling back to the buildpack's [DefaultVersion] if the
+directive is absent.
+
+The `go.mod` file also allows for arbitrary comments. This buildpack utilizes
+[build constraint](https://golang.org/pkg/go/build/#hdr-Build_Constraints) style
 comments to track Heroku build specific configuration which is encoded in the
 following way:
 
 - `// +heroku goVersion <version>`: the major version of go you would like
-  Heroku to use when compiling your code. If not specified this defaults to the
-  buildpack's [DefaultVersion]. Specifying a version < go1.11 will cause a build
-  error because modules are not supported by older versions of go.
+  Heroku to use when compiling your code. This is optional and takes precedence
+  over the `go` directive; when it is absent the `go` directive (or the
+  buildpack's [DefaultVersion]) is used instead. Specifying a version < go1.11
+  will cause a build error because modules are not supported by older versions
+  of go.
 
-  Example: `// +heroku goVersion go1.11`
+  Example: `// +heroku goVersion go1.27`
 
 - `// +heroku install <packagespec>[ <packagespec>]`: a space seperated list of
   the packages you want to install. If not specified, the buildpack defaults to
@@ -82,12 +88,12 @@ variable, which takes precedence over the `go.mod` directives. Setting
 `$GOVERSION` to a major version will result in the buildpack using the latest
 released minor version in that series. Since Go doesn't release `.0` versions,
 specifying a `.0` version will pin your code to the initial release of the given
-major version (ex `go1.24.0` == `go1.24` w/o auto updating to `go1.24.1` when
-it becomes available).
+major version (ex `go1.27.0` == `go1.27` w/o auto updating to a later
+`go1.27.x` patch release).
 
 ```console
-heroku config:set GOVERSION=go1.24   # Will use go1.24.X, where X is the latest minor release in the 1.24 series
-heroku config:set GOVERSION=go1.23.4 # Pins to go1.23.4
+heroku config:set GOVERSION=go1.27   # Will use go1.27.X, where X is the latest minor release in the 1.27 series
+heroku config:set GOVERSION=go1.27.0 # Pins to go1.27.0
 ```
 
 If a top level `vendor` directory exists and the `go.sum` file has a size
