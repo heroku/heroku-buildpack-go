@@ -1767,6 +1767,14 @@
     "SHA": "a290581cfe4fe28ddd737dde3095f3dbeb7f2e4065cab4eae44dfc53b760c2f7",
     "URL": "https://go.dev/dl/go1.26.1.linux-arm64.tar.gz"
   },
+  "go1.26.10.linux-amd64.tar.gz": {
+    "SHA": "ccfe7ae822d2c2f41f4fe7c956199967a4dac22d0ee0d2b2bfdb440aab3b20c5",
+    "URL": "https://go.dev/dl/go1.26.10.linux-amd64.tar.gz"
+  },
+  "go1.26.10.linux-arm64.tar.gz": {
+    "SHA": "3f4227ce7b206a513e794f1393adb473a07b46e94d18bd15d1c684bbb7319797",
+    "URL": "https://go.dev/dl/go1.26.10.linux-arm64.tar.gz"
+  },
   "go1.26.2.linux-amd64.tar.gz": {
     "SHA": "990e6b4bbba816dc3ee129eaeaf4b42f17c2800b88a2166c265ac1a200262282",
     "URL": "https://go.dev/dl/go1.26.2.linux-amd64.tar.gz"
@@ -1854,6 +1862,14 @@
   "go1.27.2.linux-arm64.tar.gz": {
     "SHA": "94f3e30b8e374bc285e7dadc11e0865726b9bc6e85b841ccceaabc0214c6b7c8",
     "URL": "https://go.dev/dl/go1.27.2.linux-arm64.tar.gz"
+  },
+  "go1.27.3.linux-amd64.tar.gz": {
+    "SHA": "65efbc80fdc1fa2cd2631cad5b481777a68e8725f34e89f50fc6ac714e379b40",
+    "URL": "https://go.dev/dl/go1.27.3.linux-amd64.tar.gz"
+  },
+  "go1.27.3.linux-arm64.tar.gz": {
+    "SHA": "a06e99309dbcbdca1a8ccd2282c3ee146e55930886e26b4f1193269587165f49",
+    "URL": "https://go.dev/dl/go1.27.3.linux-arm64.tar.gz"
   },
   "golangci-lint-1.20.0-linux-amd64.tar.gz": {
     "SHA": "5a638cba74fbfb6e11b9dce38e8caf3f18e998b6548118116d631ebcae3ebac5",
