@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+
+## [v239] - 2026-10-23
+
 - Added metrics for the `go` and `toolchain` directives, Go release line, outdated patch versions and Go workspace usage. ([#700](https://github.com/heroku/heroku-buildpack-go/pull/700))
 - Fixed the Go version pinned metric for exact versions requested without a `go` prefix, and for pre-Go 1.21 `.0` versions. ([#700](https://github.com/heroku/heroku-buildpack-go/pull/700))
 
@@ -1282,7 +1285,8 @@
 
 * [GOPATH naming changed & update godep](https://github.com/heroku/heroku-buildpack-go/pull/82)
 
-[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v238...main
+[unreleased]: https://github.com/heroku/heroku-buildpack-go/compare/v239...main
+[v239]: https://github.com/heroku/heroku-buildpack-go/compare/v238...v239
 [v238]: https://github.com/heroku/heroku-buildpack-go/compare/v237...v238
 [v237]: https://github.com/heroku/heroku-buildpack-go/compare/v236...v237
 [v236]: https://github.com/heroku/heroku-buildpack-go/compare/v235...v236
