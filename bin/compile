@@ -221,11 +221,27 @@ requested_go_version="${ver}"
 ver=$(expandVer "${ver}")
 build_data::set_string "go_version" "${ver}"
 
-# Track whether the version was pinned (fully specified)
-if [[ "${requested_go_version}" = "${ver}" ]]; then
-	build_data::set_raw "go_version_pinned" "true"
-else
+# Track whether the version was pinned (fully specified), rather than being a release line
+# (e.g. `go1.26`) that expands to that line's latest patch release.
+if [[ "${requested_go_version}" =~ ^(go)?[0-9]+\.[0-9]+$ ]]; then
 	build_data::set_raw "go_version_pinned" "false"
+else
+	build_data::set_raw "go_version_pinned" "true"
+fi
+
+# Track the release line, and whether a newer patch release is available for it
+if [[ "${ver}" =~ ^go([0-9]+\.[0-9]+) ]]; then
+	go_version_major="${BASH_REMATCH[1]}"
+	build_data::set_string "go_version_major" "${go_version_major}"
+
+	latest_patch=$(jq -r --arg line "go${go_version_major}" '.Go.VersionExpansion[$line] // empty' "${DataJSON}")
+	if [[ -n "${latest_patch}" ]]; then
+		if [[ "${ver}" = "${latest_patch}" ]]; then
+			build_data::set_raw "go_version_outdated" "false"
+		else
+			build_data::set_raw "go_version_outdated" "true"
+		fi
+	fi
 fi
 
 # If $GO_LINKER_SYMBOL and GO_LINKER_VALUE are set, tell the linker to DTRT
