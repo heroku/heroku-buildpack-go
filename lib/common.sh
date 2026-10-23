@@ -288,14 +288,26 @@ determineTool() {
 
 		output::step "Detected go modules via go.mod"
 
+		local go_directive toolchain_directive
+		go_directive=$(awk '{ if ($1 == "go" ) { print $2; exit } }' "${goMOD}")
+		toolchain_directive=$(awk '{ if ($1 == "toolchain" ) { print $2; exit } }' "${goMOD}")
+		build_data::set_string "go_directive" "${go_directive}"
+		build_data::set_string "toolchain_directive" "${toolchain_directive}"
+
+		if [[ -f "${BUILD_DIR}/go.work" ]]; then
+			build_data::set_raw "uses_workspace" "true"
+		else
+			build_data::set_raw "uses_workspace" "false"
+		fi
+
 		# Determine Go version from go.mod if not already set by GOVERSION
 		if [[ -z "${ver:-}" ]]; then
 			ver=$(awk '{ if ($1 == "//" && $2 == "+heroku" && $3 == "goVersion" ) { print $4; exit } }' "${goMOD}")
 			if [[ -n "${ver}" ]]; then
 				go_version_origin="go.mod (heroku comment)"
 			else
-				ver=$(awk '{ if ($1 == "go" ) { print "go" $2; exit } }' "${goMOD}")
-				if [[ -n "${ver}" ]]; then
+				if [[ -n "${go_directive}" ]]; then
+					ver="go${go_directive}"
 					go_version_origin="go.mod"
 				else
 					# shellcheck disable=SC2154
