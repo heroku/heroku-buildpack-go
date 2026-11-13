@@ -16,7 +16,7 @@ fi
 # The curl flags mirror sbin/update-go-versions: --no-progress-meter (rather
 # than -s) keeps retry status messages visible, and the timeouts/retries stop a
 # transient go.dev blip from failing the run and delaying updates until the next
-# daily cron.
+# scheduled run.
 if ! releases="$(curl \
 	--no-progress-meter \
 	--fail \
