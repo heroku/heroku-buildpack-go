@@ -2,7 +2,7 @@ name: Update Go Versions
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Every 5 minutes
+    - cron: '14,29,44,59 * * * *' # Every 15 minutes, off the hour
   workflow_dispatch:
     inputs:
       versions:
