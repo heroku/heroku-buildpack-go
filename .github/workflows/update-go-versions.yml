@@ -54,7 +54,7 @@ jobs:
             ${{ inputs.versions && format('This PR adds support for the following Go versions: {0}', inputs.versions) || 'This PR adds support for the latest stable Go versions fetched from go.dev.' }}
 
       - name: Configure PR for auto-merge
-        if: steps.pr.outputs.pull-request-operation == 'created'
+        if: contains(fromJSON('["created", "updated"]'), steps.pr.outputs.pull-request-operation)
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: gh pr merge --squash --auto "${{ steps.pr.outputs.pull-request-number }}"
